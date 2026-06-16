@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Sextant Offline Command Center</title>
+    <title>Sextant Unified Strategic Command Center</title>
 
     <style>
         body {
@@ -14,21 +14,21 @@
         }
 
         h1 {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .panel {
             border: 1px solid #00ff88;
             padding: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         button {
             background: #0b0f14;
             color: #00ff88;
             border: 1px solid #00ff88;
-            padding: 10px 15px;
-            margin-right: 10px;
+            padding: 10px;
+            margin: 5px;
             cursor: pointer;
         }
 
@@ -39,8 +39,8 @@
 
         pre {
             background: #05080c;
-            padding: 15px;
-            min-height: 180px;
+            padding: 12px;
+            min-height: 160px;
             overflow: auto;
             border: 1px solid #00ff88;
         }
@@ -49,16 +49,21 @@
 
 <body>
 
-<h1>⚡ Sextant Offline Command Center</h1>
+<h1>⚡ Sextant Unified Strategic Command Center</h1>
 
 <div class="panel">
     <button onclick="runSystem()">▶ Run Generator</button>
-    <button onclick="runSimulation()">🧠 Run Simulation</button>
+    <button onclick="runSimulation()">🧠 Run Failure Simulation</button>
 </div>
 
 <div class="panel">
-    <div>OUTPUT STREAM</div>
-    <pre id="output">Waiting for execution...</pre>
+    <div>EXECUTION OUTPUT</div>
+    <pre id="output">Awaiting execution...</pre>
+</div>
+
+<div class="panel">
+    <div>RISK DASHBOARD</div>
+    <pre id="risk">Risk Index: --</pre>
 </div>
 
 <script src="engine.js"></script>
