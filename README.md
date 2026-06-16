@@ -12,7 +12,7 @@ Your live screen (GitHub Pages) is:
 
 ⚡ Live Command Center
 
-Replace it with this:
+
 https://123AGustien.github.io/sextant-self-generator
 
 live screen (GitHub Pages) URL is:
