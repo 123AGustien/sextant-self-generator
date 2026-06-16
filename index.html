@@ -3,19 +3,64 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Sextant Offline Console</title>
+    <title>Sextant Offline Command Center</title>
+
+    <style>
+        body {
+            background: #0b0f14;
+            color: #00ff88;
+            font-family: monospace;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            border: 1px solid #00ff88;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background: #0b0f14;
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 10px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #00ff88;
+            color: #0b0f14;
+        }
+
+        pre {
+            background: #05080c;
+            padding: 15px;
+            min-height: 180px;
+            overflow: auto;
+            border: 1px solid #00ff88;
+        }
+    </style>
 </head>
 
 <body>
 
 <h1>⚡ Sextant Offline Command Center</h1>
 
-<button onclick="runSystem()">Run Generator</button>
-<button onclick="runSimulation()">Run Simulation</button>
+<div class="panel">
+    <button onclick="runSystem()">▶ Run Generator</button>
+    <button onclick="runSimulation()">🧠 Run Simulation</button>
+</div>
 
-<pre id="output">Waiting for execution...</pre>
+<div class="panel">
+    <div>OUTPUT STREAM</div>
+    <pre id="output">Waiting for execution...</pre>
+</div>
 
-<!-- OFFLINE ENGINE ONLY -->
 <script src="engine.js"></script>
 <script src="command_bridge.js"></script>
 
