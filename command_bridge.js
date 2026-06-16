@@ -2,6 +2,7 @@ function updateUI(output, risk, result, riskLevel) {
     if (output) {
         output.textContent = JSON.stringify(result, null, 2);
     }
+
     if (risk) {
         risk.textContent = "Risk Index: " + riskLevel;
     }
