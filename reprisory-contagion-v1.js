@@ -4,7 +4,7 @@ import { ReprisoryEngine } from "./reprisory/engine.js";
  * Reprisory Contagion Engine v1 (GLOBAL MODE)
  */
 
-function runContagionV1() {
+export function runContagionV1() {
   const engine = new ReprisoryEngine();
 
   // =========================
@@ -86,6 +86,6 @@ function runContagionV1() {
 }
 
 // =========================
-// GLOBAL EXPORT (CRITICAL FIX)
+// GLOBAL EXPORT
 // =========================
 window.runContagionV1 = runContagionV1;
