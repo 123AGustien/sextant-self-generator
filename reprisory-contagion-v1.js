@@ -1,11 +1,10 @@
 import { ReprisoryEngine } from "./reprisory/engine.js";
 
 /**
- * Reprisory Contagion Engine v1
- * Simulates systemic failure across interconnected banks
+ * Reprisory Contagion Engine v1 (GLOBAL MODE)
  */
 
-export function runContagionV1() {
+function runContagionV1() {
   const engine = new ReprisoryEngine();
 
   // =========================
@@ -30,7 +29,7 @@ export function runContagionV1() {
   });
 
   // =========================
-  // EXPOSURE MATRIX (simplified)
+  // EXPOSURE MATRIX
   // =========================
   const exposure = {
     bankA: { bankB: 200 },
@@ -39,9 +38,9 @@ export function runContagionV1() {
   };
 
   // =========================
-  // SHOCK EVENT (initial failure)
+  // INITIAL SHOCK
   // =========================
-  engine.entities.bankA.assets.cash -= 1200; // bankA starts under stress
+  engine.entities.bankA.assets.cash -= 1200;
 
   // =========================
   // SIMULATION LOOP
@@ -51,14 +50,12 @@ export function runContagionV1() {
     Object.keys(engine.entities).forEach(bankId => {
       const bank = engine.entities[bankId];
 
-      // STEP 1: compute solvency
       const net = bank.assets.cash - bank.liabilities.deposits;
 
       if (net < 0) {
-        bank.health -= 0.3; // degradation
+        bank.health -= 0.3;
       }
 
-      // STEP 2: contagion spread
       if (bank.health < 0.7) {
         const targets = exposure[bankId] || {};
 
@@ -71,22 +68,24 @@ export function runContagionV1() {
         });
       }
 
-      // STEP 3: collapse condition
       if (bank.health <= 0) {
         bank.assets.cash = 0;
-        bank.liabilities.deposits *= 1.2; // panic amplification
+        bank.liabilities.deposits *= 1.2;
       }
     });
 
     engine.tick();
   }
 
-  // =========================
-  // OUTPUT
-  // =========================
   return {
     simulation: "reprisory-contagion-v1",
     status: "COMPLETE",
+    finalState: engine.entities,
     history: engine.history
   };
 }
+
+// =========================
+// GLOBAL EXPORT (CRITICAL FIX)
+// =========================
+window.runContagionV1 = runContagionV1;
