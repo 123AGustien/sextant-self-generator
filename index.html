@@ -53,11 +53,12 @@
 
 <!-- CORE CONTROLS -->
 <div class="panel">
-    <button onclick="runSystem()">▶ Run Generator</button>
-    <button onclick="runSimulation()">🧠 Run Failure Simulation</button>
+    <button id="runBankRun">▶ Bank Run Simulation</button>
+    <button id="runSimulation">🧠 Contagion Simulation</button>
+    <button id="runCentralBank">🏛 Central Bank Intervention</button>
 </div>
 
-<!-- SCENARIOS (THIS WAS MISSING) -->
+<!-- SCENARIOS -->
 <div class="panel">
     <div>SCENARIO CONTROL</div>
 
@@ -79,30 +80,11 @@
     <pre id="risk">Risk Index: --</pre>
 </div>
 
-<!-- ENGINE -->
-<script src="engine.js"></script>
-<script src="command_bridge.js"></script>
-
+<!-- SCENARIO ENGINE (LIGHTWEIGHT ONLY) -->
 <script>
-function runSystem() {
-    const output = document.getElementById("output");
-    const result = generateModule("api");
-    output.textContent = JSON.stringify(result, null, 2);
-}
-
-function runSimulation() {
-    const output = document.getElementById("output");
-    const result = generateModule("simulator");
-    output.textContent = JSON.stringify(result, null, 2);
-}
-
 function runScenario(type) {
     const output = document.getElementById("output");
     const risk = document.getElementById("risk");
-
-    if (!output || !risk || typeof generateModule !== "function") return;
-
-    const base = generateModule("simulator");
 
     const scenarios = {
         trade: {
@@ -126,7 +108,7 @@ function runScenario(type) {
             }
         },
         energy: {
-            name: "Energy Market Shock",
+            name: "Energy Shock",
             risk: "HIGH",
             effects: {
                 oil_supply: -75,
@@ -155,7 +137,6 @@ function runScenario(type) {
 
     const simulation = {
         scenario: scenario.name,
-        engine_output: base,
         effects: scenario.effects
     };
 
@@ -163,9 +144,9 @@ function runScenario(type) {
     risk.textContent = "Risk Index: " + scenario.risk;
 }
 </script>
-    <!-- ZIP EXPORT LIBRARIES (OFFLINE BROWSER TOOLS) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<!-- REPRISORY ENGINE (NOW HANDLED EXTERNALLY) -->
+<script type="module" src="ui-bindings.js"></script>
 
 </body>
 </html>
