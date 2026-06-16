@@ -1,12 +1,9 @@
 /**
- * Reprisory Control Panel v1
- * Interactive scenario editor with live simulation
+ * Reprisory Control Panel v1 (GLOBAL MODE)
  */
 
-import { runCustomScenario } from "./reprisory-scenario-builder-v1.js";
-
 // =========================
-// INITIAL STATE
+// STATE
 // =========================
 const state = {
   shockLevel: "medium",
@@ -17,7 +14,7 @@ const state = {
 // =========================
 // INIT UI
 // =========================
-export function initControlPanel() {
+function initControlPanel() {
   const container = document.getElementById("control-panel");
 
   if (!container) {
@@ -45,7 +42,7 @@ export function initControlPanel() {
       <option value="aggressive">Aggressive</option>
     </select>
 
-    <button onclick="runLiveScenario()">Run Crisis Simulation</button>
+    <button id="runLiveScenarioBtn">Run Crisis Simulation</button>
 
     <hr/>
 
@@ -56,9 +53,10 @@ export function initControlPanel() {
 }
 
 // =========================
-// EVENT LISTENERS
+// LISTENERS
 // =========================
 function attachListeners() {
+
   document.getElementById("shockLevel").onchange = (e) => {
     state.shockLevel = e.target.value;
   };
@@ -70,12 +68,23 @@ function attachListeners() {
   document.getElementById("policyAggression").onchange = (e) => {
     state.policyAggression = e.target.value;
   };
+
+  const btn = document.getElementById("runLiveScenarioBtn");
+
+  if (btn) {
+    btn.onclick = runLiveScenario;
+  }
 }
 
 // =========================
-// LIVE SIMULATION RUNNER
+// LIVE RUNNER
 // =========================
-export function runLiveScenario() {
+function runLiveScenario() {
+
+  if (typeof runCustomScenario !== "function") {
+    console.error("runCustomScenario missing");
+    return;
+  }
 
   const result = runCustomScenario({
     shockLevel: state.shockLevel,
@@ -87,7 +96,7 @@ export function runLiveScenario() {
 }
 
 // =========================
-// OUTPUT RENDER
+// OUTPUT
 // =========================
 function renderOutput(result) {
 
@@ -117,14 +126,13 @@ ${JSON.stringify(result.result.finalState, null, 2)}
 }
 
 // =========================
-// RISK CLASSIFIER
+// RISK ENGINE
 // =========================
 function classifyRisk(state) {
   let stress = 0;
 
   Object.values(state || {}).forEach(bank => {
     const net = bank.assets.cash - bank.liabilities.deposits;
-
     if (net < 0) stress += Math.abs(net);
   });
 
@@ -132,3 +140,9 @@ function classifyRisk(state) {
   if (stress < 1500) return "AMBER";
   return "RED";
 }
+
+// =========================
+// GLOBAL EXPORTS (CRITICAL)
+// =========================
+window.initControlPanel = initControlPanel;
+window.runLiveScenario = runLiveScenario;
