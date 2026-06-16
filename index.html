@@ -3,37 +3,20 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Sextant Command Center (Offline)</title>
-
-    <link rel="stylesheet" href="styles.css">
+    <title>Sextant Command Center</title>
 </head>
 
 <body>
 
-    <h1>⚡ Sextant Strategic Command Center</h1>
-    <p>Offline Simulation Mode Active</p>
+<h1>Sextant Command Center</h1>
 
-    <hr>
+<button onclick="runSystem()">Run Generator</button>
+<button onclick="runSimulation()">Run Simulation</button>
 
-    <button onclick="runSystem()">
-        ▶ Run Generator
-    </button>
+<pre id="output">Waiting for execution...</pre>
 
-    <button onclick="runSimulation()">
-        🧠 Run Failure Simulation
-    </button>
-
-    <hr>
-
-    <h3>Output</h3>
-    <pre id="output">Waiting for execution...</pre>
-
-    <!-- Core engine -->
-    <script src="engine.js"></script>
-
-    <!-- UI bridge (must define runSystem + runSimulation) -->
-    <script src="command_bridge.js"></script>
+<script src="engine.js"></script>
+<script src="command_bridge.js"></script>
 
 </body>
-
 </html>
