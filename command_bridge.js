@@ -1,7 +1,11 @@
 const API_URL = "https://YOUR-REAL-BACKEND-URL/generate";
 
 async function runGeneration() {
+    const output = document.getElementById("output");
+
     try {
+        output.innerText = "Running generator...";
+
         const response = await fetch(API_URL, {
             method: "POST",
             headers: {
@@ -13,16 +17,21 @@ async function runGeneration() {
             })
         });
 
+        if (!response.ok) {
+            throw new Error("Server returned error: " + response.status);
+        }
+
         const data = await response.json();
 
         console.log("GENERATOR OUTPUT:", data);
 
-        document.getElementById("output").innerText =
-            JSON.stringify(data, null, 2);
+        output.innerText = JSON.stringify(data, null, 2);
 
     } catch (error) {
         console.error("System Error:", error);
-        document.getElementById("output").innerText =
-            "ERROR: Backend not connected";
+
+        output.innerText =
+            "ERROR: Backend not connected or unavailable\n\n" +
+            error.message;
     }
 }
