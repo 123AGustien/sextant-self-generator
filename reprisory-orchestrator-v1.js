@@ -1,39 +1,46 @@
-import { runBankRunV1 } from "./reprisory-bankrun-v1.js";
-import { runContagionV1 } from "./reprisory-contagion-v1.js";
-import { runCentralBankIntervention } from "./reprisory-centralbank-v2.js";
-
 /**
- * Reprisory Orchestrator v1
- * Full financial system simulation pipeline
+ * Reprisory Orchestrator v1 (GLOBAL MODE)
+ * Full system pipeline: Bank Run → Contagion → Central Bank
  */
 
-export function runFullSystemCrisis(mode = "BANK_RUN → CONTAGION → POLICY") {
-
-  let stage1, stage2, stage3;
+// =========================
+// ORCHESTRATOR
+// =========================
+function runFullSystemCrisis(mode = "BANK_RUN → CONTAGION → POLICY") {
 
   // =========================
   // STAGE 1: BANK RUN
   // =========================
-  stage1 = runBankRunV1();
+  const stage1 = window.runBankRunV1?.();
 
-  // Extract system state
+  if (!stage1) {
+    console.error("runBankRunV1 missing");
+    return null;
+  }
+
+  // derive state safely
   let state = {
-    entities: stage1.history?.at(-1)?.entities || {}
+    entities: stage1.entities || {}
   };
 
   // =========================
   // STAGE 2: CONTAGION
   // =========================
-  stage2 = runContagionV1();
+  const stage2 = window.runContagionV1?.();
 
-  state = {
-    entities: stage2.history?.at(-1)?.entities || state.entities
-  };
+  if (stage2?.finalState) {
+    state.entities = stage2.finalState;
+  }
 
   // =========================
-  // STAGE 3: CENTRAL BANK RESPONSE
+  // STAGE 3: CENTRAL BANK
   // =========================
-  stage3 = runCentralBankIntervention(state);
+  const stage3 = window.runCentralBankIntervention?.(state);
+
+  if (!stage3) {
+    console.error("runCentralBankIntervention missing");
+    return null;
+  }
 
   // =========================
   // FINAL OUTPUT
@@ -44,6 +51,11 @@ export function runFullSystemCrisis(mode = "BANK_RUN → CONTAGION → POLICY") 
     bankRun: stage1,
     contagion: stage2,
     policyResponse: stage3,
-    finalState: stage3.finalState
+    finalState: stage3.finalState || state.entities
   };
 }
+
+// =========================
+// GLOBAL EXPORT
+// =========================
+window.runFullSystemCrisis = runFullSystemCrisis;
