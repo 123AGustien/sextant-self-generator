@@ -11,6 +11,7 @@
             color: #00ff88;
             font-family: monospace;
             padding: 20px;
+            padding: 20px;
         }
 
         h1 {
@@ -28,6 +29,20 @@
             padding: 12px;
             overflow: auto;
             border: 1px solid #00ff88;
+            min-height: 80px;
+        }
+
+        button {
+            background: #0b0f14;
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #00ff88;
+            color: #0b0f14;
         }
     </style>
 </head>
@@ -36,13 +51,13 @@
 
 <h1>🧠 Sextant Repository Generator Spec</h1>
 
+<!-- INPUT SECTION -->
 <div class="box">
     <h3>INPUT</h3>
-    <pre>
-"Create an offline crisis dashboard with scenario engine"
-    </pre>
+    <pre>"Create an offline crisis dashboard with scenario engine"</pre>
 </div>
 
+<!-- PROCESS SECTION -->
 <div class="box">
     <h3>PROCESS</h3>
     <pre>
@@ -54,6 +69,7 @@
     </pre>
 </div>
 
+<!-- OUTPUT STRUCTURE -->
 <div class="box">
     <h3>OUTPUT STRUCTURE</h3>
     <pre>
@@ -67,6 +83,7 @@ project/
     </pre>
 </div>
 
+<!-- RULES -->
 <div class="box">
     <h3>RULES</h3>
     <pre>
@@ -77,12 +94,42 @@ project/
     </pre>
 </div>
 
+<!-- ENGINE CONTRACT -->
 <div class="box">
     <h3>ENGINE CONTRACT</h3>
     <pre>
 Description → Parser → Template Mapping → File Generator → Output
     </pre>
 </div>
+
+<!-- TEST RUNNER -->
+<div class="box">
+    <h3>TEST GENERATOR</h3>
+
+    <button onclick="runTest()">▶ Run Generator</button>
+
+    <pre id="output">Waiting for execution...</pre>
+</div>
+
+<!-- ENGINE SCRIPT -->
+<script src="generator-engine.js"></script>
+
+<script>
+function runTest() {
+    if (typeof generateRepository !== "function") {
+        document.getElementById("output").textContent =
+            "ERROR: generator-engine.js not loaded";
+        return;
+    }
+
+    const result = generateRepository(
+        "Create an offline crisis dashboard with scenario engine"
+    );
+
+    document.getElementById("output").textContent =
+        JSON.stringify(result, null, 2);
+}
+</script>
 
 </body>
 </html>
