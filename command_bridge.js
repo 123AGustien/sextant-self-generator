@@ -2,13 +2,16 @@ function runSystem() {
     const output = document.getElementById("output");
     const risk = document.getElementById("risk");
 
-    if (!output) return;
+    if (!output || typeof generateModule !== "function") {
+        console.error("System not ready: generateModule missing");
+        return;
+    }
 
     const result = generateModule("api");
 
     output.textContent = JSON.stringify(result, null, 2);
 
-    if (risk && typeof calculateRisk === "function") {
+    if (risk) {
         risk.textContent = "Risk Index: LOW";
     }
 }
@@ -17,13 +20,16 @@ function runSimulation() {
     const output = document.getElementById("output");
     const risk = document.getElementById("risk");
 
-    if (!output) return;
+    if (!output || typeof generateModule !== "function") {
+        console.error("System not ready: generateModule missing");
+        return;
+    }
 
     const result = generateModule("simulator");
 
     output.textContent = JSON.stringify(result, null, 2);
 
-    if (risk && typeof calculateRisk === "function") {
+    if (risk) {
         risk.textContent = "Risk Index: HIGH";
     }
 }
