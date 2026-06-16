@@ -1,14 +1,11 @@
 import { ReprisoryEngine } from "./reprisory/engine.js";
 
 /**
- * Reprisory Central Bank Intervention Layer v2
- * Adds:
- * - Policy regime classification
- * - Central bank balance sheet
- * - Stabilized intervention logic
+ * Reprisory Central Bank Intervention Layer v2 (GLOBAL MODE)
  */
 
-export function runCentralBankIntervention(systemState, mode = "auto") {
+function runCentralBankIntervention(systemState = { entities: {} }, mode = "auto") {
+
   const engine = new ReprisoryEngine();
 
   engine.entities = JSON.parse(JSON.stringify(systemState.entities || {}));
@@ -27,7 +24,7 @@ export function runCentralBankIntervention(systemState, mode = "auto") {
   let regime = "GREEN";
 
   // =========================
-  // STRESS CALCULATION
+  // STRESS FUNCTION
   // =========================
   function calculateStressLevel() {
     let stress = 0;
@@ -65,7 +62,6 @@ export function runCentralBankIntervention(systemState, mode = "auto") {
       liquidityInjection = Math.min(1000, centralBank.liquidityPool * 0.2);
     }
 
-    // Deduct liquidity usage (no infinite printing)
     centralBank.liquidityPool -= liquidityInjection;
   }
 
@@ -79,17 +75,14 @@ export function runCentralBankIntervention(systemState, mode = "auto") {
 
     Object.values(engine.entities).forEach(bank => {
 
-      // interest impact
       const interestShock = centralBank.policyRate * bank.liabilities.deposits;
       bank.assets.cash -= interestShock;
 
-      // liquidity floor behavior
       if (bank.assets.cash < 0) {
         bank.assets.cash = 0;
         bank.liabilities.deposits *= 1.05;
       }
 
-      // controlled intervention (not runaway)
       if (liquidityInjection > 0) {
         bank.assets.cash += liquidityInjection * 0.1;
       }
@@ -98,9 +91,6 @@ export function runCentralBankIntervention(systemState, mode = "auto") {
     engine.tick();
   }
 
-  // =========================
-  // OUTPUT
-  // =========================
   return {
     simulation: "centralbank-intervention-v2",
     regime,
@@ -109,3 +99,8 @@ export function runCentralBankIntervention(systemState, mode = "auto") {
     history: engine.history
   };
 }
+
+// =========================
+// GLOBAL EXPORT (CRITICAL FIX)
+// =========================
+window.runCentralBankIntervention = runCentralBankIntervention;
