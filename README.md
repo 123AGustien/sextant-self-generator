@@ -12,6 +12,9 @@ Offline deterministic code generation module.
 
 Replace it with this:
 https://123AGustien.github.io/sextant-self-generator
+
+live screen (GitHub Pages) URL is:
+https://123AGustien.github.io/sextant-self-generator/
 ---
 
 Purpose
