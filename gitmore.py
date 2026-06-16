@@ -1,7 +1,4 @@
-"""
-Sextant Self Generator - GITMORE FILE
-Single-file bundled version of the generator system
-"""
+import os
 
 class ScaffoldEngine:
 
@@ -34,10 +31,21 @@ class {name.capitalize()}Service:
 """
 
 
+def write_file(filename, content):
+    with open(filename, "w") as f:
+        f.write(content)
+
+
 def generate(module_type, name):
     engine = ScaffoldEngine()
-    return engine.build(module_type, name)
+    code = engine.build(module_type, name)
+
+    filename = f"{name}_{module_type}.py"
+    write_file(filename, code)
+
+    return f"generated: {filename}"
 
 
 if __name__ == "__main__":
     print(generate("api", "navigation"))
+    print(generate("service", "navigation"))
