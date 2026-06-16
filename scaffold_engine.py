@@ -1,6 +1,16 @@
 class ScaffoldEngine:
 
-    def create_api(self, name):
+    def build(self, module_type, name):
+
+        if module_type == "api":
+            return self.api_template(name)
+
+        if module_type == "service":
+            return self.service_template(name)
+
+        return "unknown module type"
+
+    def api_template(self, name):
         return f"""
 from flask import Blueprint
 
@@ -11,7 +21,7 @@ def handler():
     return {{"module": "{name}", "status": "active"}}
 """
 
-    def create_service(self, name):
+    def service_template(self, name):
         return f"""
 class {name.capitalize()}Service:
     def run(self):
