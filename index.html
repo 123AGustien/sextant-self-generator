@@ -51,23 +51,118 @@
 
 <h1>⚡ Sextant Unified Strategic Command Center</h1>
 
+<!-- CORE CONTROLS -->
 <div class="panel">
     <button onclick="runSystem()">▶ Run Generator</button>
     <button onclick="runSimulation()">🧠 Run Failure Simulation</button>
 </div>
 
+<!-- SCENARIOS (THIS WAS MISSING) -->
+<div class="panel">
+    <div>SCENARIO CONTROL</div>
+
+    <button onclick="runScenario('trade')">US–China Trade Escalation</button>
+    <button onclick="runScenario('taiwan')">Taiwan Strait Crisis</button>
+    <button onclick="runScenario('energy')">Energy Shock</button>
+    <button onclick="runScenario('recession')">Global Recession</button>
+</div>
+
+<!-- OUTPUT -->
 <div class="panel">
     <div>EXECUTION OUTPUT</div>
     <pre id="output">Awaiting execution...</pre>
 </div>
 
+<!-- RISK -->
 <div class="panel">
     <div>RISK DASHBOARD</div>
     <pre id="risk">Risk Index: --</pre>
 </div>
 
+<!-- ENGINE -->
 <script src="engine.js"></script>
 <script src="command_bridge.js"></script>
+
+<script>
+function runSystem() {
+    const output = document.getElementById("output");
+    const result = generateModule("api");
+    output.textContent = JSON.stringify(result, null, 2);
+}
+
+function runSimulation() {
+    const output = document.getElementById("output");
+    const result = generateModule("simulator");
+    output.textContent = JSON.stringify(result, null, 2);
+}
+
+function runScenario(type) {
+    const output = document.getElementById("output");
+    const risk = document.getElementById("risk");
+
+    if (!output || !risk || typeof generateModule !== "function") return;
+
+    const base = generateModule("simulator");
+
+    const scenarios = {
+        trade: {
+            name: "US–China Trade Escalation",
+            risk: "HIGH",
+            effects: {
+                supply_chain: -70,
+                currency: -50,
+                exports: -80,
+                inflation: +40
+            }
+        },
+        taiwan: {
+            name: "Taiwan Strait Crisis",
+            risk: "CRITICAL",
+            effects: {
+                semiconductors: -90,
+                tech_supply: -85,
+                markets: -60,
+                volatility: +80
+            }
+        },
+        energy: {
+            name: "Energy Market Shock",
+            risk: "HIGH",
+            effects: {
+                oil_supply: -75,
+                inflation: +70,
+                logistics: -60,
+                markets: -55
+            }
+        },
+        recession: {
+            name: "Global Recession",
+            risk: "HIGH",
+            effects: {
+                gdp: -80,
+                banking: -85,
+                liquidity: -70,
+                unemployment: +60
+            }
+        }
+    };
+
+    const scenario = scenarios[type] || {
+        name: "Unknown Scenario",
+        risk: "MEDIUM",
+        effects: {}
+    };
+
+    const simulation = {
+        scenario: scenario.name,
+        engine_output: base,
+        effects: scenario.effects
+    };
+
+    output.textContent = JSON.stringify(simulation, null, 2);
+    risk.textContent = "Risk Index: " + scenario.risk;
+}
+</script>
 
 </body>
 </html>
