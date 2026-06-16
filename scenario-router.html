@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Sextant Scenario Router</title>
+    <title>Sextant True Scenario Engine</title>
 
     <style>
         body {
@@ -49,22 +49,22 @@
 
 <body>
 
-<h1>⚡ Sextant Scenario Router (Root Mode)</h1>
+<h1>⚡ Sextant True Scenario Engine</h1>
 
 <div class="panel">
     <button onclick="runScenario('trade')">US–China Trade Escalation</button>
     <button onclick="runScenario('taiwan')">Taiwan Strait Crisis</button>
-    <button onclick="runScenario('energy')">Energy Shock</button>
+    <button onclick="runScenario('energy')">Energy Market Shock</button>
     <button onclick="runScenario('recession')">Global Recession</button>
 </div>
 
 <div class="panel">
-    <div>FAILURE OUTPUT</div>
-    <pre id="output">Awaiting scenario...</pre>
+    <div>EXECUTION OUTPUT</div>
+    <pre id="output">Awaiting execution...</pre>
 </div>
 
 <div class="panel">
-    <div>RISK INDEX</div>
+    <div>RISK DASHBOARD</div>
     <pre id="risk">--</pre>
 </div>
 
@@ -75,37 +75,81 @@ function runScenario(type) {
     const output = document.getElementById("output");
     const risk = document.getElementById("risk");
 
-    let result = generateModule("simulator");
-
-    let scenarioName = "";
-    let riskLevel = "MEDIUM";
-
-    if (type === "trade") {
-        scenarioName = "US–China Trade Escalation";
-        riskLevel = "HIGH";
+    if (!output || !risk || typeof generateModule !== "function") {
+        console.error("Engine not loaded correctly");
+        return;
     }
 
-    if (type === "taiwan") {
-        scenarioName = "Taiwan Strait Crisis";
-        riskLevel = "CRITICAL";
+    const base = generateModule("simulator");
+
+    const scenarios = {
+        trade: {
+            name: "US–China Trade Escalation",
+            risk: "HIGH",
+            effects: {
+                supply_chain: -70,
+                currency: -50,
+                exports: -80,
+                inflation: +40
+            },
+            narrative: "Export collapse + currency shock detected"
+        },
+
+        taiwan: {
+            name: "Taiwan Strait Crisis",
+            risk: "CRITICAL",
+            effects: {
+                semiconductors: -90,
+                tech_supply: -85,
+                markets: -60,
+                volatility: +80
+            },
+            narrative: "Semiconductor breakdown + global tech shock"
+        },
+
+        energy: {
+            name: "Energy Market Shock",
+            risk: "HIGH",
+            effects: {
+                oil_supply: -75,
+                inflation: +70,
+                logistics: -60,
+                markets: -55
+            },
+            narrative: "Energy disruption + inflation spike"
+        },
+
+        recession: {
+            name: "Global Recession",
+            risk: "HIGH",
+            effects: {
+                gdp: -80,
+                banking: -85,
+                liquidity: -70,
+                unemployment: +60
+            },
+            narrative: "Banking liquidity failure + economic contraction"
+        }
+    };
+
+    const scenario = scenarios[type];
+
+    if (!scenario) {
+        output.textContent = "Unknown scenario";
+        risk.textContent = "Risk Index: MEDIUM";
+        return;
     }
 
-    if (type === "energy") {
-        scenarioName = "Energy Shock";
-        riskLevel = "HIGH";
-    }
+    const simulation = {
+        scenario: scenario.name,
+        engine_layer: base,
+        narrative: scenario.narrative,
+        system_effects: scenario.effects,
+        timestamp: new Date().toISOString()
+    };
 
-    if (type === "recession") {
-        scenarioName = "Global Recession";
-        riskLevel = "HIGH";
-    }
-
-    output.textContent = JSON.stringify({
-        scenario: scenarioName,
-        module: result
-    }, null, 2);
-
-    risk.textContent = "Risk Index: " + riskLevel;
+    output.textContent = JSON.stringify(simulation, null, 2);
+    risk.textContent = "Risk Index: " + scenario.risk;
 }
 </script>
 
