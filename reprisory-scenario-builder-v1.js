@@ -1,45 +1,79 @@
-import { runFullSystemCrisis } from "./reprisory-orchestrator-v1.js";
-
 /**
- * Reprisory Scenario Builder v1
- * Allows custom crisis configuration
+ * Reprisory Scenario Builder v1 (GLOBAL MODE)
+ * Custom crisis configuration layer
  */
 
-export function runCustomScenario(config = {}) {
+// =========================
+// MAIN ENTRY
+// =========================
+function runCustomScenario(config = {}) {
 
   const scenario = {
-    shockLevel: config.shockLevel || "medium",   // low | medium | high
+    shockLevel: config.shockLevel || "medium",
     contagionStrength: config.contagionStrength || 1.0,
-    policyAggression: config.policyAggression || "standard" // low | standard | aggressive
+    policyAggression: config.policyAggression || "standard"
   };
 
   // =========================
-  // APPLY SCENARIO PRESETS
+  // APPLY SHOCK PRESETS
   // =========================
-  if (scenario.shockLevel === "low") {
-    config.bankRunShock = 200;
-  }
+  const preset = getShockPreset(scenario.shockLevel);
 
-  if (scenario.shockLevel === "medium") {
-    config.bankRunShock = 300;
-  }
-
-  if (scenario.shockLevel === "high") {
-    config.bankRunShock = 600;
-  }
-
-  // attach config to global system state
-  globalThis.REPRISORY_CONFIG = {
+  const finalConfig = {
     ...scenario,
+    ...preset,
     ...config
   };
 
-  // run full system with scenario context
+  // store globally (used by all engines)
+  globalThis.REPRISORY_CONFIG = finalConfig;
+
+  // =========================
+  // RUN ORCHESTRATOR
+  // =========================
+  if (typeof runFullSystemCrisis !== "function") {
+    console.error("Orchestrator missing");
+    return null;
+  }
+
   const result = runFullSystemCrisis("CUSTOM_SCENARIO");
 
   return {
     simulation: "reprisory-scenario-builder-v1",
-    config: globalThis.REPRISORY_CONFIG,
+    config: finalConfig,
     result
   };
 }
+
+// =========================
+// SHOCK PRESETS
+// =========================
+function getShockPreset(level) {
+
+  switch (level) {
+
+    case "low":
+      return {
+        bankRunShock: 200,
+        contagionMultiplier: 0.8
+      };
+
+    case "high":
+      return {
+        bankRunShock: 600,
+        contagionMultiplier: 1.5
+      };
+
+    case "medium":
+    default:
+      return {
+        bankRunShock: 300,
+        contagionMultiplier: 1.0
+      };
+  }
+}
+
+// =========================
+// GLOBAL EXPORT
+// =========================
+window.runCustomScenario = runCustomScenario;
