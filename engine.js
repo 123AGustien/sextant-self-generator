@@ -1,4 +1,5 @@
-function generateModule(type) {
+function generateModule(type, scenario = null) {
+
     const modules = {
         api: {
             name: "API MODULE",
@@ -30,11 +31,20 @@ function generateModule(type) {
         }
     };
 
-    const result = modules[type] || modules.default;
+    let result = modules[type] || modules.default;
+
+    // 🧠 SCENARIO LAYER (SAFE INJECTION)
+    if (scenario) {
+        result = {
+            ...result,
+            scenario: scenario,
+            note: "Scenario overlay applied"
+        };
+    }
 
     return {
         timestamp: new Date().toISOString(),
-        module: result,
-        type_requested: type
+        type_requested: type,
+        module: result
     };
 }
