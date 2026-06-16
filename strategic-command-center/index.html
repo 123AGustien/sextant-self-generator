@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sextant Scenario Router</title>
+
+    <style>
+        body {
+            background: #0b0f14;
+            color: #00ff88;
+            font-family: monospace;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .panel {
+            border: 1px solid #00ff88;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        button {
+            background: #0b0f14;
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #00ff88;
+            color: #0b0f14;
+        }
+
+        pre {
+            background: #05080c;
+            padding: 12px;
+            min-height: 160px;
+            overflow: auto;
+            border: 1px solid #00ff88;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>⚡ Sextant Scenario Router</h1>
+
+<div class="panel">
+    <button onclick="runScenario('trade')">US–China Trade Escalation</button>
+    <button onclick="runScenario('taiwan')">Taiwan Strait Crisis</button>
+    <button onclick="runScenario('energy')">Energy Shock</button>
+    <button onclick="runScenario('recession')">Global Recession</button>
+</div>
+
+<div class="panel">
+    <div>FAILURE OUTPUT</div>
+    <pre id="output">Awaiting scenario...</pre>
+</div>
+
+<div class="panel">
+    <div>RISK INDEX</div>
+    <pre id="risk">--</pre>
+</div>
+
+<script src="../engine.js"></script>
+<script src="../command_bridge.js"></script>
+
+<script>
+function runScenario(type) {
+    const output = document.getElementById("output");
+    const risk = document.getElementById("risk");
+
+    let result = generateModule("simulator");
+
+    let scenarioName = "";
+    let riskLevel = "MEDIUM";
+
+    if (type === "trade") {
+        scenarioName = "US–China Trade Escalation";
+        riskLevel = "HIGH";
+    }
+
+    if (type === "taiwan") {
+        scenarioName = "Taiwan Strait Crisis";
+        riskLevel = "CRITICAL";
+    }
+
+    if (type === "energy") {
+        scenarioName = "Energy Market Shock";
+        riskLevel = "HIGH";
+    }
+
+    if (type === "recession") {
+        scenarioName = "Global Recession";
+        riskLevel = "HIGH";
+    }
+
+    output.textContent = JSON.stringify({
+        scenario: scenarioName,
+        result: result
+    }, null, 2);
+
+    risk.textContent = "Risk Index: " + riskLevel;
+}
+</script>
+
+</body>
+</html>
