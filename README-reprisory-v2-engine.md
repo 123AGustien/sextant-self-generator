@@ -85,3 +85,43 @@ This branch is:
 Reprisory v2 transforms the system into:
 
 > A real-time macro-financial crisis simulation environment with policy response modeling.
+
+---
+
+Simulator Development Path
+
+Purpose
+
+The Sextant Self Generator is evolving beyond scaffold generation into a resilience scenario generation engine.
+
+The objective is to generate and rank potential failure cascades that may emerge from interacting stress factors.
+
+The focus is not prediction.
+
+The focus is discovering plausible pathways to resilience failure before they become material events.
+
+Top 10 Emerging Failure Cascades
+
+1. FX Shock → Liquidity Stress → Confidence Loss
+
+2. Payment Delay → Customer Panic → Withdrawal Spike
+
+3. Market Volatility → Margin Calls → Funding Pressure
+
+4. Cyber Incident → Service Disruption → Reputation Damage
+
+5. Deposit Outflow → Liquidity Compression → Emergency Funding
+
+6. Credit Deterioration → Capital Erosion → Lending Contraction
+
+7. Infrastructure Failure → Operational Disruption → Business Continuity Stress
+
+8. Regulatory Shock → Compliance Pressure → Strategic Retrenchment
+
+9. Market Rumor → Confidence Erosion → Liquidity Event
+
+10. Multi-Stress Convergence → Systemic Pressure → Resilience Threshold Breach
+
+Mission Statement
+
+Discovering hidden pathways to resilience failure before they occur.
