@@ -8,6 +8,10 @@ function updateUI(output, risk, result, riskLevel) {
     }
 }
 
+/* =========================
+   CORE SYSTEM (GENERATOR)
+   ========================= */
+
 function runSystem() {
     const output = document.getElementById("output");
     const risk = document.getElementById("risk");
@@ -21,6 +25,10 @@ function runSystem() {
 
     updateUI(output, risk, result, "LOW");
 }
+
+/* =========================
+   SIMULATION SYSTEM
+   ========================= */
 
 function runSimulation() {
     const output = document.getElementById("output");
@@ -37,14 +45,13 @@ function runSimulation() {
 }
 
 /* =========================
-   REPRISORY INTEGRATION
+   REPRISORY: BANK RUN
    ========================= */
 
 function runBankRun() {
     const output = document.getElementById("output");
     const risk = document.getElementById("risk");
 
-    // check Reprisory hook exists
     if (typeof triggerBankRun !== "function") {
         console.error("System not ready: triggerBankRun missing");
         return;
@@ -56,7 +63,25 @@ function runBankRun() {
 }
 
 /* =========================
-   OPTIONAL: COMMAND ROUTER
+   REPRISORY: CONTAGION (READY HOOK)
+   ========================= */
+
+function runContagion() {
+    const output = document.getElementById("output");
+    const risk = document.getElementById("risk");
+
+    if (typeof triggerContagion !== "function") {
+        console.error("System not ready: triggerContagion missing");
+        return;
+    }
+
+    const result = triggerContagion();
+
+    updateUI(output, risk, result, "SYSTEMIC RISK");
+}
+
+/* =========================
+   COMMAND ROUTER (SCALE LAYER)
    ========================= */
 
 function runCommand(mode) {
@@ -71,6 +96,10 @@ function runCommand(mode) {
 
         case "bankrun":
             runBankRun();
+            break;
+
+        case "contagion":
+            runContagion();
             break;
 
         default:
