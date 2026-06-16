@@ -1,10 +1,13 @@
-name: Sextant Auto Generator Commit
+name: Sextant Event-Driven Evolution
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
-  build:
+  evolve:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,13 +19,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Run generator
+      - name: Run Evolution Engine
         run: python gitmore.py
 
-      - name: Commit generated files
+      - name: Commit Evolution Output
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "auto-generated module update" || echo "no changes"
+          git commit -m "event-driven evolution update" || echo "no changes"
           git push
