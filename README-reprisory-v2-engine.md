@@ -1,0 +1,87 @@
+# 🧠 Reprisory v2 Engine Branch
+
+This branch contains the **Reprisory Financial Systems Simulation Engine v2**, including:
+
+- Bank run simulation layer
+- Contagion propagation engine
+- Central bank intervention system
+- Orchestrated macro-financial simulation pipeline
+- Early real-time system architecture experiments
+
+---
+
+# ⚡ Live System (GitHub Pages)
+
+👉 **Working Control Center:**
+
+https://123agustien.github.io/sextant-self-generator/
+
+---
+
+# 🏛️ System Purpose
+
+This branch evolves the Sextant ecosystem into a:
+
+> **Macro-financial crisis simulation and systemic risk engine**
+
+It models:
+- liquidity shocks
+- bank failure propagation
+- policy intervention response
+- systemic stability feedback loops
+
+---
+
+# 🧩 Core Components
+
+- `reprisory-bankrun-v1.js` → liquidity stress simulation
+- `reprisory-contagion-v1.js` → failure propagation model
+- `reprisory-centralbank-v2.js` → policy intervention system
+- `reprisory-orchestrator-v1.js` → full system pipeline
+- `reprisory-dashboard-v1.js` → visualization layer
+- `reprisory-control-panel-v1.js` → interactive scenario editor
+- `reprisory-realtime-engine-v1.js` → continuous simulation loop
+
+---
+
+# 🔁 Execution Modes
+
+The system supports:
+
+### 1. Fixed Simulation
+Run single crisis scenario
+
+### 2. Orchestrated Pipeline
+Bank run → contagion → central bank response
+
+### 3. Real-Time Mode
+Continuous evolving financial system (tick-based simulation)
+
+### 4. Scenario Builder
+User-defined crisis parameters via control panel
+
+---
+
+# 📊 System Status
+
+- ✔ Fully browser-based (no backend required)
+- ✔ Deterministic simulation engine
+- ✔ Multi-layer financial system model
+- ✔ Real-time experimental engine active
+
+---
+
+# ⚠️ Branch Notes
+
+This branch is:
+- Ahead of main in experimental simulation logic
+- Used for system architecture evolution
+- Not production-stable (development sandbox)
+
+---
+
+# 🧠 Summary
+
+Reprisory v2 transforms the system into:
+
+> A real-time macro-financial crisis simulation environment with policy response modeling.
