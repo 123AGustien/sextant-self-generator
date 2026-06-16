@@ -22,6 +22,8 @@ function generateRepository(description) {
     }
 
     return base;
+
+    
 }
 
 // ---------------- MODULE TEMPLATES ----------------
@@ -67,6 +69,7 @@ Offline deterministic generator output.
 ## Files
 - index.html
 - engine.js
+
 `;
 }
 
@@ -79,3 +82,23 @@ body {
 }
 `;
 }
+<div class="box">
+    <h3>TEST GENERATOR</h3>
+
+    <button onclick="runTest()">Run Generator</button>
+
+    <pre id="output"></pre>
+</div>
+
+<script src="generator-engine.js"></script>
+
+<script>
+function runTest() {
+    const result = generateRepository(
+        "Create an offline crisis dashboard with scenario engine"
+    );
+
+    document.getElementById("output").textContent =
+        JSON.stringify(result, null, 2);
+}
+</script>
