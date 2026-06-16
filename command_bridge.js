@@ -1,4 +1,4 @@
-const API_URL = "https://YOUR-DEPLOYED-API-URL/generate";
+const API_URL = "https://YOUR-REAL-BACKEND-URL/generate";
 
 async function runGeneration() {
     try {
@@ -22,5 +22,7 @@ async function runGeneration() {
 
     } catch (error) {
         console.error("System Error:", error);
+        document.getElementById("output").innerText =
+            "ERROR: Backend not connected";
     }
 }
