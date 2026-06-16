@@ -2,49 +2,47 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Sextant Unified Strategic Command Center</title>
+<meta charset="UTF-8">
+<title>Sextant Unified Strategic Command Center</title>
 
-    <style>
-        body {
-            background: #0b0f14;
-            color: #00ff88;
-            font-family: monospace;
-            padding: 20px;
-        }
+<style>
+body {
+    background: #0b0f14;
+    color: #00ff88;
+    font-family: monospace;
+    padding: 20px;
+}
 
-        h1 {
-            margin-bottom: 10px;
-        }
+h1 { margin-bottom: 10px; }
 
-        .panel {
-            border: 1px solid #00ff88;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
+.panel {
+    border: 1px solid #00ff88;
+    padding: 12px;
+    margin-bottom: 12px;
+}
 
-        button {
-            background: #0b0f14;
-            color: #00ff88;
-            border: 1px solid #00ff88;
-            padding: 10px;
-            margin: 5px;
-            cursor: pointer;
-        }
+button {
+    background: #0b0f14;
+    color: #00ff88;
+    border: 1px solid #00ff88;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
 
-        button:hover {
-            background: #00ff88;
-            color: #0b0f14;
-        }
+button:hover {
+    background: #00ff88;
+    color: #0b0f14;
+}
 
-        pre {
-            background: #05080c;
-            padding: 12px;
-            min-height: 160px;
-            overflow: auto;
-            border: 1px solid #00ff88;
-        }
-    </style>
+pre {
+    background: #05080c;
+    padding: 12px;
+    min-height: 160px;
+    overflow: auto;
+    border: 1px solid #00ff88;
+}
+</style>
 </head>
 
 <body>
@@ -80,9 +78,12 @@
     <pre id="risk">Risk Index: --</pre>
 </div>
 
-<!-- SCENARIO ENGINE (LIGHTWEIGHT ONLY) -->
 <script>
+/**
+ * SAFE SCENARIO ENGINE (ALWAYS WORKS)
+ */
 function runScenario(type) {
+
     const output = document.getElementById("output");
     const risk = document.getElementById("risk");
 
@@ -94,7 +95,7 @@ function runScenario(type) {
                 supply_chain: -70,
                 currency: -50,
                 exports: -80,
-                inflation: +40
+                inflation: 40
             }
         },
         taiwan: {
@@ -104,7 +105,7 @@ function runScenario(type) {
                 semiconductors: -90,
                 tech_supply: -85,
                 markets: -60,
-                volatility: +80
+                volatility: 80
             }
         },
         energy: {
@@ -112,7 +113,7 @@ function runScenario(type) {
             risk: "HIGH",
             effects: {
                 oil_supply: -75,
-                inflation: +70,
+                inflation: 70,
                 logistics: -60,
                 markets: -55
             }
@@ -124,7 +125,7 @@ function runScenario(type) {
                 gdp: -80,
                 banking: -85,
                 liquidity: -70,
-                unemployment: +60
+                unemployment: 60
             }
         }
     };
@@ -135,18 +136,20 @@ function runScenario(type) {
         effects: {}
     };
 
-    const simulation = {
+    output.textContent = JSON.stringify({
         scenario: scenario.name,
         effects: scenario.effects
-    };
+    }, null, 2);
 
-    output.textContent = JSON.stringify(simulation, null, 2);
     risk.textContent = "Risk Index: " + scenario.risk;
 }
 </script>
 
-<!-- REPRISORY ENGINE (NOW HANDLED EXTERNALLY) -->
-<script type="module" src="ui-bindings.js"></script>
+<!-- ENGINE LAYER (GLOBAL MODE SAFE) -->
+<script src="reprisory-bankrun-v1.js"></script>
+<script src="reprisory-contagion-v1.js"></script>
+<script src="reprisory-centralbank-v2.js"></script>
+<script src="ui-bindings.js"></script>
 
 </body>
 </html>
