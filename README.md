@@ -58,4 +58,147 @@ Components
 - "engine.js" → generation logic
 - "simulator.js" → failure simulation
 - "command_bridge.js" → UI execution layer
-- "index.html" → command interface
+- "index.html" → command iinterface
+---
+
+Sextant Ecosystem Architecture
+
+The Sextant Protocol is composed of four interconnected modules:
+
+1. Self Generator
+
+Generates cascades
+
+Responsible for creating structured failure scenarios based on interacting stress factors.
+
+Output:
+
+- Failure cascade models
+- Scenario libraries
+- Stress combinations
+
+---
+
+2. Simulator
+
+Runs cascades
+
+Executes generated scenarios and simulates how stress events propagate through a system.
+
+Output:
+
+- Cascade execution results
+- System response behaviour
+- Resilience thresholds
+
+---
+
+3. Operations Console
+
+Visualizes cascades
+
+Provides a visual interface for observing simulations in real time.
+
+Output:
+
+- Dashboards
+- Control room views
+- Scenario playback
+- Risk visualization
+
+---
+
+4. Official Index
+
+Explains the ecosystem
+
+Serves as the documentation and reference layer for the entire Sextant Protocol.
+
+Output:
+
+- Architecture overview
+- Repository mapping
+- Public documentation
+- System narrative
+
+---
+
+System Flow
+
+Self Generator → Simulator → Operations Console → Official Index
+
+This forms a closed loop:
+
+Generate → Execute → Visualize → Document
+---
+
+Sextant Ecosystem Architecture
+
+The Sextant Protocol is composed of four interconnected modules:
+
+1. Self Generator
+
+Generates cascades
+
+Responsible for creating structured failure scenarios based on interacting stress factors.
+
+Output:
+
+- Failure cascade models
+- Scenario libraries
+- Stress combinations
+
+---
+
+2. Simulator
+
+Runs cascades
+
+Executes generated scenarios and simulates how stress events propagate through a system.
+
+Output:
+
+- Cascade execution results
+- System response behaviour
+- Resilience thresholds
+
+---
+
+3. Operations Console
+
+Visualizes cascades
+
+Provides a visual interface for observing simulations in real time.
+
+Output:
+
+- Dashboards
+- Control room views
+- Scenario playback
+- Risk visualization
+
+---
+
+4. Official Index
+
+Explains the ecosystem
+
+Serves as the documentation and reference layer for the entire Sextant Protocol.
+
+Output:
+
+- Architecture overview
+- Repository mapping
+- Public documentation
+- System narrative
+
+---
+
+System Flow
+
+Self Generator → Simulator → Operations Console → Official Index
+
+This forms a closed loop:
+
+Generate → Execute → Visualize → Document
+- 
