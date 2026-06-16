@@ -6,6 +6,8 @@ Offline deterministic code generation module.
 🧠 Offline = JavaScript (browser engine)
 ☁️ Online = Python (server/API layer)
 
+Your live screen (GitHub Pages) is:
+👉 https://123agustien.github.io/sextant-self-generator
 ---
 
 ⚡ Live Command Center
