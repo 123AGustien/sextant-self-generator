@@ -4,10 +4,10 @@ Offline deterministic code generation module.
 
 ---
 
-⚡ Live Command Center (Offline UI)
+⚡ Live Command Center
 
-- "123agustien.github.io" (https://reference-url-citation.invalid/0)
-
+Replace it with this:
+https://123AGustien.github.io/sextant-self-generator
 ---
 
 Purpose
