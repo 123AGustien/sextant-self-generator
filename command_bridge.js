@@ -35,3 +35,45 @@ function runSimulation() {
 
     updateUI(output, risk, result, "HIGH");
 }
+
+/* =========================
+   REPRISORY INTEGRATION
+   ========================= */
+
+function runBankRun() {
+    const output = document.getElementById("output");
+    const risk = document.getElementById("risk");
+
+    // check Reprisory hook exists
+    if (typeof triggerBankRun !== "function") {
+        console.error("System not ready: triggerBankRun missing");
+        return;
+    }
+
+    const result = triggerBankRun();
+
+    updateUI(output, risk, result, "CRITICAL");
+}
+
+/* =========================
+   OPTIONAL: COMMAND ROUTER
+   ========================= */
+
+function runCommand(mode) {
+    switch (mode) {
+        case "system":
+            runSystem();
+            break;
+
+        case "simulation":
+            runSimulation();
+            break;
+
+        case "bankrun":
+            runBankRun();
+            break;
+
+        default:
+            console.error("Unknown mode:", mode);
+    }
+}
