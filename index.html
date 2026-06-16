@@ -1,79 +1,188 @@
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<title>Sextant Unified Strategic Command Center</title><style>
+body{
+    background:#0b0f14;
+    color:#00ff88;
+    font-family:monospace;
+    padding:20px;
+}
 
-    const output = document.getElementById("output");
-    const risk = document.getElementById("risk");
+.panel{
+    border:1px solid #00ff88;
+    padding:12px;
+    margin-bottom:12px;
+}
 
-    // =========================
-    // BANK RUN
-    // =========================
-    document.getElementById("runBankRun")?.addEventListener("click", () => {
+button{
+    background:#0b0f14;
+    color:#00ff88;
+    border:1px solid #00ff88;
+    padding:10px;
+    margin:5px;
+    cursor:pointer;
+}
 
-        if (typeof window.runBankRunV1 !== "function") {
-            output.textContent = "runBankRunV1 missing";
-            risk.textContent = "Risk Index: ERROR";
+button:hover{
+    background:#00ff88;
+    color:#0b0f14;
+}
+
+pre{
+    background:#05080c;
+    border:1px solid #00ff88;
+    padding:12px;
+    min-height:160px;
+    overflow:auto;
+}
+</style></head><body><h1>⚡ Sextant Unified Strategic Command Center</h1><div class="panel">
+    <button id="runBankRun">▶ Bank Run Simulation</button>
+    <button id="runSimulation">🧠 Contagion Simulation</button>
+    <button id="runCentralBank">🏛 Central Bank Intervention</button>
+</div><div class="panel">
+    <div>SCENARIO CONTROL</div><button onclick="runScenario('trade')">
+    US–China Trade Escalation
+</button>
+
+<button onclick="runScenario('taiwan')">
+    Taiwan Strait Crisis
+</button>
+
+<button onclick="runScenario('energy')">
+    Energy Shock
+</button>
+
+<button onclick="runScenario('recession')">
+    Global Recession
+</button>
+
+</div><div class="panel">
+    <div>EXECUTION OUTPUT</div>
+    <pre id="output">Awaiting execution...</pre>
+</div><div class="panel">
+    <div>RISK DASHBOARD</div>
+    <pre id="risk">Risk Index: --</pre>
+</div><script>
+
+function runScenario(type){
+
+    const output =
+        document.getElementById("output");
+
+    const risk =
+        document.getElementById("risk");
+
+    const scenarios = {
+
+        trade:{
+            name:"US–China Trade Escalation",
+            risk:"HIGH"
+        },
+
+        taiwan:{
+            name:"Taiwan Strait Crisis",
+            risk:"CRITICAL"
+        },
+
+        energy:{
+            name:"Energy Shock",
+            risk:"HIGH"
+        },
+
+        recession:{
+            name:"Global Recession",
+            risk:"HIGH"
+        }
+    };
+
+    const scenario = scenarios[type];
+
+    output.textContent =
+        JSON.stringify(scenario,null,2);
+
+    risk.textContent =
+        "Risk Index: " + scenario.risk;
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    const output =
+        document.getElementById("output");
+
+    const risk =
+        document.getElementById("risk");
+
+    document.getElementById("runBankRun")
+    ?.addEventListener("click",()=>{
+
+        if(typeof window.runBankRunV1 !== "function"){
+            output.textContent =
+                "runBankRunV1 missing";
             return;
         }
 
-        const result = window.runBankRunV1();
-
         output.textContent =
-            JSON.stringify(result, null, 2);
+            JSON.stringify(
+                window.runBankRunV1(),
+                null,
+                2
+            );
 
         risk.textContent =
             "Risk Index: HIGH (Bank Run)";
     });
 
-    // =========================
-    // CONTAGION
-    // =========================
-    document.getElementById("runSimulation")?.addEventListener("click", () => {
+    document.getElementById("runSimulation")
+    ?.addEventListener("click",()=>{
 
-        if (typeof window.runContagionV1 !== "function") {
-            output.textContent = "runContagionV1 missing";
-            risk.textContent = "Risk Index: ERROR";
+        if(typeof window.runContagionV1 !== "function"){
+            output.textContent =
+                "runContagionV1 missing";
             return;
         }
 
-        const result = window.runContagionV1();
-
         output.textContent =
-            JSON.stringify(result, null, 2);
+            JSON.stringify(
+                window.runContagionV1(),
+                null,
+                2
+            );
 
         risk.textContent =
             "Risk Index: CRITICAL (Contagion)";
     });
 
-    // =========================
-    // CENTRAL BANK
-    // =========================
-    document.getElementById("runCentralBank")?.addEventListener("click", () => {
+    document.getElementById("runCentralBank")
+    ?.addEventListener("click",()=>{
 
-        if (typeof window.runCentralBankIntervention !== "function") {
+        if(typeof window.runCentralBankIntervention !== "function"){
             output.textContent =
                 "runCentralBankIntervention missing";
-
-            risk.textContent =
-                "Risk Index: ERROR";
-
             return;
         }
 
-        const result =
-            window.runCentralBankIntervention({
-                entities: {}
-            });
-
         output.textContent =
-            JSON.stringify(result, null, 2);
+            JSON.stringify(
+                window.runCentralBankIntervention({
+                    entities:{
+                        bankA:{
+                            assets:{cash:-500},
+                            liabilities:{deposits:1200}
+                        },
+                        bankB:{
+                            assets:{cash:-300},
+                            liabilities:{deposits:900}
+                        }
+                    }
+                }),
+                null,
+                2
+            );
 
         risk.textContent =
             "Risk Index: STABILIZATION";
     });
 
 });
-</script>
-
-<script type="module" src="reprisory-bankrun-v1.js"></script>
-<script type="module" src="reprisory-contagion-v1.js"></script>
-<script type="module" src="reprisory-centralbank-v2.js"></script>
+</script><script type="module" src="reprisory-bankrun-v1.js"></script><script type="module" src="reprisory-contagion-v1.js"></script><script type="module" src="reprisory-centralbank-v2.js"></script></body>
+</html>
