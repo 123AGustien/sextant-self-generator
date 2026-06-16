@@ -1,73 +1,76 @@
 import { ReprisoryEngine } from "./reprisory/engine.js";
 
 /**
- * Reprisory Central Bank Intervention Layer v1
- * Responds to:
- * - Bank runs
- * - Contagion stress
- * - Systemic liquidity failure
+ * Reprisory Central Bank Intervention Layer v2
+ * Adds:
+ * - Policy regime classification
+ * - Central bank balance sheet
+ * - Stabilized intervention logic
  */
 
 export function runCentralBankIntervention(systemState, mode = "auto") {
   const engine = new ReprisoryEngine();
 
-  // Load incoming system state (from bank run or contagion)
   engine.entities = JSON.parse(JSON.stringify(systemState.entities || {}));
   engine.history = [];
 
   // =========================
-  // POLICY VARIABLES
+  // CENTRAL BANK BALANCE SHEET
   // =========================
-  let baseRate = 0.05;
+  const centralBank = {
+    reserves: 10000,
+    liquidityPool: 5000,
+    policyRate: 0.05
+  };
+
   let liquidityInjection = 0;
+  let regime = "GREEN";
 
   // =========================
-  // SYSTEM STRESS ANALYSIS
+  // STRESS CALCULATION
   // =========================
   function calculateStressLevel() {
-    let totalStress = 0;
+    let stress = 0;
 
     Object.values(engine.entities).forEach(bank => {
       const net = bank.assets.cash - bank.liabilities.deposits;
 
-      if (net < 0) totalStress += Math.abs(net);
-      if (bank.health && bank.health < 0.7) totalStress += 200;
+      if (net < 0) stress += Math.abs(net);
+      if (bank.health && bank.health < 0.7) stress += 200;
     });
 
-    return totalStress;
+    return stress;
   }
 
   // =========================
-  // POLICY RESPONSE FUNCTION
+  // POLICY ENGINE
   // =========================
   function applyPolicy(stress) {
 
-    // LOW stress: stable environment
     if (stress < 500) {
-      baseRate = 0.05;
+      regime = "GREEN";
+      centralBank.policyRate = 0.05;
       liquidityInjection = 0;
     }
 
-    // MEDIUM stress: preventive easing
     else if (stress < 1500) {
-      baseRate = 0.03;
+      regime = "AMBER";
+      centralBank.policyRate = 0.03;
       liquidityInjection = 200;
     }
 
-    // HIGH stress: crisis response
     else {
-      baseRate = 0.01;
-      liquidityInjection = 1000;
-
-      // emergency liquidity support
-      Object.values(engine.entities).forEach(bank => {
-        bank.assets.cash += liquidityInjection * 0.3;
-      });
+      regime = "RED";
+      centralBank.policyRate = 0.01;
+      liquidityInjection = Math.min(1000, centralBank.liquidityPool * 0.2);
     }
+
+    // Deduct liquidity usage (no infinite printing)
+    centralBank.liquidityPool -= liquidityInjection;
   }
 
   // =========================
-  // SIMULATION LOOP (POLICY + SYSTEM)
+  // SIMULATION LOOP
   // =========================
   for (let t = 0; t < 10; t++) {
 
@@ -76,17 +79,17 @@ export function runCentralBankIntervention(systemState, mode = "auto") {
 
     Object.values(engine.entities).forEach(bank => {
 
-      // interest rate impact (simple stress amplifier)
-      const interestShock = baseRate * bank.liabilities.deposits;
+      // interest impact
+      const interestShock = centralBank.policyRate * bank.liabilities.deposits;
       bank.assets.cash -= interestShock;
 
-      // liquidity floor
+      // liquidity floor behavior
       if (bank.assets.cash < 0) {
         bank.assets.cash = 0;
         bank.liabilities.deposits *= 1.05;
       }
 
-      // emergency stabilization
+      // controlled intervention (not runaway)
       if (liquidityInjection > 0) {
         bank.assets.cash += liquidityInjection * 0.1;
       }
@@ -96,12 +99,12 @@ export function runCentralBankIntervention(systemState, mode = "auto") {
   }
 
   // =========================
-  // OUTPUT POLICY RESULT
+  // OUTPUT
   // =========================
   return {
-    simulation: "centralbank-intervention-v1",
-    baseRate,
-    liquidityInjection,
+    simulation: "centralbank-intervention-v2",
+    regime,
+    centralBank,
     finalState: engine.entities,
     history: engine.history
   };
