@@ -2,49 +2,47 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Sextant Unified Strategic Command Center</title>
+<meta charset="UTF-8">
+<title>Sextant Unified Strategic Command Center</title>
 
-    <style>
-        body {
-            background: #0b0f14;
-            color: #00ff88;
-            font-family: monospace;
-            padding: 20px;
-        }
+<style>
+body {
+    background: #0b0f14;
+    color: #00ff88;
+    font-family: monospace;
+    padding: 20px;
+}
 
-        h1 {
-            margin-bottom: 10px;
-        }
+h1 { margin-bottom: 10px; }
 
-        .panel {
-            border: 1px solid #00ff88;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
+.panel {
+    border: 1px solid #00ff88;
+    padding: 12px;
+    margin-bottom: 12px;
+}
 
-        button {
-            background: #0b0f14;
-            color: #00ff88;
-            border: 1px solid #00ff88;
-            padding: 10px;
-            margin: 5px;
-            cursor: pointer;
-        }
+button {
+    background: #0b0f14;
+    color: #00ff88;
+    border: 1px solid #00ff88;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
 
-        button:hover {
-            background: #00ff88;
-            color: #0b0f14;
-        }
+button:hover {
+    background: #00ff88;
+    color: #0b0f14;
+}
 
-        pre {
-            background: #05080c;
-            padding: 12px;
-            min-height: 160px;
-            overflow: auto;
-            border: 1px solid #00ff88;
-        }
-    </style>
+pre {
+    background: #05080c;
+    padding: 12px;
+    min-height: 160px;
+    overflow: auto;
+    border: 1px solid #00ff88;
+}
+</style>
 </head>
 
 <body>
@@ -56,6 +54,16 @@
     <button id="runBankRun">▶ Bank Run Simulation</button>
     <button id="runSimulation">🧠 Contagion Simulation</button>
     <button id="runCentralBank">🏛 Central Bank Intervention</button>
+</div>
+
+<!-- SCENARIOS -->
+<div class="panel">
+    <div>SCENARIO CONTROL</div>
+
+    <button onclick="runScenario('trade')">US–China Trade Escalation</button>
+    <button onclick="runScenario('taiwan')">Taiwan Strait Crisis</button>
+    <button onclick="runScenario('energy')">Energy Shock</button>
+    <button onclick="runScenario('recession')">Global Recession</button>
 </div>
 
 <!-- OUTPUT -->
@@ -70,12 +78,78 @@
     <pre id="risk">Risk Index: --</pre>
 </div>
 
-<!-- ENGINE SCRIPTS -->
-<script src="engine.js"></script>
-<script src="command_bridge.js"></script>
+<script>
+/**
+ * SAFE SCENARIO ENGINE (ALWAYS WORKS)
+ */
+function runScenario(type) {
 
-<!-- UI BINDING (YOUR REAL SYSTEM) -->
-<script type="module" src="ui-bindings.js"></script>
+    const output = document.getElementById("output");
+    const risk = document.getElementById("risk");
+
+    const scenarios = {
+        trade: {
+            name: "US–China Trade Escalation",
+            risk: "HIGH",
+            effects: {
+                supply_chain: -70,
+                currency: -50,
+                exports: -80,
+                inflation: 40
+            }
+        },
+        taiwan: {
+            name: "Taiwan Strait Crisis",
+            risk: "CRITICAL",
+            effects: {
+                semiconductors: -90,
+                tech_supply: -85,
+                markets: -60,
+                volatility: 80
+            }
+        },
+        energy: {
+            name: "Energy Shock",
+            risk: "HIGH",
+            effects: {
+                oil_supply: -75,
+                inflation: 70,
+                logistics: -60,
+                markets: -55
+            }
+        },
+        recession: {
+            name: "Global Recession",
+            risk: "HIGH",
+            effects: {
+                gdp: -80,
+                banking: -85,
+                liquidity: -70,
+                unemployment: 60
+            }
+        }
+    };
+
+    const scenario = scenarios[type] || {
+        name: "Unknown Scenario",
+        risk: "MEDIUM",
+        effects: {}
+    };
+
+    output.textContent = JSON.stringify({
+        scenario: scenario.name,
+        effects: scenario.effects
+    }, null, 2);
+
+    risk.textContent = "Risk Index: " + scenario.risk;
+}
+</script>
+
+<!-- ENGINE LAYER (GLOBAL MODE SAFE) -->
+<script src="reprisory-bankrun-v1.js"></script>
+<script src="reprisory-contagion-v1.js"></script>
+<script src="reprisory-centralbank-v2.js"></script>
+<script src="ui-bindings.js"></script>
 
 </body>
 </html>

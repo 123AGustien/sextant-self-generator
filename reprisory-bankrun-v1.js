@@ -1,42 +1,76 @@
-export function runBankRunV1() {
-  const engine = new ReprisoryEngine();
+/**
+ * Reprisory Bank Run Simulation v1 (GLOBAL MODE)
+ * MUST expose function to window for UI binding layer
+ */
 
-  engine.addEntity("bankA", {
-    assets: { cash: 1000, loans: 500 },
-    liabilities: { deposits: 1200 }
-  });
+function runBankRunV1() {
 
-  engine.addEntity("bankB", {
-    assets: { cash: 800, loans: 300 },
-    liabilities: { deposits: 900 }
-  });
+    const engine = {
+        time: 0,
+        history: [],
+        entities: {}
+    };
 
-  const withdrawalShock = 300;
-  const steps = 10;
+    // =========================
+    // INITIAL BANK STATE
+    // =========================
+    engine.entities.bankA = {
+        assets: { cash: 1000, loans: 500 },
+        liabilities: { deposits: 1200 }
+    };
 
-  for (let t = 0; t < steps; t++) {
+    engine.entities.bankB = {
+        assets: { cash: 800, loans: 300 },
+        liabilities: { deposits: 900 }
+    };
 
-    Object.values(engine.entities).forEach(bank => {
+    // =========================
+    // PARAMETERS
+    // =========================
+    const withdrawalShock = 300;
+    const steps = 10;
 
-      bank.assets.cash -= withdrawalShock;
+    // =========================
+    // SIMULATION LOOP
+    // =========================
+    for (let t = 0; t < steps; t++) {
 
-      if (bank.assets.cash < 0) {
-        bank.assets.cash = 0;
-        bank.liabilities.deposits *= 1.1;
-      }
+        Object.values(engine.entities).forEach(bank => {
 
-    });
+            // liquidity drain
+            bank.assets.cash -= withdrawalShock;
 
-    engine.tick();
-  }
+            // insolvency condition
+            if (bank.assets.cash < 0) {
+                bank.assets.cash = 0;
 
-  return {
-    simulation: "reprisory-bankrun-v1",
-    status: "COMPLETE",
-    final_time: engine.time,
-    history: engine.history
-  };
+                // panic amplification
+                bank.liabilities.deposits *= 1.1;
+            }
+        });
+
+        engine.time++;
+
+        // log snapshot
+        engine.history.push({
+            t: engine.time,
+            state: JSON.parse(JSON.stringify(engine.entities))
+        });
+    }
+
+    // =========================
+    // OUTPUT
+    // =========================
+    return {
+        simulation: "reprisory-bankrun-v1",
+        status: "complete",
+        final_time: engine.time,
+        entities: engine.entities,
+        history: engine.history
+    };
 }
 
-// ✅ ADD THIS LINE ONLY
+// =========================
+// GLOBAL EXPORT (CRITICAL FOR UI)
+// =========================
 window.runBankRunV1 = runBankRunV1;
