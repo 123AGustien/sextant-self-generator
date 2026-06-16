@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sextant Repository Generator Spec</title>
+
+    <style>
+        body {
+            background: #0b0f14;
+            color: #00ff88;
+            font-family: monospace;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .box {
+            border: 1px solid #00ff88;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        pre {
+            background: #05080c;
+            padding: 12px;
+            overflow: auto;
+            border: 1px solid #00ff88;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🧠 Sextant Repository Generator Spec</h1>
+
+<div class="box">
+    <h3>INPUT</h3>
+    <pre>
+"Create an offline crisis dashboard with scenario engine"
+    </pre>
+</div>
+
+<div class="box">
+    <h3>PROCESS</h3>
+    <pre>
+1. Parse description
+2. Detect system type
+3. Map required modules
+4. Generate file structure
+5. Output repository blueprint
+    </pre>
+</div>
+
+<div class="box">
+    <h3>OUTPUT STRUCTURE</h3>
+    <pre>
+project/
+
+├── index.html
+├── engine.js
+├── styles.css
+├── README.md
+├── assets/
+    </pre>
+</div>
+
+<div class="box">
+    <h3>RULES</h3>
+    <pre>
+- Offline deterministic generation only
+- No backend required
+- Output must be structured JSON or file map
+- Templates define file content
+    </pre>
+</div>
+
+<div class="box">
+    <h3>ENGINE CONTRACT</h3>
+    <pre>
+Description → Parser → Template Mapping → File Generator → Output
+    </pre>
+</div>
+
+</body>
+</html>
