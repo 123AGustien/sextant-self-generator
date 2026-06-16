@@ -1,155 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-<meta charset="UTF-8">
-<title>Sextant Unified Strategic Command Center</title>
-
-<style>
-body {
-    background: #0b0f14;
-    color: #00ff88;
-    font-family: monospace;
-    padding: 20px;
-}
-
-h1 { margin-bottom: 10px; }
-
-.panel {
-    border: 1px solid #00ff88;
-    padding: 12px;
-    margin-bottom: 12px;
-}
-
-button {
-    background: #0b0f14;
-    color: #00ff88;
-    border: 1px solid #00ff88;
-    padding: 10px;
-    margin: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #00ff88;
-    color: #0b0f14;
-}
-
-pre {
-    background: #05080c;
-    padding: 12px;
-    min-height: 160px;
-    overflow: auto;
-    border: 1px solid #00ff88;
-}
-</style>
-</head>
-
-<body>
-
-<h1>⚡ Sextant Unified Strategic Command Center</h1>
-
-<!-- CORE CONTROLS (REPRISORY SYSTEM) -->
-<div class="panel">
-    <button id="runBankRun">▶ Bank Run Simulation</button>
-    <button id="runSimulation">🧠 Contagion Simulation</button>
-    <button id="runCentralBank">🏛 Central Bank Intervention</button>
-</div>
-
-<!-- SCENARIOS -->
-<div class="panel">
-    <div>SCENARIO CONTROL</div>
-
-    <button onclick="runScenario('trade')">US–China Trade Escalation</button>
-    <button onclick="runScenario('taiwan')">Taiwan Strait Crisis</button>
-    <button onclick="runScenario('energy')">Energy Shock</button>
-    <button onclick="runScenario('recession')">Global Recession</button>
-</div>
-
-<!-- OUTPUT -->
-<div class="panel">
-    <div>EXECUTION OUTPUT</div>
-    <pre id="output">Awaiting execution...</pre>
-</div>
-
-<!-- RISK -->
-<div class="panel">
-    <div>RISK DASHBOARD</div>
-    <pre id="risk">Risk Index: --</pre>
-</div>
-
 <script>
-/**
- * SAFE SCENARIO ENGINE (ALWAYS WORKS)
- */
-function runScenario(type) {
+document.addEventListener("DOMContentLoaded", () => {
 
     const output = document.getElementById("output");
     const risk = document.getElementById("risk");
 
-    const scenarios = {
-        trade: {
-            name: "US–China Trade Escalation",
-            risk: "HIGH",
-            effects: {
-                supply_chain: -70,
-                currency: -50,
-                exports: -80,
-                inflation: 40
-            }
-        },
-        taiwan: {
-            name: "Taiwan Strait Crisis",
-            risk: "CRITICAL",
-            effects: {
-                semiconductors: -90,
-                tech_supply: -85,
-                markets: -60,
-                volatility: 80
-            }
-        },
-        energy: {
-            name: "Energy Shock",
-            risk: "HIGH",
-            effects: {
-                oil_supply: -75,
-                inflation: 70,
-                logistics: -60,
-                markets: -55
-            }
-        },
-        recession: {
-            name: "Global Recession",
-            risk: "HIGH",
-            effects: {
-                gdp: -80,
-                banking: -85,
-                liquidity: -70,
-                unemployment: 60
-            }
+    // =========================
+    // BANK RUN
+    // =========================
+    document.getElementById("runBankRun")?.addEventListener("click", () => {
+
+        if (typeof window.runBankRunV1 !== "function") {
+            output.textContent = "runBankRunV1 missing";
+            risk.textContent = "Risk Index: ERROR";
+            return;
         }
-    };
 
-    const scenario = scenarios[type] || {
-        name: "Unknown Scenario",
-        risk: "MEDIUM",
-        effects: {}
-    };
+        const result = window.runBankRunV1();
 
-    output.textContent = JSON.stringify({
-        scenario: scenario.name,
-        effects: scenario.effects
-    }, null, 2);
+        output.textContent =
+            JSON.stringify(result, null, 2);
 
-    risk.textContent = "Risk Index: " + scenario.risk;
-}
+        risk.textContent =
+            "Risk Index: HIGH (Bank Run)";
+    });
+
+    // =========================
+    // CONTAGION
+    // =========================
+    document.getElementById("runSimulation")?.addEventListener("click", () => {
+
+        if (typeof window.runContagionV1 !== "function") {
+            output.textContent = "runContagionV1 missing";
+            risk.textContent = "Risk Index: ERROR";
+            return;
+        }
+
+        const result = window.runContagionV1();
+
+        output.textContent =
+            JSON.stringify(result, null, 2);
+
+        risk.textContent =
+            "Risk Index: CRITICAL (Contagion)";
+    });
+
+    // =========================
+    // CENTRAL BANK
+    // =========================
+    document.getElementById("runCentralBank")?.addEventListener("click", () => {
+
+        if (typeof window.runCentralBankIntervention !== "function") {
+            output.textContent =
+                "runCentralBankIntervention missing";
+
+            risk.textContent =
+                "Risk Index: ERROR";
+
+            return;
+        }
+
+        const result =
+            window.runCentralBankIntervention({
+                entities: {}
+            });
+
+        output.textContent =
+            JSON.stringify(result, null, 2);
+
+        risk.textContent =
+            "Risk Index: STABILIZATION";
+    });
+
+});
 </script>
 
-<!-- ENGINE LAYER (GLOBAL MODE SAFE) -->
-<script src="reprisory-bankrun-v1.js"></script>
-<script src="reprisory-contagion-v1.js"></script>
-<script src="reprisory-centralbank-v2.js"></script>
-<script src="ui-bindings.js"></script>
-
-</body>
-</html>
+<script type="module" src="reprisory-bankrun-v1.js"></script>
+<script type="module" src="reprisory-contagion-v1.js"></script>
+<script type="module" src="reprisory-centralbank-v2.js"></script>
