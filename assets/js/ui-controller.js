@@ -18,6 +18,9 @@ export function createUIController(engine){
 
         const stability = Math.max(0, 100 - state.risk);
 
+        /* -------------------------
+           SCENARIO PATH OUTPUT
+        ------------------------- */
         if(outputEl){
             outputEl.textContent = state.scenario
                 ? state.scenario.path.slice(0, state.step)
@@ -25,16 +28,25 @@ export function createUIController(engine){
                 : "Idle";
         }
 
+        /* -------------------------
+           RISK DISPLAY
+        ------------------------- */
         if(riskEl){
             riskEl.textContent = "Risk Index: " + state.risk;
         }
 
+        /* -------------------------
+           TIMELINE RENDER
+        ------------------------- */
         if(timelineEl){
             timelineEl.textContent = state.timeline
                 .map(t => `[${t.time}] ${t.type} → ${t.data}`)
                 .join("\n");
         }
 
+        /* -------------------------
+           MAIN SYSTEM IO PANEL
+        ------------------------- */
         if(ioEl){
             ioEl.textContent =
 `STATUS: ACTIVE
@@ -46,8 +58,26 @@ INTERVENTION: ${state.intervention || "none"}
 EVENTS: ${state.timeline.length}`;
         }
 
+        /* -------------------------
+           INTERVENTION LOG
+        ------------------------- */
         if(logEl && state.intervention){
             logEl.textContent = "ACTIVE: " + state.intervention;
+        }
+
+        /* -------------------------
+           🧠 EXPLANATION LAYER OUTPUT
+        ------------------------- */
+
+        const explanation =
+            state.scenario?.explanation ||
+            state.explanation;
+
+        if(explanation && logEl){
+
+            logEl.textContent +=
+                "\n\n--- EXPLANATION LAYER ---\n" +
+                JSON.stringify(explanation, null, 2);
         }
     }
 
