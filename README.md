@@ -227,3 +227,11 @@ https://github.com/123AGustien/sextant-self-generator
 Mission Statement
 
 "Discovering pathways to failure and protecting the strategies that prevent them."
+
+## Future Development Roadmap
+
+### Phase 4 — Data Integration Layer (External Collaboration Required)
+This phase requires integration with external data sources (FX, liquidity, market indicators) and backend infrastructure support. Collaboration with data engineering partners is required.
+
+### Phase 5 — Institutional Validation & Deployment Layer (External Collaboration Required)
+This phase focuses on auditability, model validation, and potential deployment in institutional environments. Requires partnership with backend engineers, financial data providers, and domain validators.
