@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sextant Simulator v4 – Intervention Interruption Engine</title>
+<title>Sextant Simulator v5 – Unified Cascade Interruption Engine</title>
 
 <style>
 body{
@@ -44,7 +44,7 @@ pre{
 
 <body>
 
-<h1>⚡ Sextant Simulator v4 – Intervention Interruption Engine</h1>
+<h1>⚡ Sextant Simulator v5 – Unified Cascade Engine</h1>
 
 <!-- SCENARIOS -->
 <div class="panel">
@@ -58,38 +58,52 @@ pre{
 
 <!-- OUTPUT -->
 <div class="panel">
-    <h3>CASCADE ENGINE</h3>
-    <pre id="output">Awaiting execution...</pre>
+    <h3>CASCADE EXECUTION</h3>
+    <pre id="output">Awaiting scenario...</pre>
 </div>
 
 <!-- RISK -->
 <div class="panel">
     <h3>RISK ENGINE</h3>
-    <pre id="risk">Risk Index: --</pre>
+    <pre id="risk">0</pre>
 </div>
 
 <!-- INTERVENTION -->
 <div class="panel">
-    <h3>INTERVENTION CONTROL</h3>
+    <h3>INTERVENTION LAYER</h3>
 
-    <button onclick="applyIntervention('liquidity')">Liquidity Buffer</button>
-    <button onclick="applyIntervention('central')">Central Bank Injection</button>
-    <button onclick="applyIntervention('communication')">Communication Stabilization</button>
+    <button onclick="setIntervention('liquidity')">Liquidity Buffer</button>
+    <button onclick="setIntervention('central')">Central Bank Injection</button>
+    <button onclick="setIntervention('communication')">Communication Stabilization</button>
 
-    <pre id="log">No intervention applied</pre>
+    <pre id="log">No intervention active</pre>
+</div>
+
+<!-- TIMELINE -->
+<div class="panel">
+    <h3>CASCADE TIMELINE</h3>
+    <pre id="timeline">Empty</pre>
 </div>
 
 <script>
 
-let currentRisk = 0;
-let activeScenario = null;
-let stepIndex = 0;
-let cascadeTimer = null;
-let interventionActive = null;
+/* -------------------------
+   STATE ENGINE
+-------------------------*/
 
-/* ---------------------------
+let system = {
+    scenario: null,
+    step: 0,
+    risk: 0,
+    intervention: null,
+    timeline: []
+};
+
+let timer = null;
+
+/* -------------------------
    SCENARIOS
-----------------------------*/
+-------------------------*/
 
 function runScenario(type){
 
@@ -97,118 +111,137 @@ function runScenario(type){
         trade:{
             name:"US–China Trade Escalation",
             path:["FX Shock","Liquidity Stress","Confidence Loss"],
-            baseRisk:75
+            base:75
         },
 
         taiwan:{
             name:"Taiwan Strait Crisis",
             path:["Geopolitical Shock","Market Volatility","Capital Flight"],
-            baseRisk:95
+            base:95
         },
 
         energy:{
             name:"Energy Shock",
             path:["Oil Spike","Inflation Pressure","Liquidity Tightening"],
-            baseRisk:80
+            base:80
         },
 
         recession:{
             name:"Global Recession",
             path:["Demand Collapse","Credit Stress","Unemployment Rise"],
-            baseRisk:85
+            base:85
         }
     };
 
-    activeScenario = scenarios[type];
-    currentRisk = activeScenario.baseRisk;
-    stepIndex = 0;
-    interventionActive = null;
+    system.scenario = scenarios[type];
+    system.step = 0;
+    system.risk = system.scenario.base;
+    system.timeline = [];
+    system.intervention = null;
+
+    log("SCENARIO_INIT", system.scenario.name);
 
     document.getElementById("output").textContent =
         "INITIATING CASCADE...\n";
 
-    document.getElementById("risk").textContent =
-        "Risk Index: " + currentRisk;
-
+    update();
     startCascade();
 }
 
-/* ---------------------------
-   CASCADE ENGINE (INTERRUPTABLE)
-----------------------------*/
+/* -------------------------
+   CASCADE ENGINE
+-------------------------*/
 
 function startCascade(){
 
-    if(!activeScenario) return;
+    clearInterval(timer);
 
-    const output = document.getElementById("output");
+    timer = setInterval(() => {
 
-    clearInterval(cascadeTimer);
+        let s = system.scenario;
 
-    cascadeTimer = setInterval(() => {
+        if(!s) return;
 
-        // IF INTERVENTION SUCCESSFULLY STOPS SYSTEM
-        if(interventionActive === "liquidity" && stepIndex >= 1){
-            output.textContent += "\n🛑 CASCADE INTERRUPTED BY LIQUIDITY BUFFER";
-            clearInterval(cascadeTimer);
+        if(system.step >= s.path.length){
+            log("CASCADE_COMPLETE", true);
+            clearInterval(timer);
             return;
         }
 
-        if(interventionActive === "central" && stepIndex >= 2){
-            output.textContent += "\n🛑 CASCADE STABILIZED BY CENTRAL BANK ACTION";
-            clearInterval(cascadeTimer);
-            return;
+        let node = s.path[system.step];
+
+        log("CASCADE_STEP", node);
+
+        system.risk += 8;
+
+        // INTERVENTION EFFECTS
+        if(system.intervention === "liquidity" && system.step >= 1){
+            system.risk -= 25;
+            log("INTERVENTION_TRIGGERED", "Liquidity stops propagation");
+            clearInterval(timer);
         }
 
-        if(stepIndex >= activeScenario.path.length){
-            output.textContent += "\n✔ CASCADE COMPLETED";
-            clearInterval(cascadeTimer);
-            return;
+        if(system.intervention === "central" && system.step >= 2){
+            system.risk -= 35;
+            log("INTERVENTION_TRIGGERED", "Central bank stabilizes system");
+            clearInterval(timer);
         }
 
-        let node = activeScenario.path[stepIndex];
+        system.step++;
 
-        output.textContent += "→ " + node + "\n";
+        update();
 
-        currentRisk += 5;
-
-        document.getElementById("risk").textContent =
-            "Risk Index: " + currentRisk;
-
-        stepIndex++;
-
-    }, 1200);
+    }, 1000);
 }
 
-/* ---------------------------
+/* -------------------------
    INTERVENTIONS
-----------------------------*/
+-------------------------*/
 
-function applyIntervention(type){
+function setIntervention(type){
 
-    const log = document.getElementById("log");
+    system.intervention = type;
 
-    interventionActive = type;
+    log("INTERVENTION_SET", type);
 
-    let label = "";
+    document.getElementById("log").textContent =
+        "Active: " + type;
 
-    if(type === "liquidity"){
-        label = "Liquidity Buffer Activated (Early Interruption Capability)";
-    }
+}
 
-    if(type === "central"){
-        label = "Central Bank Injection Activated (Mid-Cascade Stabilizer)";
-    }
+/* -------------------------
+   LOGGING ENGINE
+-------------------------*/
 
-    if(type === "communication"){
-        label = "Communication Stabilization Activated (Soft Containment)";
-    }
+function log(type, data){
 
-    log.textContent =
-        label +
-        "\nSystem Status: Intervention Active" +
-        "\nCascade Response: Pending";
+    system.timeline.push({
+        time: new Date().toISOString(),
+        type,
+        data
+    });
 
+    update();
+}
+
+/* -------------------------
+   RENDER
+-------------------------*/
+
+function update(){
+
+    document.getElementById("risk").textContent =
+        system.risk;
+
+    document.getElementById("output").textContent =
+        system.scenario
+        ? system.scenario.path.slice(0, system.step).map(x => "→ " + x).join("\n")
+        : "No scenario";
+
+    document.getElementById("timeline").textContent =
+        system.timeline.map(t =>
+            `[${t.time}] ${t.type} → ${t.data}`
+        ).join("\n");
 }
 
 </script>
