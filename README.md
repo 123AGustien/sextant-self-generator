@@ -19,6 +19,10 @@ Offline deterministic code generation and resilience scenario generation engine.
 
 Live Console (GitHub Pages)
 This is your running upgraded system (simulator + dashboard + engine):
+
+most likely URL sources for it are:
+123agustien.github.io
+123agustien.github.io
 👉 https://123agustien.github.io/sextant-self-generator
 Purpose
 
