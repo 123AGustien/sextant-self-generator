@@ -1,4 +1,16 @@
-Sextant Self Generator
+SELF GENERATOR
+↓
+DISCOVER CASCADES
+↓
+SIMULATOR
+↓
+TEST INTERVENTIONS
+↓
+OPERATIONS CONSOLE
+↓
+VISUALIZE RESILIENCE
+
+GitHub reprisory link to paste at the topntextant Self Generator
 
 Offline deterministic code generation and resilience scenario generation engine.
 
