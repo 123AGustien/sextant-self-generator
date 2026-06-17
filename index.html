@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sextant Unified Strategic Command Center v2</title>
+<title>Sextant Simulator v3 – Cascade Propagation Engine</title>
 
 <style>
 body{
@@ -44,7 +44,7 @@ pre{
 
 <body>
 
-<h1>⚡ Sextant Unified Strategic Command Center v2</h1>
+<h1>⚡ Sextant Simulator v3 – Cascade Propagation Engine</h1>
 
 <!-- SCENARIOS -->
 <div class="panel">
@@ -56,21 +56,21 @@ pre{
     <button onclick="runScenario('recession')">Global Recession</button>
 </div>
 
-<!-- SIMULATION -->
+<!-- SIMULATION OUTPUT -->
 <div class="panel">
-    <h3>SIMULATION ENGINE</h3>
+    <h3>CASCADE PROPAGATION</h3>
     <pre id="output">Awaiting execution...</pre>
 </div>
 
 <!-- RISK -->
 <div class="panel">
-    <h3>RISK DASHBOARD</h3>
+    <h3>RISK ENGINE</h3>
     <pre id="risk">Risk Index: --</pre>
 </div>
 
 <!-- INTERVENTION -->
 <div class="panel">
-    <h3>INTERVENTION LAYER</h3>
+    <h3>INTERVENTIONS</h3>
 
     <button onclick="applyIntervention('liquidity')">Liquidity Buffer</button>
     <button onclick="applyIntervention('central')">Central Bank Injection</button>
@@ -83,53 +83,104 @@ pre{
 
 let currentRisk = 0;
 let activeScenario = null;
+let stepIndex = 0;
+let cascadeTimer = null;
 
 /* ---------------------------
-   SCENARIO ENGINE
+   SCENARIOS
 ----------------------------*/
 
 function runScenario(type){
 
-    const output = document.getElementById("output");
-    const risk = document.getElementById("risk");
-
     const scenarios = {
         trade:{
             name:"US–China Trade Escalation",
-            path:["FX Shock","Liquidity Stress","Confidence Loss"],
+            path:[
+                "FX Shock",
+                "Liquidity Stress",
+                "Confidence Loss"
+            ],
             baseRisk:75
         },
 
         taiwan:{
             name:"Taiwan Strait Crisis",
-            path:["Geopolitical Shock","Market Volatility","Capital Flight"],
+            path:[
+                "Geopolitical Shock",
+                "Market Volatility",
+                "Capital Flight"
+            ],
             baseRisk:95
         },
 
         energy:{
             name:"Energy Shock",
-            path:["Oil Spike","Inflation Pressure","Liquidity Tightening"],
+            path:[
+                "Oil Spike",
+                "Inflation Pressure",
+                "Liquidity Tightening"
+            ],
             baseRisk:80
         },
 
         recession:{
             name:"Global Recession",
-            path:["Demand Collapse","Credit Stress","Unemployment Rise"],
+            path:[
+                "Demand Collapse",
+                "Credit Stress",
+                "Unemployment Rise"
+            ],
             baseRisk:85
         }
     };
 
     activeScenario = scenarios[type];
-
     currentRisk = activeScenario.baseRisk;
+    stepIndex = 0;
 
-    output.textContent = JSON.stringify({
-        scenario: activeScenario.name,
-        cascade: activeScenario.path,
-        state:"RUNNING"
-    }, null, 2);
+    document.getElementById("output").textContent =
+        "INITIATING CASCADE...\n";
 
-    risk.textContent = "Risk Index: " + currentRisk;
+    document.getElementById("risk").textContent =
+        "Risk Index: " + currentRisk;
+
+    startCascade();
+}
+
+/* ---------------------------
+   CASCADE PROPAGATION ENGINE
+----------------------------*/
+
+function startCascade(){
+
+    if(!activeScenario) return;
+
+    const output = document.getElementById("output");
+
+    clearInterval(cascadeTimer);
+
+    cascadeTimer = setInterval(() => {
+
+        if(stepIndex >= activeScenario.path.length){
+            output.textContent += "\nCASCADE COMPLETE";
+            clearInterval(cascadeTimer);
+            return;
+        }
+
+        let node = activeScenario.path[stepIndex];
+
+        output.textContent +=
+            "→ " + node + "\n";
+
+        // risk increases per step
+        currentRisk += 5;
+
+        document.getElementById("risk").textContent =
+            "Risk Index: " + currentRisk;
+
+        stepIndex++;
+
+    }, 1200);
 }
 
 /* ---------------------------
@@ -139,7 +190,6 @@ function runScenario(type){
 function applyIntervention(type){
 
     const log = document.getElementById("log");
-    const risk = document.getElementById("risk");
 
     let reduction = 0;
     let label = "";
@@ -161,15 +211,16 @@ function applyIntervention(type){
 
     currentRisk = Math.max(0, currentRisk - reduction);
 
-    risk.textContent = "Risk Index: " + currentRisk;
+    document.getElementById("risk").textContent =
+        "Risk Index: " + currentRisk;
 
     log.textContent =
-        label + "\nNew Risk Level: " + currentRisk;
+        label +
+        "\nRisk Reduced: -" + reduction +
+        "\nCurrent Risk: " + currentRisk;
 }
 
 </script>
 
 </body>
 </html>
-
-        
