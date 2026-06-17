@@ -1,5 +1,7 @@
 ---Generate Scenarios → Discover Cascades → Protect Interventions → Preserve Resilience
 
+
+
 Sextant Ecosystem Architecture
 
 The Sextant Protocol is composed of four interconnected modules:
@@ -106,7 +108,42 @@ What matters is that you got to the finish line:
 Sextant Self Generator
 
 Offline deterministic code generation module.
+Sextant Philosophy
 
+Sextant Protocol does not seek to predict the future or quantify every possible risk.
+
+Instead, Sextant identifies plausible sequences of events that may develop into cascading failures.
+
+The objective is to discover:
+
+- How stress propagates through a system.
+- Which pathways create resilience challenges.
+- Which intervention points can interrupt a cascade.
+- Which recovery strategies reduce systemic impact.
+
+Core Principle
+
+We do not start with risk.
+
+We start with scenarios.
+
+By exploring how events interact and propagate, Sextant identifies potential failure cascades and the strategic intervention points that may prevent escalation.
+
+Resilience Objective
+
+Identify the cascade.
+
+Protect the intervention.
+
+Preserve system resilience.
+
+System Flow
+
+Scenario Generation → Cascade Discovery → Intervention Analysis → Resilience Preservation
+
+Mission Statement
+
+"Discovering pathways to failure and protecting the strategies that prevent them."
 
 🧠 Offline = JavaScript (browser engine)
 ☁️ Online = Python (server/API layer)
