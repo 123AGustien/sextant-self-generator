@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sextant Simulator v6 – Unified System Engine</title>
+<title>Sextant Simulator v6.1 – Unified Cascade State Machine</title>
 
 <style>
 body{
@@ -44,9 +44,9 @@ pre{
 
 <body>
 
-<h1>⚡ Sextant Simulator v6 – Unified Cascade System</h1>
+<h1>⚡ Sextant Simulator v6.1 – Unified Cascade Engine</h1>
 
-<!-- UNIFIED NAVIGATION -->
+<!-- NAVIGATION -->
 <div class="panel">
     <h2>SEXTANT SYSTEM NAVIGATION</h2>
 
@@ -66,9 +66,9 @@ pre{
     <button onclick="runScenario('recession')">Global Recession</button>
 </div>
 
-<!-- CASCADE OUTPUT -->
+<!-- OUTPUT -->
 <div class="panel">
-    <h3>CASCADE EXECUTION</h3>
+    <h3>CASCADE EXECUTION ENGINE</h3>
     <pre id="output">Awaiting scenario...</pre>
 </div>
 
@@ -104,7 +104,7 @@ pre{
 <script>
 
 /* -------------------------
-   STATE ENGINE
+   STATE MACHINE CORE
 -------------------------*/
 
 let system = {
@@ -128,7 +128,7 @@ function openModule(name){
     const modules = {
         generator: "SELF GENERATOR → Scenario creation layer active",
         simulator: "SIMULATOR → Cascade execution engine active",
-        intervention: "INTERVENTION LAB → Testing interruption strategies",
+        intervention: "INTERVENTION LAB → Stress interruption testing active",
         console: "OPERATIONS CONSOLE → Visualization layer active"
     };
 
@@ -136,7 +136,7 @@ function openModule(name){
 }
 
 /* -------------------------
-   SCENARIOS
+   SCENARIO ENGINE
 -------------------------*/
 
 function runScenario(type){
@@ -147,19 +147,16 @@ function runScenario(type){
             path:["FX Shock","Liquidity Stress","Confidence Loss"],
             base:75
         },
-
         taiwan:{
             name:"Taiwan Strait Crisis",
             path:["Geopolitical Shock","Market Volatility","Capital Flight"],
             base:95
         },
-
         energy:{
             name:"Energy Shock",
             path:["Oil Spike","Inflation Pressure","Liquidity Tightening"],
             base:80
         },
-
         recession:{
             name:"Global Recession",
             path:["Demand Collapse","Credit Stress","Unemployment Rise"],
@@ -180,7 +177,7 @@ function runScenario(type){
 }
 
 /* -------------------------
-   CASCADE ENGINE
+   CASCADE STATE MACHINE (FIXED)
 -------------------------*/
 
 function startCascade(){
@@ -204,17 +201,24 @@ function startCascade(){
 
         system.risk += 8;
 
-        // INTERVENTION RULES
+        /* INTERVENTION LOGIC (STATE LOCKED) */
+
         if(system.intervention === "liquidity" && system.step >= 1){
             system.risk -= 25;
             log("INTERVENTION_TRIGGERED", "Liquidity Buffer stops cascade");
+            system.step++;
             clearInterval(timer);
+            update();
+            return;
         }
 
         if(system.intervention === "central" && system.step >= 2){
             system.risk -= 35;
             log("INTERVENTION_TRIGGERED", "Central Bank stabilizes system");
+            system.step++;
             clearInterval(timer);
+            update();
+            return;
         }
 
         system.step++;
@@ -225,7 +229,7 @@ function startCascade(){
 }
 
 /* -------------------------
-   INTERVENTIONS
+   INTERVENTION ENGINE
 -------------------------*/
 
 function setIntervention(type){
@@ -235,11 +239,11 @@ function setIntervention(type){
     log("INTERVENTION_SET", type);
 
     document.getElementById("log").textContent =
-        "ACTIVE: " + type;
+        "ACTIVE INTERVENTION: " + type;
 }
 
 /* -------------------------
-   LOGGING ENGINE
+   EVENT LOGGING ENGINE
 -------------------------*/
 
 function log(type, data){
@@ -265,7 +269,7 @@ function update(){
     document.getElementById("output").textContent =
         system.scenario
         ? system.scenario.path.slice(0, system.step).map(x => "→ " + x).join("\n")
-        : "No scenario";
+        : "No scenario loaded";
 
     document.getElementById("timeline").textContent =
         system.timeline.map(t =>
