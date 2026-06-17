@@ -46,6 +46,12 @@ most likely URL sources for it are:
 👉 https://123agustien.github.io/sextant-self-generator
 Purpose
 
+## 🚀 Release v6.2 — Monetization Layer (Sextant System)
+
+- Git Tag: `v6.2-monetization-ready`  
+- GitHub Release: https://github.com/123AGustien/sextant-self-generator/releases/tag/v6.2-monetization-ready  
+- Live System: https://123agustien.github.io/sextant-self-generator/
+
 The Sextant Self Generator is a controlled scaffold engine designed to support the Sextant ecosystem.
 
 Originally developed as an offline module generation platform, the project is evolving into a resilience scenario generation engine capable of discovering failure cascades, identifying intervention points, and supporting resilience analysis.
