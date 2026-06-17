@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sextant Dashboard v6.1 – Control Interface Upgrade</title>
+<title>Sextant Dashboard v6.2 – Control Interface</title>
 
 <style>
 body{
@@ -44,9 +44,9 @@ pre{
 
 <body>
 
-<h1>⚡ Sextant Dashboard v6.1 – Control Interface</h1>
+<h1>⚡ Sextant Dashboard v6.2 – Control Interface</h1>
 
-<!-- CASCADE INPUT -->
+<!-- CASCADE CONTROL -->
 <div class="panel">
     <h3>CASCADE CONTROL PANEL</h3>
 
@@ -83,138 +83,140 @@ pre{
 
 <script>
 
-/* ---------------------------
-   SYSTEM STATE
-----------------------------*/
+/* ===========================
+   CONTROL LAYER (FULL SYSTEM)
+=========================== */
 
-let system = {
-    cascades: [],
-    risk: 0,
-    intervention: null,
-    interventionPower: 1
-};
+const Control = {
 
-/* ---------------------------
-   CASCADE TOGGLE SYSTEM
-----------------------------*/
+    system: {
+        cascades: [],
+        risk: 0,
+        intervention: null,
+        interventionPower: 1
+    },
 
-function toggleCascade(name){
+    toggleCascade(name){
 
-    const index = system.cascades.indexOf(name);
+        const s = this.system;
 
-    if(index === -1){
-        system.cascades.push(name);
-    } else {
-        system.cascades.splice(index, 1);
-    }
+        const index = s.cascades.indexOf(name);
 
-    updateSystem();
-}
+        if(index === -1){
+            s.cascades.push(name);
+        } else {
+            s.cascades.splice(index, 1);
+        }
 
-/* ---------------------------
-   INTERVENTION CONTROL
-----------------------------*/
+        this.update();
+    },
 
-function setIntervention(type, btn){
+    setIntervention(type, btn){
 
-    system.intervention = type;
+        const s = this.system;
 
-    system.interventionPower =
-        type === "central" ? 1.8 :
-        type === "communication" ? 1.4 :
-        1.2;
+        s.intervention = type;
 
-    document.getElementById("log").textContent =
-        "Active Intervention: " + type;
+        s.interventionPower =
+            type === "central" ? 1.8 :
+            type === "communication" ? 1.4 :
+            1.2;
 
-    // button highlight system
-    document.querySelectorAll("button").forEach(b =>
-        b.classList.remove("active")
-    );
+        document.getElementById("log").textContent =
+            "Active Intervention: " + type;
 
-    btn.classList.add("active");
+        document.querySelectorAll("button")
+            .forEach(b => b.classList.remove("active"));
 
-    updateSystem();
-}
+        btn.classList.add("active");
 
-/* ---------------------------
-   SYSTEM ENGINE
-----------------------------*/
+        this.update();
+    },
 
-function updateSystem(){
+    update(){
 
-    let base = system.cascades.length * 20;
+        const s = this.system;
 
-    let interaction =
-        system.cascades.length > 1
-        ? system.cascades.length * 10
-        : 0;
+        let base = s.cascades.length * 20;
 
-    system.risk = base + interaction;
+        let interaction =
+            s.cascades.length > 1
+                ? s.cascades.length * 10
+                : 0;
 
-    // intervention reduces risk
-    system.risk = Math.max(
-        0,
-        system.risk - (system.interventionPower * 18)
-    );
+        s.risk = base + interaction;
 
-    render();
-}
+        s.risk = Math.max(
+            0,
+            s.risk - (s.interventionPower * 18)
+        );
 
-/* ---------------------------
-   RENDER DASHBOARD
-----------------------------*/
+        this.render();
+    },
 
-function render(){
+    render(){
 
-    const dashboard = document.getElementById("dashboard");
-    const risk = document.getElementById("risk");
+        const s = this.system;
 
-    let stability = Math.max(0, 100 - system.risk);
+        let stability = Math.max(0, 100 - s.risk);
 
-    dashboard.textContent =
+        document.getElementById("dashboard").textContent =
 `ACTIVE CASCADES:
-${system.cascades.length ? system.cascades.map(c => "→ " + c).join("\n") : "None"}
+${s.cascades.length ? s.cascades.map(c => "→ " + c).join("\n") : "None"}
 
 INTERVENTION:
-${system.intervention || "None"}
+${s.intervention || "None"}
 
 SYSTEM STABILITY:
 ${stability.toFixed(1)}%
 
 STATUS:
-${system.risk > 80 ? "🔥 CRITICAL"
-: system.risk > 50 ? "⚠ HIGH"
-: system.risk > 20 ? "🟡 MODERATE"
+${s.risk > 80 ? "🔥 CRITICAL"
+: s.risk > 50 ? "⚠ HIGH"
+: s.risk > 20 ? "🟡 MODERATE"
 : "🟢 STABLE"}`;
 
-    risk.textContent = "Risk Index: " + system.risk;
+        document.getElementById("risk").textContent =
+            "Risk Index: " + s.risk;
+    },
+
+    reset(){
+
+        this.system = {
+            cascades: [],
+            risk: 0,
+            intervention: null,
+            interventionPower: 1
+        };
+
+        document.getElementById("log").textContent =
+            "No intervention active";
+
+        document.querySelectorAll("button")
+            .forEach(b => b.classList.remove("active"));
+
+        this.update();
+    }
+};
+
+/* ===========================
+   UI BINDINGS ONLY
+=========================== */
+
+function toggleCascade(name){
+    Control.toggleCascade(name);
 }
 
-/* ---------------------------
-   RESET SYSTEM
-----------------------------*/
+function setIntervention(type, btn){
+    Control.setIntervention(type, btn);
+}
 
 function resetSystem(){
-
-    system = {
-        cascades: [],
-        risk: 0,
-        intervention: null,
-        interventionPower: 1
-    };
-
-    document.getElementById("log").textContent =
-        "No intervention active";
-
-    document.querySelectorAll("button")
-        .forEach(b => b.classList.remove("active"));
-
-    updateSystem();
+    Control.reset();
 }
 
 /* INIT */
-updateSystem();
+Control.update();
 
 </script>
 
