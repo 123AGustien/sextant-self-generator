@@ -6,6 +6,7 @@
 import { createCascadeEngine } from "./cascade-engine.js";
 import { createUIController } from "./ui-controller.js";
 import { createLicensingEngine } from "./licensing-engine.js";
+import { explainCascade } from "./explanation_engine.js";
 
 (function bootstrap(){
 
@@ -30,25 +31,17 @@ import { createLicensingEngine } from "./licensing-engine.js";
 
     function enforceLimits(){
 
-        // Block intervention engine if not allowed
         if(!features.interventionEngine && engine.setIntervention){
-            const original = engine.setIntervention;
-
-            engine.setIntervention = function(type){
+            engine.setIntervention = function(){
                 console.warn("LOCKED FEATURE: Intervention Engine requires upgrade");
-                return {
-                    success: false,
-                    message: "Upgrade required"
-                };
+                return { success: false, message: "Upgrade required" };
             };
         }
 
-        // Block API exposure if not allowed
         if(!features.apiAccess){
             window.SEXTANT_API = undefined;
         }
 
-        // Optional export restriction hook
         if(!features.exportData){
             window.SEXTANT_EXPORT = function(){
                 console.warn("Export locked: Upgrade required");
@@ -60,11 +53,40 @@ import { createLicensingEngine } from "./licensing-engine.js";
     }
 
     /* -------------------------
+       EXPLANATION LAYER (CLEAN DESIGN)
+    ------------------------- */
+
+    function attachExplanationLayer(){
+
+        const originalRun = engine.run || engine.generate || engine.execute;
+
+        if(!originalRun){
+            console.warn("No cascade execution method found for explanation layer");
+            return;
+        }
+
+        engine.run = function(...args){
+
+            const result = originalRun.apply(this, args);
+
+            if(result && typeof result === "object"){
+                result.explanation = explainCascade(result);
+            }
+
+            return result;
+        };
+
+        console.log("EXPLANATION ENGINE ACTIVE");
+    }
+
+    /* -------------------------
        BOOT SEQUENCE
     ------------------------- */
 
     ui.init();
     ui.bindUI();
+
+    attachExplanationLayer();
 
     enforceLimits();
 
@@ -86,6 +108,6 @@ import { createLicensingEngine } from "./licensing-engine.js";
         })
     };
 
-    console.log("SEXTANT SYSTEM ONLINE v6.2 — MONETISATION LAYER ACTIVE");
+    console.log("SEXTANT SYSTEM ONLINE v6.2 — MONETISATION + EXPLANATION LAYER ACTIVE");
 
 })();
