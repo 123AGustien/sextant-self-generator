@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sextant Simulator v6.1 – Unified Cascade State Machine</title>
+<title>Sextant Simulator v6.2 – Unified Cascade Engine</title>
 
 <style>
 body{
@@ -44,32 +44,30 @@ pre{
 
 <body>
 
-<h1>⚡ Sextant Simulator v6.1 – Unified Cascade Engine</h1>
+<h1>⚡ Sextant Simulator v6.2 – Unified Cascade Engine</h1>
 
 <!-- NAVIGATION -->
 <div class="panel">
-    <h2>SEXTANT SYSTEM NAVIGATION</h2>
-
+    <h3>NAVIGATION</h3>
     <button onclick="openModule('generator')">Self Generator</button>
     <button onclick="openModule('simulator')">Simulator</button>
     <button onclick="openModule('intervention')">Intervention Lab</button>
-    <button onclick="openModule('console')">Operations Console</button>
+    <button onclick="openModule('console')">Console</button>
 </div>
 
 <!-- SCENARIOS -->
 <div class="panel">
     <h3>SCENARIO CONTROL</h3>
-
-    <button onclick="runScenario('trade')">US–China Trade Escalation</button>
-    <button onclick="runScenario('taiwan')">Taiwan Strait Crisis</button>
+    <button onclick="runScenario('trade')">US–China Trade</button>
+    <button onclick="runScenario('taiwan')">Taiwan Crisis</button>
     <button onclick="runScenario('energy')">Energy Shock</button>
     <button onclick="runScenario('recession')">Global Recession</button>
 </div>
 
 <!-- OUTPUT -->
 <div class="panel">
-    <h3>CASCADE EXECUTION ENGINE</h3>
-    <pre id="output">Awaiting scenario...</pre>
+    <h3>CASCADE ENGINE</h3>
+    <pre id="output">Idle...</pre>
 </div>
 
 <!-- RISK -->
@@ -80,184 +78,24 @@ pre{
 
 <!-- INTERVENTION -->
 <div class="panel">
-    <h3>INTERVENTION CONTROL</h3>
-
-    <button onclick="setIntervention('liquidity')">Liquidity Buffer</button>
-    <button onclick="setIntervention('central')">Central Bank Injection</button>
-    <button onclick="setIntervention('communication')">Communication Stabilization</button>
-
-    <pre id="log">No intervention active</pre>
-</div>
-
-<!-- IO PANEL -->
-<div class="panel">
-    <h3>SIMULATOR IO PANEL</h3>
-    <pre id="io">STATUS: idle</pre>
+    <h3>INTERVENTION</h3>
+    <button onclick="setIntervention('liquidity')">Liquidity</button>
+    <button onclick="setIntervention('central')">Central Bank</button>
+    <button onclick="setIntervention('communication')">Communication</button>
+    <pre id="log">None</pre>
 </div>
 
 <!-- TIMELINE -->
 <div class="panel">
-    <h3>CASCADE TIMELINE LOG</h3>
+    <h3>TIMELINE</h3>
     <pre id="timeline">Empty</pre>
 </div>
 
 <script>
 
-/* -------------------------
-   STATE
--------------------------*/
-
-let system = {
-    cascades: [],
-    risk: 0,
-    intervention: null,
-    interventionPower: 1,
-    timeline: []
-};
-
-/* -------------------------
-   LOG ENGINE
--------------------------*/
-
-function logEvent(type, data){
-
-    system.timeline.push({
-        time: new Date().toISOString(),
-        type,
-        data
-    });
-}
-
-/* -------------------------
-   CASCADES
--------------------------*/
-
-function toggleCascade(name){
-
-    const index = system.cascades.indexOf(name);
-
-    if(index === -1){
-        system.cascades.push(name);
-        logEvent("CASCADE_ADDED", name);
-    } else {
-        system.cascades.splice(index, 1);
-        logEvent("CASCADE_REMOVED", name);
-    }
-
-    updateSystem();
-}
-
-/* -------------------------
-   INTERVENTION
--------------------------*/
-
-function setIntervention(type, btn){
-
-    system.intervention = type;
-
-    system.interventionPower =
-        type === "central" ? 1.8 :
-        type === "communication" ? 1.4 :
-        1.2;
-
-    logEvent("INTERVENTION_SET", type);
-
-    document.querySelectorAll("button")
-        .forEach(b => b.classList.remove("active"));
-
-    btn.classList.add("active");
-
-    updateSystem();
-}
-
-/* -------------------------
-   ENGINE
--------------------------*/
-
-function updateSystem(){
-
-    let base = system.cascades.length * 20;
-
-    let interaction =
-        system.cascades.length > 1
-        ? system.cascades.length * 10
-        : 0;
-
-    system.risk = base + interaction;
-
-    system.risk = Math.max(
-        0,
-        system.risk - (system.interventionPower * 18)
-    );
-
-    logEvent("RISK_UPDATE", system.risk);
-
-    render();
-}
-
-/* -------------------------
-   RENDER
--------------------------*/
-
-function render(){
-
-    const stability = Math.max(0, 100 - system.risk);
-
-    document.getElementById("dashboard").textContent =
-`CASCADE STATE:
-${system.cascades.length ? system.cascades.map(c => "→ " + c).join("\n") : "None"}
-
-INTERVENTION:
-${system.intervention || "None"}
-
-STABILITY:
-${stability.toFixed(1)}%
-
-STATUS:
-${system.risk > 80 ? "CRITICAL"
-: system.risk > 50 ? "HIGH"
-: system.risk > 20 ? "MODERATE"
-: "STABLE"}`;
-
-    document.getElementById("risk").textContent =
-        "Risk Index: " + system.risk;
-
-    document.getElementById("timeline").textContent =
-        system.timeline.map(e =>
-            `[${e.time}] ${e.type} → ${JSON.stringify(e.data)}`
-        ).join("\n");
-}
-
-/* -------------------------
-   RESET
--------------------------*/
-
-function resetSystem(){
-
-    system = {
-        cascades: [],
-        risk: 0,
-        intervention: null,
-        interventionPower: 1,
-        timeline: []
-    };
-
-    document.querySelectorAll("button")
-        .forEach(b => b.classList.remove("active"));
-
-    logEvent("SYSTEM_RESET", true);
-
-    updateSystem();
-}
-
-/* INIT */
-updateSystem();
-
-</script>
-
-   STATE MACHINE CORE
--------------------------*/
-
+/* =========================
+   SINGLE STATE ENGINE
+=========================*/
 let system = {
     scenario: null,
     step: 0,
@@ -268,28 +106,17 @@ let system = {
 
 let timer = null;
 
-/* -------------------------
-   NAVIGATION ENGINE
--------------------------*/
-
+/* =========================
+   NAVIGATION
+=========================*/
 function openModule(name){
-
-    const output = document.getElementById("output");
-
-    const modules = {
-        generator: "SELF GENERATOR → Scenario creation layer active",
-        simulator: "SIMULATOR → Cascade execution engine active",
-        intervention: "INTERVENTION LAB → Stress interruption testing active",
-        console: "OPERATIONS CONSOLE → Visualization layer active"
-    };
-
-    output.textContent = modules[name] || "MODULE NOT FOUND";
+    document.getElementById("output").textContent =
+        "MODULE → " + name;
 }
 
-/* -------------------------
-   SCENARIO ENGINE
--------------------------*/
-
+/* =========================
+   SCENARIOS
+=========================*/
 function runScenario(type){
 
     const scenarios = {
@@ -327,10 +154,9 @@ function runScenario(type){
     update();
 }
 
-/* -------------------------
-   CASCADE STATE MACHINE (FIXED)
--------------------------*/
-
+/* =========================
+   CASCADE ENGINE
+=========================*/
 function startCascade(){
 
     clearInterval(timer);
@@ -352,12 +178,9 @@ function startCascade(){
 
         system.risk += 8;
 
-        /* INTERVENTION LOGIC (STATE LOCKED) */
-
         if(system.intervention === "liquidity" && system.step >= 1){
             system.risk -= 25;
-            log("INTERVENTION_TRIGGERED", "Liquidity Buffer stops cascade");
-            system.step++;
+            log("INTERVENTION_TRIGGERED", "Liquidity stops cascade");
             clearInterval(timer);
             update();
             return;
@@ -365,24 +188,21 @@ function startCascade(){
 
         if(system.intervention === "central" && system.step >= 2){
             system.risk -= 35;
-            log("INTERVENTION_TRIGGERED", "Central Bank stabilizes system");
-            system.step++;
+            log("INTERVENTION_TRIGGERED", "Central Bank stabilizes");
             clearInterval(timer);
             update();
             return;
         }
 
         system.step++;
-
         update();
 
     }, 1000);
 }
 
-/* -------------------------
-   INTERVENTION ENGINE
--------------------------*/
-
+/* =========================
+   INTERVENTION
+=========================*/
 function setIntervention(type){
 
     system.intervention = type;
@@ -390,13 +210,12 @@ function setIntervention(type){
     log("INTERVENTION_SET", type);
 
     document.getElementById("log").textContent =
-        "ACTIVE INTERVENTION: " + type;
+        "ACTIVE → " + type;
 }
 
-/* -------------------------
-   EVENT LOGGING ENGINE
--------------------------*/
-
+/* =========================
+   LOGGING
+=========================*/
 function log(type, data){
 
     system.timeline.push({
@@ -408,32 +227,22 @@ function log(type, data){
     update();
 }
 
-/* -------------------------
-   RENDER ENGINE
--------------------------*/
-
+/* =========================
+   RENDER
+=========================*/
 function update(){
 
-    document.getElementById("risk").textContent =
-        system.risk;
+    document.getElementById("risk").textContent = system.risk;
 
     document.getElementById("output").textContent =
         system.scenario
         ? system.scenario.path.slice(0, system.step).map(x => "→ " + x).join("\n")
-        : "No scenario loaded";
+        : "Idle";
 
     document.getElementById("timeline").textContent =
         system.timeline.map(t =>
             `[${t.time}] ${t.type} → ${t.data}`
         ).join("\n");
-
-    document.getElementById("io").textContent =
-`STATUS: running
-SCENARIO: ${system.scenario?.name || "none"}
-STEP: ${system.step}
-RISK: ${system.risk}
-INTERVENTION: ${system.intervention || "none"}
-TIMELINE EVENTS: ${system.timeline.length}`;
 }
 
 /* INIT */
