@@ -1,3 +1,34 @@
+<script>
+function explainCascade(cascade) {
+
+    const path = cascade.path || "unknown";
+    const stress = cascade.stress || 0;
+
+    let severity = "low";
+    if (stress > 0.8) severity = "critical";
+    else if (stress > 0.6) severity = "high";
+    else if (stress > 0.4) severity = "moderate";
+
+    let driver = "multi-factor stress";
+
+    if (path.includes("FX")) driver = "currency instability";
+    if (path.includes("Liquidity")) driver = "liquidity contraction";
+    if (path.includes("Bank")) driver = "banking system stress";
+
+    return `
+CASCADE ANALYSIS
+Primary Path: ${path}
+Primary Driver: ${driver}
+Severity: ${severity}
+
+SYSTEM INTERPRETATION:
+The system is experiencing ${driver}.
+Stress propagation indicates a ${severity} regime.
+Intervention should focus on stabilising the primary driver.
+`;
+}
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
