@@ -1,6 +1,10 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
-<title>Sextant Unified Strategic Command Center</title><style>
+<title>Sextant Simulator v6 – Real-Time Resilience Dashboard</title>
+
+<style>
 body{
     background:#0b0f14;
     color:#00ff88;
@@ -32,157 +36,184 @@ pre{
     background:#05080c;
     border:1px solid #00ff88;
     padding:12px;
-    min-height:160px;
+    min-height:120px;
     overflow:auto;
 }
-</style></head><body><h1>⚡ Sextant Unified Strategic Command Center</h1><div class="panel">
-    <button id="runBankRun">▶ Bank Run Simulation</button>
-    <button id="runSimulation">🧠 Contagion Simulation</button>
-    <button id="runCentralBank">🏛 Central Bank Intervention</button>
-</div><div class="panel">
-    <div>SCENARIO CONTROL</div><button onclick="runScenario('trade')">
-    US–China Trade Escalation
-</button>
+</style>
+</head>
 
-<button onclick="runScenario('taiwan')">
-    Taiwan Strait Crisis
-</button>
+<body>
 
-<button onclick="runScenario('energy')">
-    Energy Shock
-</button>
+<h1>⚡ Sextant Simulator v6 – Real-Time Resilience Dashboard</h1>
 
-<button onclick="runScenario('recession')">
-    Global Recession
-</button>
+<!-- CASCADES -->
+<div class="panel">
+    <h3>CASCADE INPUT LAYER</h3>
 
-</div><div class="panel">
-    <div>EXECUTION OUTPUT</div>
-    <pre id="output">Awaiting execution...</pre>
-</div><div class="panel">
-    <div>RISK DASHBOARD</div>
-    <pre id="risk">Risk Index: --</pre>
-</div><script>
+    <button onclick="addCascade('FX Shock')">FX Shock</button>
+    <button onclick="addCascade('Credit Stress')">Credit Stress</button>
+    <button onclick="addCascade('Geopolitical Shock')">Geopolitical Shock</button>
+    <button onclick="addCascade('Energy Shock')">Energy Shock</button>
 
-function runScenario(type){
+    <button onclick="clearSystem()">Reset System</button>
+</div>
 
-    const output =
-        document.getElementById("output");
+<!-- DASHBOARD -->
+<div class="panel">
+    <h3>LIVE RESILIENCE DASHBOARD</h3>
+    <pre id="dashboard">Initializing system...</pre>
+</div>
 
-    const risk =
-        document.getElementById("risk");
+<!-- RISK -->
+<div class="panel">
+    <h3>SYSTEM RISK ENGINE</h3>
+    <pre id="risk">0</pre>
+</div>
 
-    const scenarios = {
+<!-- INTERVENTION -->
+<div class="panel">
+    <h3>INTERVENTION CONTROL</h3>
 
-        trade:{
-            name:"US–China Trade Escalation",
-            risk:"HIGH"
-        },
+    <button onclick="intervene('liquidity')">Liquidity Buffer</button>
+    <button onclick="intervene('central')">Central Bank Injection</button>
+    <button onclick="intervene('communication')">Communication Stabilization</button>
 
-        taiwan:{
-            name:"Taiwan Strait Crisis",
-            risk:"CRITICAL"
-        },
+    <pre id="log">No intervention active</pre>
+</div>
 
-        energy:{
-            name:"Energy Shock",
-            risk:"HIGH"
-        },
+<script>
 
-        recession:{
-            name:"Global Recession",
-            risk:"HIGH"
-        }
-    };
+/* ---------------------------
+   STATE ENGINE
+----------------------------*/
 
-    const scenario = scenarios[type];
+let system = {
+    cascades: [],
+    risk: 0,
+    stability: 100,
+    interventionPower: 1
+};
 
-    output.textContent =
-        JSON.stringify(scenario,null,2);
+/* ---------------------------
+   ADD CASCADES
+----------------------------*/
 
-    risk.textContent =
-        "Risk Index: " + scenario.risk;
+function addCascade(name){
+
+    system.cascades.push(name);
+
+    system.risk += 20;
+
+    updateDashboard();
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
+/* ---------------------------
+   INTERVENTIONS
+----------------------------*/
 
-    const output =
-        document.getElementById("output");
+function intervene(type){
 
-    const risk =
-        document.getElementById("risk");
+    const log = document.getElementById("log");
 
-    document.getElementById("runBankRun")
-    ?.addEventListener("click",()=>{
+    if(type === "liquidity"){
+        system.interventionPower = 1.2;
+        log.textContent = "Liquidity Buffer Active";
+    }
 
-        if(typeof window.runBankRunV1 !== "function"){
-            output.textContent =
-                "runBankRunV1 missing";
-            return;
-        }
+    if(type === "central"){
+        system.interventionPower = 1.8;
+        log.textContent = "Central Bank Injection Active";
+    }
 
-        output.textContent =
-            JSON.stringify(
-                window.runBankRunV1(),
-                null,
-                2
-            );
+    if(type === "communication"){
+        system.interventionPower = 1.4;
+        log.textContent = "Communication Stabilization Active";
+    }
 
-        risk.textContent =
-            "Risk Index: HIGH (Bank Run)";
-    });
+    updateDashboard();
+}
 
-    document.getElementById("runSimulation")
-    ?.addEventListener("click",()=>{
+/* ---------------------------
+   SYSTEM ENGINE LOOP
+----------------------------*/
 
-        if(typeof window.runContagionV1 !== "function"){
-            output.textContent =
-                "runContagionV1 missing";
-            return;
-        }
+function updateDashboard(){
 
-        output.textContent =
-            JSON.stringify(
-                window.runContagionV1(),
-                null,
-                2
-            );
+    let riskBase = system.cascades.length * 20;
 
-        risk.textContent =
-            "Risk Index: CRITICAL (Contagion)";
-    });
+    let interactionBoost =
+        system.cascades.length > 1
+        ? system.cascades.length * 8
+        : 0;
 
-    document.getElementById("runCentralBank")
-    ?.addEventListener("click",()=>{
+    system.risk = riskBase + interactionBoost;
 
-        if(typeof window.runCentralBankIntervention !== "function"){
-            output.textContent =
-                "runCentralBankIntervention missing";
-            return;
-        }
+    system.risk = Math.max(
+        0,
+        system.risk - (system.interventionPower * 15)
+    );
 
-        output.textContent =
-            JSON.stringify(
-                window.runCentralBankIntervention({
-                    entities:{
-                        bankA:{
-                            assets:{cash:-500},
-                            liabilities:{deposits:1200}
-                        },
-                        bankB:{
-                            assets:{cash:-300},
-                            liabilities:{deposits:900}
-                        }
-                    }
-                }),
-                null,
-                2
-            );
+    system.stability = Math.max(
+        0,
+        100 - system.risk
+    );
 
-        risk.textContent =
-            "Risk Index: STABILIZATION";
-    });
+    render();
+}
 
-});
-</script><script type="module" src="reprisory-bankrun-v1.js"></script><script type="module" src="reprisory-contagion-v1.js"></script><script type="module" src="reprisory-centralbank-v2.js"></script></body>
+/* ---------------------------
+   RENDER DASHBOARD
+----------------------------*/
+
+function render(){
+
+    const dashboard = document.getElementById("dashboard");
+    const risk = document.getElementById("risk");
+
+    dashboard.textContent =
+`ACTIVE CASCADES:
+${system.cascades.map(c => "→ " + c).join("\n") || "None"}
+
+SYSTEM STATUS:
+Risk Level: ${system.risk}
+Stability: ${system.stability}%
+
+INTERVENTION POWER:
+${system.interventionPower}
+
+HEAT LEVEL:
+${system.risk > 80 ? "🔥 CRITICAL"
+: system.risk > 50 ? "⚠ HIGH"
+: system.risk > 20 ? "🟡 MODERATE"
+: "🟢 STABLE"}`;
+
+    risk.textContent =
+        "Risk Index: " + system.risk;
+}
+
+/* ---------------------------
+   RESET
+----------------------------*/
+
+function clearSystem(){
+
+    system = {
+        cascades: [],
+        risk: 0,
+        stability: 100,
+        interventionPower: 1
+    };
+
+    document.getElementById("log").textContent =
+        "No intervention active";
+
+    updateDashboard();
+}
+
+/* INITIAL RENDER */
+updateDashboard();
+
+</script>
+
+</body>
 </html>
