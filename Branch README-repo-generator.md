@@ -1,3 +1,32 @@
+Resilience Intervention Framework
+
+Sextant Protocol does not stop at identifying failure cascades.
+
+For every cascade discovered, Sextant seeks to identify potential intervention points that may interrupt, reduce, or prevent escalation.
+
+The framework evaluates:
+
+1. The cascade pathway.
+2. Available intervention options.
+3. The resilience of each intervention.
+4. Alternative recovery pathways.
+
+Core Question:
+
+"What intervention would prevent the cascade?"
+
+Secondary Question:
+
+"What protects the intervention itself?"
+
+This creates a layered resilience model where systems are evaluated not only for failure pathways, but also for the durability of the measures designed to prevent them.
+
+Mission:
+
+Discover the cascade.
+Protect the intervention.
+Preserve resilience.
+
 # Sextant Repo Generator (Branch: repo-generator)
 
 ## Purpose
