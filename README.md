@@ -26,6 +26,10 @@ The Sextant Self Generator is a controlled scaffold engine designed to support t
 
 Originally developed as an offline module generation platform, the project is evolving into a resilience scenario generation engine capable of discovering failure cascades, identifying intervention points, and supporting resilience analysis.
 
+Live Console (GitHub Pages)
+This is your running upgraded system (simulator + dashboard + engine):
+👉 https://123agustien.github.io/sextant-self-generator
+
 ---
 
 Core Mission
