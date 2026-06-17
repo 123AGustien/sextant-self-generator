@@ -2,253 +2,70 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sextant Simulator v6.2 – Unified Cascade Engine</title>
+<title>Sextant System — Control Entry</title>
 
 <style>
 body{
     background:#0b0f14;
     color:#00ff88;
     font-family:monospace;
-    padding:20px;
+    padding:40px;
+    max-width:900px;
+    margin:auto;
 }
 
-.panel{
-    border:1px solid #00ff88;
-    padding:12px;
-    margin-bottom:12px;
-}
-
-button{
-    background:#0b0f14;
+h1,h2{
     color:#00ff88;
-    border:1px solid #00ff88;
-    padding:10px;
-    margin:5px;
-    cursor:pointer;
 }
 
-button.active{
-    background:#00ff88;
-    color:#0b0f14;
+.section{
+    border:1px solid #00ff88;
+    padding:20px;
+    margin:20px 0;
 }
 
-pre{
-    background:#05080c;
-    border:1px solid #00ff88;
-    padding:12px;
-    min-height:120px;
-    overflow:auto;
+a{
+    color:#00ff88;
+    display:block;
+    margin:10px 0;
+    text-decoration:none;
+    font-size:18px;
+}
+
+a:hover{
+    text-decoration:underline;
 }
 </style>
 </head>
 
 <body>
 
-<h1>⚡ Sextant Simulator v6.2 – Unified Cascade Engine</h1>
+<h1>⚡ SEXTANT SYSTEM</h1>
+<h2>Control Entry Gateway</h2>
 
-<!-- NAVIGATION -->
-<div class="panel">
-    <h3>NAVIGATION</h3>
-    <button onclick="openModule('generator')">Self Generator</button>
-    <button onclick="openModule('simulator')">Simulator</button>
-    <button onclick="openModule('intervention')">Intervention Lab</button>
-    <button onclick="openModule('console')">Console</button>
+<div class="section">
+    <h2>Navigation</h2>
+
+    <a href="landing.html">📘 Product Overview (Institutional Brief)</a>
+
+    <a href="simulation_screen_v1.html">⚡ Simulator v6.2 (Cascade Engine)</a>
+
+    <a href="scenario-router.html">🧭 Scenario Router</a>
+
+    <a href="sextant-offline-command-center/">🛰 Operations Console</a>
 </div>
 
-<!-- SCENARIOS -->
-<div class="panel">
-    <h3>SCENARIO CONTROL</h3>
-    <button onclick="runScenario('trade')">US–China Trade</button>
-    <button onclick="runScenario('taiwan')">Taiwan Crisis</button>
-    <button onclick="runScenario('energy')">Energy Shock</button>
-    <button onclick="runScenario('recession')">Global Recession</button>
+<div class="section">
+    <h2>System Status</h2>
+    <p>Mode: Active</p>
+    <p>Engine: Cascade Simulation Layer</p>
+    <p>Deployment: GitHub Pages</p>
 </div>
 
-<!-- OUTPUT -->
-<div class="panel">
-    <h3>CASCADE ENGINE</h3>
-    <pre id="output">Idle...</pre>
+<div class="section">
+    <h2>Core Flow</h2>
+    <p>Generate → Simulate → Intervene → Visualize</p>
 </div>
-
-<!-- RISK -->
-<div class="panel">
-    <h3>RISK ENGINE</h3>
-    <pre id="risk">0</pre>
-</div>
-
-<!-- INTERVENTION -->
-<div class="panel">
-    <h3>INTERVENTION</h3>
-    <button onclick="setIntervention('liquidity')">Liquidity</button>
-    <button onclick="setIntervention('central')">Central Bank</button>
-    <button onclick="setIntervention('communication')">Communication</button>
-    <pre id="log">None</pre>
-</div>
-
-<!-- TIMELINE -->
-<div class="panel">
-    <h3>TIMELINE</h3>
-    <pre id="timeline">Empty</pre>
-</div>
-
-<script>
-
-/* =========================
-   SINGLE STATE ENGINE
-=========================*/
-let system = {
-    scenario: null,
-    step: 0,
-    risk: 0,
-    intervention: null,
-    timeline: []
-};
-
-let timer = null;
-
-/* =========================
-   NAVIGATION
-=========================*/
-function openModule(name){
-    document.getElementById("output").textContent =
-        "MODULE → " + name;
-}
-
-/* =========================
-   SCENARIOS
-=========================*/
-function runScenario(type){
-
-    const scenarios = {
-        trade:{
-            name:"US–China Trade Escalation",
-            path:["FX Shock","Liquidity Stress","Confidence Loss"],
-            base:75
-        },
-        taiwan:{
-            name:"Taiwan Strait Crisis",
-            path:["Geopolitical Shock","Market Volatility","Capital Flight"],
-            base:95
-        },
-        energy:{
-            name:"Energy Shock",
-            path:["Oil Spike","Inflation Pressure","Liquidity Tightening"],
-            base:80
-        },
-        recession:{
-            name:"Global Recession",
-            path:["Demand Collapse","Credit Stress","Unemployment Rise"],
-            base:85
-        }
-    };
-
-    system.scenario = scenarios[type];
-    system.step = 0;
-    system.risk = system.scenario.base;
-    system.timeline = [];
-    system.intervention = null;
-
-    log("SCENARIO_INIT", system.scenario.name);
-
-    startCascade();
-    update();
-}
-
-/* =========================
-   CASCADE ENGINE
-=========================*/
-function startCascade(){
-
-    clearInterval(timer);
-
-    timer = setInterval(() => {
-
-        if(!system.scenario) return;
-
-        if(system.step >= system.scenario.path.length){
-            log("CASCADE_COMPLETE", "finished");
-            clearInterval(timer);
-            update();
-            return;
-        }
-
-        let node = system.scenario.path[system.step];
-
-        log("CASCADE_STEP", node);
-
-        system.risk += 8;
-
-        if(system.intervention === "liquidity" && system.step >= 1){
-            system.risk -= 25;
-            log("INTERVENTION_TRIGGERED", "Liquidity stops cascade");
-            clearInterval(timer);
-            update();
-            return;
-        }
-
-        if(system.intervention === "central" && system.step >= 2){
-            system.risk -= 35;
-            log("INTERVENTION_TRIGGERED", "Central Bank stabilizes");
-            clearInterval(timer);
-            update();
-            return;
-        }
-
-        system.step++;
-        update();
-
-    }, 1000);
-}
-
-/* =========================
-   INTERVENTION
-=========================*/
-function setIntervention(type){
-
-    system.intervention = type;
-
-    log("INTERVENTION_SET", type);
-
-    document.getElementById("log").textContent =
-        "ACTIVE → " + type;
-}
-
-/* =========================
-   LOGGING
-=========================*/
-function log(type, data){
-
-    system.timeline.push({
-        time: new Date().toISOString(),
-        type,
-        data
-    });
-
-    update();
-}
-
-/* =========================
-   RENDER
-=========================*/
-function update(){
-
-    document.getElementById("risk").textContent = system.risk;
-
-    document.getElementById("output").textContent =
-        system.scenario
-        ? system.scenario.path.slice(0, system.step).map(x => "→ " + x).join("\n")
-        : "Idle";
-
-    document.getElementById("timeline").textContent =
-        system.timeline.map(t =>
-            `[${t.time}] ${t.type} → ${t.data}`
-        ).join("\n");
-}
-
-/* INIT */
-update();
-
-</script>
 
 </body>
 </html>
