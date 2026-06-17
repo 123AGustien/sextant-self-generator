@@ -27,7 +27,7 @@ button{
     cursor:pointer;
 }
 
-button:hover{
+button.active{
     background:#00ff88;
     color:#0b0f14;
 }
@@ -104,6 +104,157 @@ pre{
 <script>
 
 /* -------------------------
+   STATE
+-------------------------*/
+
+let system = {
+    cascades: [],
+    risk: 0,
+    intervention: null,
+    interventionPower: 1,
+    timeline: []
+};
+
+/* -------------------------
+   LOG ENGINE
+-------------------------*/
+
+function logEvent(type, data){
+
+    system.timeline.push({
+        time: new Date().toISOString(),
+        type,
+        data
+    });
+}
+
+/* -------------------------
+   CASCADES
+-------------------------*/
+
+function toggleCascade(name){
+
+    const index = system.cascades.indexOf(name);
+
+    if(index === -1){
+        system.cascades.push(name);
+        logEvent("CASCADE_ADDED", name);
+    } else {
+        system.cascades.splice(index, 1);
+        logEvent("CASCADE_REMOVED", name);
+    }
+
+    updateSystem();
+}
+
+/* -------------------------
+   INTERVENTION
+-------------------------*/
+
+function setIntervention(type, btn){
+
+    system.intervention = type;
+
+    system.interventionPower =
+        type === "central" ? 1.8 :
+        type === "communication" ? 1.4 :
+        1.2;
+
+    logEvent("INTERVENTION_SET", type);
+
+    document.querySelectorAll("button")
+        .forEach(b => b.classList.remove("active"));
+
+    btn.classList.add("active");
+
+    updateSystem();
+}
+
+/* -------------------------
+   ENGINE
+-------------------------*/
+
+function updateSystem(){
+
+    let base = system.cascades.length * 20;
+
+    let interaction =
+        system.cascades.length > 1
+        ? system.cascades.length * 10
+        : 0;
+
+    system.risk = base + interaction;
+
+    system.risk = Math.max(
+        0,
+        system.risk - (system.interventionPower * 18)
+    );
+
+    logEvent("RISK_UPDATE", system.risk);
+
+    render();
+}
+
+/* -------------------------
+   RENDER
+-------------------------*/
+
+function render(){
+
+    const stability = Math.max(0, 100 - system.risk);
+
+    document.getElementById("dashboard").textContent =
+`CASCADE STATE:
+${system.cascades.length ? system.cascades.map(c => "→ " + c).join("\n") : "None"}
+
+INTERVENTION:
+${system.intervention || "None"}
+
+STABILITY:
+${stability.toFixed(1)}%
+
+STATUS:
+${system.risk > 80 ? "CRITICAL"
+: system.risk > 50 ? "HIGH"
+: system.risk > 20 ? "MODERATE"
+: "STABLE"}`;
+
+    document.getElementById("risk").textContent =
+        "Risk Index: " + system.risk;
+
+    document.getElementById("timeline").textContent =
+        system.timeline.map(e =>
+            `[${e.time}] ${e.type} → ${JSON.stringify(e.data)}`
+        ).join("\n");
+}
+
+/* -------------------------
+   RESET
+-------------------------*/
+
+function resetSystem(){
+
+    system = {
+        cascades: [],
+        risk: 0,
+        intervention: null,
+        interventionPower: 1,
+        timeline: []
+    };
+
+    document.querySelectorAll("button")
+        .forEach(b => b.classList.remove("active"));
+
+    logEvent("SYSTEM_RESET", true);
+
+    updateSystem();
+}
+
+/* INIT */
+updateSystem();
+
+</script>
+
    STATE MACHINE CORE
 -------------------------*/
 
