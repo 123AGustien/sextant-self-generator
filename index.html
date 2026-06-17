@@ -1,6 +1,10 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
-<title>Sextant Unified Strategic Command Center</title><style>
+<title>Sextant Unified Strategic Command Center v2</title>
+
+<style>
 body{
     background:#0b0f14;
     color:#00ff88;
@@ -32,157 +36,140 @@ pre{
     background:#05080c;
     border:1px solid #00ff88;
     padding:12px;
-    min-height:160px;
+    min-height:140px;
     overflow:auto;
 }
-</style></head><body><h1>⚡ Sextant Unified Strategic Command Center</h1><div class="panel">
-    <button id="runBankRun">▶ Bank Run Simulation</button>
-    <button id="runSimulation">🧠 Contagion Simulation</button>
-    <button id="runCentralBank">🏛 Central Bank Intervention</button>
-</div><div class="panel">
-    <div>SCENARIO CONTROL</div><button onclick="runScenario('trade')">
-    US–China Trade Escalation
-</button>
+</style>
+</head>
 
-<button onclick="runScenario('taiwan')">
-    Taiwan Strait Crisis
-</button>
+<body>
 
-<button onclick="runScenario('energy')">
-    Energy Shock
-</button>
+<h1>⚡ Sextant Unified Strategic Command Center v2</h1>
 
-<button onclick="runScenario('recession')">
-    Global Recession
-</button>
+<!-- SCENARIOS -->
+<div class="panel">
+    <h3>SCENARIO CONTROL</h3>
 
-</div><div class="panel">
-    <div>EXECUTION OUTPUT</div>
+    <button onclick="runScenario('trade')">US–China Trade Escalation</button>
+    <button onclick="runScenario('taiwan')">Taiwan Strait Crisis</button>
+    <button onclick="runScenario('energy')">Energy Shock</button>
+    <button onclick="runScenario('recession')">Global Recession</button>
+</div>
+
+<!-- SIMULATION -->
+<div class="panel">
+    <h3>SIMULATION ENGINE</h3>
     <pre id="output">Awaiting execution...</pre>
-</div><div class="panel">
-    <div>RISK DASHBOARD</div>
+</div>
+
+<!-- RISK -->
+<div class="panel">
+    <h3>RISK DASHBOARD</h3>
     <pre id="risk">Risk Index: --</pre>
-</div><script>
+</div>
+
+<!-- INTERVENTION -->
+<div class="panel">
+    <h3>INTERVENTION LAYER</h3>
+
+    <button onclick="applyIntervention('liquidity')">Liquidity Buffer</button>
+    <button onclick="applyIntervention('central')">Central Bank Injection</button>
+    <button onclick="applyIntervention('communication')">Communication Stabilization</button>
+
+    <pre id="log">No intervention applied</pre>
+</div>
+
+<script>
+
+let currentRisk = 0;
+let activeScenario = null;
+
+/* ---------------------------
+   SCENARIO ENGINE
+----------------------------*/
 
 function runScenario(type){
 
-    const output =
-        document.getElementById("output");
-
-    const risk =
-        document.getElementById("risk");
+    const output = document.getElementById("output");
+    const risk = document.getElementById("risk");
 
     const scenarios = {
-
         trade:{
             name:"US–China Trade Escalation",
-            risk:"HIGH"
+            path:["FX Shock","Liquidity Stress","Confidence Loss"],
+            baseRisk:75
         },
 
         taiwan:{
             name:"Taiwan Strait Crisis",
-            risk:"CRITICAL"
+            path:["Geopolitical Shock","Market Volatility","Capital Flight"],
+            baseRisk:95
         },
 
         energy:{
             name:"Energy Shock",
-            risk:"HIGH"
+            path:["Oil Spike","Inflation Pressure","Liquidity Tightening"],
+            baseRisk:80
         },
 
         recession:{
             name:"Global Recession",
-            risk:"HIGH"
+            path:["Demand Collapse","Credit Stress","Unemployment Rise"],
+            baseRisk:85
         }
     };
 
-    const scenario = scenarios[type];
+    activeScenario = scenarios[type];
 
-    output.textContent =
-        JSON.stringify(scenario,null,2);
+    currentRisk = activeScenario.baseRisk;
 
-    risk.textContent =
-        "Risk Index: " + scenario.risk;
+    output.textContent = JSON.stringify({
+        scenario: activeScenario.name,
+        cascade: activeScenario.path,
+        state:"RUNNING"
+    }, null, 2);
+
+    risk.textContent = "Risk Index: " + currentRisk;
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
+/* ---------------------------
+   INTERVENTIONS
+----------------------------*/
 
-    const output =
-        document.getElementById("output");
+function applyIntervention(type){
 
-    const risk =
-        document.getElementById("risk");
+    const log = document.getElementById("log");
+    const risk = document.getElementById("risk");
 
-    document.getElementById("runBankRun")
-    ?.addEventListener("click",()=>{
+    let reduction = 0;
+    let label = "";
 
-        if(typeof window.runBankRunV1 !== "function"){
-            output.textContent =
-                "runBankRunV1 missing";
-            return;
-        }
+    if(type === "liquidity"){
+        reduction = 20;
+        label = "Liquidity Buffer Activated";
+    }
 
-        output.textContent =
-            JSON.stringify(
-                window.runBankRunV1(),
-                null,
-                2
-            );
+    if(type === "central"){
+        reduction = 35;
+        label = "Central Bank Injection Activated";
+    }
 
-        risk.textContent =
-            "Risk Index: HIGH (Bank Run)";
-    });
+    if(type === "communication"){
+        reduction = 15;
+        label = "Communication Stabilization Activated";
+    }
 
-    document.getElementById("runSimulation")
-    ?.addEventListener("click",()=>{
+    currentRisk = Math.max(0, currentRisk - reduction);
 
-        if(typeof window.runContagionV1 !== "function"){
-            output.textContent =
-                "runContagionV1 missing";
-            return;
-        }
+    risk.textContent = "Risk Index: " + currentRisk;
 
-        output.textContent =
-            JSON.stringify(
-                window.runContagionV1(),
-                null,
-                2
-            );
+    log.textContent =
+        label + "\nNew Risk Level: " + currentRisk;
+}
 
-        risk.textContent =
-            "Risk Index: CRITICAL (Contagion)";
-    });
+</script>
 
-    document.getElementById("runCentralBank")
-    ?.addEventListener("click",()=>{
-
-        if(typeof window.runCentralBankIntervention !== "function"){
-            output.textContent =
-                "runCentralBankIntervention missing";
-            return;
-        }
-
-        output.textContent =
-            JSON.stringify(
-                window.runCentralBankIntervention({
-                    entities:{
-                        bankA:{
-                            assets:{cash:-500},
-                            liabilities:{deposits:1200}
-                        },
-                        bankB:{
-                            assets:{cash:-300},
-                            liabilities:{deposits:900}
-                        }
-                    }
-                }),
-                null,
-                2
-            );
-
-        risk.textContent =
-            "Risk Index: STABILIZATION";
-    });
-
-});
-</script><script type="module" src="reprisory-bankrun-v1.js"></script><script type="module" src="reprisory-contagion-v1.js"></script><script type="module" src="reprisory-centralbank-v2.js"></script></body>
+</body>
 </html>
+
+        
