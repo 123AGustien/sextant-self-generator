@@ -1,34 +1,3 @@
-<script>
-function explainCascade(cascade) {
-
-    const path = cascade.path || "unknown";
-    const stress = cascade.stress || 0;
-
-    let severity = "low";
-    if (stress > 0.8) severity = "critical";
-    else if (stress > 0.6) severity = "high";
-    else if (stress > 0.4) severity = "moderate";
-
-    let driver = "multi-factor stress";
-
-    if (path.includes("FX")) driver = "currency instability";
-    if (path.includes("Liquidity")) driver = "liquidity contraction";
-    if (path.includes("Bank")) driver = "banking system stress";
-
-    return `
-CASCADE ANALYSIS
-Primary Path: ${path}
-Primary Driver: ${driver}
-Severity: ${severity}
-
-SYSTEM INTERPRETATION:
-The system is experiencing ${driver}.
-Stress propagation indicates a ${severity} regime.
-Intervention should focus on stabilising the primary driver.
-`;
-}
-</script>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,10 +91,16 @@ pre{
     <pre id="timeline">Empty</pre>
 </div>
 
+<!-- EXPLANATION -->
+<div class="panel">
+    <h3>EXPLANATION LAYER</h3>
+    <pre id="explanation">Waiting...</pre>
+</div>
+
 <script>
 
 /* =========================
-   SINGLE STATE ENGINE
+   STATE ENGINE
 =========================*/
 let system = {
     scenario: null,
@@ -136,6 +111,38 @@ let system = {
 };
 
 let timer = null;
+
+/* =========================
+   EXPLANATION ENGINE
+=========================*/
+function explainCascade(cascade) {
+
+    const path = cascade.path || "unknown";
+    const stress = cascade.stress || 0;
+
+    let severity = "low";
+    if (stress > 0.8) severity = "critical";
+    else if (stress > 0.6) severity = "high";
+    else if (stress > 0.4) severity = "moderate";
+
+    let driver = "multi-factor stress";
+
+    if (path.includes("FX")) driver = "currency instability";
+    if (path.includes("Liquidity")) driver = "liquidity contraction";
+    if (path.includes("Bank")) driver = "banking system stress";
+
+    return `
+CASCADE ANALYSIS
+Primary Path: ${path}
+Primary Driver: ${driver}
+Severity: ${severity}
+
+SYSTEM INTERPRETATION:
+The system is experiencing ${driver}.
+Stress propagation indicates a ${severity} regime.
+Intervention should focus on stabilising the primary driver.
+`;
+}
 
 /* =========================
    NAVIGATION
@@ -209,24 +216,17 @@ function startCascade(){
 
         system.risk += 8;
 
-        if(system.intervention === "liquidity" && system.step >= 1){
-            system.risk -= 25;
-            log("INTERVENTION_TRIGGERED", "Liquidity stops cascade");
-            clearInterval(timer);
-            update();
-            return;
-        }
-
-        if(system.intervention === "central" && system.step >= 2){
-            system.risk -= 35;
-            log("INTERVENTION_TRIGGERED", "Central Bank stabilizes");
-            clearInterval(timer);
-            update();
-            return;
-        }
-
         system.step++;
+
         update();
+
+        // CALL EXPLANATION ENGINE
+        const result = explainCascade({
+            path: system.scenario.path.slice(0, system.step).join(" → "),
+            stress: system.risk / 100
+        });
+
+        document.getElementById("explanation").textContent = result;
 
     }, 1000);
 }
