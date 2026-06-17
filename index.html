@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sextant Simulator v5 – Unified Cascade Interruption Engine</title>
+<title>Sextant Simulator v6 – Unified System Engine</title>
 
 <style>
 body{
@@ -36,7 +36,7 @@ pre{
     background:#05080c;
     border:1px solid #00ff88;
     padding:12px;
-    min-height:140px;
+    min-height:120px;
     overflow:auto;
 }
 </style>
@@ -44,7 +44,17 @@ pre{
 
 <body>
 
-<h1>⚡ Sextant Simulator v5 – Unified Cascade Engine</h1>
+<h1>⚡ Sextant Simulator v6 – Unified Cascade System</h1>
+
+<!-- UNIFIED NAVIGATION -->
+<div class="panel">
+    <h2>SEXTANT SYSTEM NAVIGATION</h2>
+
+    <button onclick="openModule('generator')">Self Generator</button>
+    <button onclick="openModule('simulator')">Simulator</button>
+    <button onclick="openModule('intervention')">Intervention Lab</button>
+    <button onclick="openModule('console')">Operations Console</button>
+</div>
 
 <!-- SCENARIOS -->
 <div class="panel">
@@ -56,7 +66,7 @@ pre{
     <button onclick="runScenario('recession')">Global Recession</button>
 </div>
 
-<!-- OUTPUT -->
+<!-- CASCADE OUTPUT -->
 <div class="panel">
     <h3>CASCADE EXECUTION</h3>
     <pre id="output">Awaiting scenario...</pre>
@@ -70,7 +80,7 @@ pre{
 
 <!-- INTERVENTION -->
 <div class="panel">
-    <h3>INTERVENTION LAYER</h3>
+    <h3>INTERVENTION CONTROL</h3>
 
     <button onclick="setIntervention('liquidity')">Liquidity Buffer</button>
     <button onclick="setIntervention('central')">Central Bank Injection</button>
@@ -79,9 +89,15 @@ pre{
     <pre id="log">No intervention active</pre>
 </div>
 
+<!-- IO PANEL -->
+<div class="panel">
+    <h3>SIMULATOR IO PANEL</h3>
+    <pre id="io">STATUS: idle</pre>
+</div>
+
 <!-- TIMELINE -->
 <div class="panel">
-    <h3>CASCADE TIMELINE</h3>
+    <h3>CASCADE TIMELINE LOG</h3>
     <pre id="timeline">Empty</pre>
 </div>
 
@@ -100,6 +116,24 @@ let system = {
 };
 
 let timer = null;
+
+/* -------------------------
+   NAVIGATION ENGINE
+-------------------------*/
+
+function openModule(name){
+
+    const output = document.getElementById("output");
+
+    const modules = {
+        generator: "SELF GENERATOR → Scenario creation layer active",
+        simulator: "SIMULATOR → Cascade execution engine active",
+        intervention: "INTERVENTION LAB → Testing interruption strategies",
+        console: "OPERATIONS CONSOLE → Visualization layer active"
+    };
+
+    output.textContent = modules[name] || "MODULE NOT FOUND";
+}
 
 /* -------------------------
    SCENARIOS
@@ -141,11 +175,8 @@ function runScenario(type){
 
     log("SCENARIO_INIT", system.scenario.name);
 
-    document.getElementById("output").textContent =
-        "INITIATING CASCADE...\n";
-
-    update();
     startCascade();
+    update();
 }
 
 /* -------------------------
@@ -158,32 +189,31 @@ function startCascade(){
 
     timer = setInterval(() => {
 
-        let s = system.scenario;
+        if(!system.scenario) return;
 
-        if(!s) return;
-
-        if(system.step >= s.path.length){
-            log("CASCADE_COMPLETE", true);
+        if(system.step >= system.scenario.path.length){
+            log("CASCADE_COMPLETE", "finished");
             clearInterval(timer);
+            update();
             return;
         }
 
-        let node = s.path[system.step];
+        let node = system.scenario.path[system.step];
 
         log("CASCADE_STEP", node);
 
         system.risk += 8;
 
-        // INTERVENTION EFFECTS
+        // INTERVENTION RULES
         if(system.intervention === "liquidity" && system.step >= 1){
             system.risk -= 25;
-            log("INTERVENTION_TRIGGERED", "Liquidity stops propagation");
+            log("INTERVENTION_TRIGGERED", "Liquidity Buffer stops cascade");
             clearInterval(timer);
         }
 
         if(system.intervention === "central" && system.step >= 2){
             system.risk -= 35;
-            log("INTERVENTION_TRIGGERED", "Central bank stabilizes system");
+            log("INTERVENTION_TRIGGERED", "Central Bank stabilizes system");
             clearInterval(timer);
         }
 
@@ -205,8 +235,7 @@ function setIntervention(type){
     log("INTERVENTION_SET", type);
 
     document.getElementById("log").textContent =
-        "Active: " + type;
-
+        "ACTIVE: " + type;
 }
 
 /* -------------------------
@@ -225,7 +254,7 @@ function log(type, data){
 }
 
 /* -------------------------
-   RENDER
+   RENDER ENGINE
 -------------------------*/
 
 function update(){
@@ -242,7 +271,18 @@ function update(){
         system.timeline.map(t =>
             `[${t.time}] ${t.type} → ${t.data}`
         ).join("\n");
+
+    document.getElementById("io").textContent =
+`STATUS: running
+SCENARIO: ${system.scenario?.name || "none"}
+STEP: ${system.step}
+RISK: ${system.risk}
+INTERVENTION: ${system.intervention || "none"}
+TIMELINE EVENTS: ${system.timeline.length}`;
 }
+
+/* INIT */
+update();
 
 </script>
 
