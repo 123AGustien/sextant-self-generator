@@ -19,7 +19,7 @@ Offline deterministic code generation and resilience scenario generation engine.
 
 Live Console (GitHub Pages)
 This is your running upgraded system (simulator + dashboard + engine):
-👉 https://123agustien.github.io/sextant-self-generator/⁠�
+👉 https://123agustien.github.io/sextant-self-generator
 Purpose
 
 The Sextant Self Generator is a controlled scaffold engine designed to support the Sextant ecosystem.
