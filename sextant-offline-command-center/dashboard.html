@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sextant Dashboard v6.2 – Control Interface</title>
+
+<style>
+body{
+    background:#0b0f14;
+    color:#00ff88;
+    font-family:monospace;
+    padding:20px;
+}
+
+.panel{
+    border:1px solid #00ff88;
+    padding:12px;
+    margin-bottom:12px;
+}
+
+button{
+    background:#0b0f14;
+    color:#00ff88;
+    border:1px solid #00ff88;
+    padding:10px;
+    margin:5px;
+    cursor:pointer;
+}
+
+button.active{
+    background:#00ff88;
+    color:#0b0f14;
+}
+
+pre{
+    background:#05080c;
+    border:1px solid #00ff88;
+    padding:12px;
+    min-height:120px;
+    overflow:auto;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚡ Sextant Dashboard v6.2 – Control Interface</h1>
+
+<!-- CASCADE CONTROL -->
+<div class="panel">
+    <h3>CASCADE CONTROL PANEL</h3>
+
+    <button onclick="toggleCascade('FX Shock')">FX Shock</button>
+    <button onclick="toggleCascade('Credit Stress')">Credit Stress</button>
+    <button onclick="toggleCascade('Geopolitical Shock')">Geopolitical Shock</button>
+    <button onclick="toggleCascade('Energy Shock')">Energy Shock</button>
+
+    <button onclick="resetSystem()">Reset System</button>
+</div>
+
+<!-- INTERVENTIONS -->
+<div class="panel">
+    <h3>INTERVENTION CONTROL PANEL</h3>
+
+    <button onclick="setIntervention('liquidity', this)">Liquidity Buffer</button>
+    <button onclick="setIntervention('central', this)">Central Bank Injection</button>
+    <button onclick="setIntervention('communication', this)">Communication Stabilization</button>
+
+    <pre id="log">No intervention active</pre>
+</div>
+
+<!-- DASHBOARD -->
+<div class="panel">
+    <h3>LIVE SYSTEM DASHBOARD</h3>
+    <pre id="dashboard">System initializing...</pre>
+</div>
+
+<!-- RISK -->
+<div class="panel">
+    <h3>RISK ENGINE</h3>
+    <pre id="risk">0</pre>
+</div>
+
+<script>
+
+/* ===========================
+   CONTROL LAYER (FULL SYSTEM)
+=========================== */
+
+const Control = {
+
+    system: {
+        cascades: [],
+        risk: 0,
+        intervention: null,
+        interventionPower: 1
+    },
+
+    toggleCascade(name){
+
+        const s = this.system;
+
+        const index = s.cascades.indexOf(name);
+
+        if(index === -1){
+            s.cascades.push(name);
+        } else {
+            s.cascades.splice(index, 1);
+        }
+
+        this.update();
+    },
+
+    setIntervention(type, btn){
+
+        const s = this.system;
+
+        s.intervention = type;
+
+        s.interventionPower =
+            type === "central" ? 1.8 :
+            type === "communication" ? 1.4 :
+            1.2;
+
+        document.getElementById("log").textContent =
+            "Active Intervention: " + type;
+
+        document.querySelectorAll("button")
+            .forEach(b => b.classList.remove("active"));
+
+        btn.classList.add("active");
+
+        this.update();
+    },
+
+    update(){
+
+        const s = this.system;
+
+        let base = s.cascades.length * 20;
+
+        let interaction =
+            s.cascades.length > 1
+                ? s.cascades.length * 10
+                : 0;
+
+        s.risk = base + interaction;
+
+        s.risk = Math.max(
+            0,
+            s.risk - (s.interventionPower * 18)
+        );
+
+        this.render();
+    },
+
+    render(){
+
+        const s = this.system;
+
+        let stability = Math.max(0, 100 - s.risk);
+
+        document.getElementById("dashboard").textContent =
+`ACTIVE CASCADES:
+${s.cascades.length ? s.cascades.map(c => "→ " + c).join("\n") : "None"}
+
+INTERVENTION:
+${s.intervention || "None"}
+
+SYSTEM STABILITY:
+${stability.toFixed(1)}%
+
+STATUS:
+${s.risk > 80 ? "🔥 CRITICAL"
+: s.risk > 50 ? "⚠ HIGH"
+: s.risk > 20 ? "🟡 MODERATE"
+: "🟢 STABLE"}`;
+
+        document.getElementById("risk").textContent =
+            "Risk Index: " + s.risk;
+    },
+
+    reset(){
+
+        this.system = {
+            cascades: [],
+            risk: 0,
+            intervention: null,
+            interventionPower: 1
+        };
+
+        document.getElementById("log").textContent =
+            "No intervention active";
+
+        document.querySelectorAll("button")
+            .forEach(b => b.classList.remove("active"));
+
+        this.update();
+    }
+};
+
+/* ===========================
+   UI BINDINGS ONLY
+=========================== */
+
+function toggleCascade(name){
+    Control.toggleCascade(name);
+}
+
+function setIntervention(type, btn){
+    Control.setIntervention(type, btn);
+}
+
+function resetSystem(){
+    Control.reset();
+}
+
+/* INIT */
+Control.update();
+
+</script>
+
+</body>
+</html>
