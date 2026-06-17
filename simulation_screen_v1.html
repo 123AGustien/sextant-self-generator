@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sextant Simulator v6.2</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #0a0f14;
+            color: #d6e2f0;
+            font-family: monospace;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .panel {
+            border: 1px solid #222;
+            padding: 10px;
+            background: #0d141b;
+            overflow: auto;
+        }
+
+        h2 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #8fbcd4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="grid">
+
+        <!-- CASCADE OUTPUT -->
+        <div class="panel">
+            <h2>CASCADE ENGINE</h2>
+            <div id="output">Idle</div>
+        </div>
+
+        <!-- RISK -->
+        <div class="panel">
+            <h2>RISK ENGINE</h2>
+            <div id="risk">0</div>
+        </div>
+
+        <!-- TIMELINE -->
+        <div class="panel">
+            <h2>TIMELINE</h2>
+            <div id="timeline"></div>
+        </div>
+
+        <!-- SYSTEM IO -->
+        <div class="panel">
+            <h2>SYSTEM STATE</h2>
+            <div id="io"></div>
+        </div>
+
+        <!-- LOG -->
+        <div class="panel">
+            <h2>LOG</h2>
+            <div id="log"></div>
+        </div>
+
+        <!-- 🧠 EXPLANATION PANEL (NEW) -->
+        <div class="panel" style="grid-column: span 2;">
+            <h2>EXPLANATION LAYER</h2>
+            <div id="explanationPanel">
+                <em>Waiting for cascade output...</em>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ENGINE BINDING (IMPORTANT) -->
+    <script type="module" src="./assets/js/ui-controller.js"></script>
+    <script type="module" src="./assets/js/app-orchestrator.js"></script>
+
+</body>
+</html>
