@@ -1,4 +1,4 @@
----
+---Generate Scenarios → Discover Cascades → Protect Interventions → Preserve Resilience
 
 Sextant Ecosystem Architecture
 
