@@ -1,9 +1,49 @@
-SELFELFVisualizationGENERATOR URLs are:
-123agustien.github.io⁠
-123agustien.github.io⁠
-123agustien.github.io⁠
-123agustien.github.io⁠
-123agustien.github.io⁠nstitutionalinstitutional demonstrations, you can now describe the flow as:
+SEXTANT PROTOCOL ECOSYSTEM
+
+Live URLs
+
+Official Index (Documentation Layer)
+https://123agustien.github.io/sextant-protocol-official-index/
+
+Self Generator (Scenario Generation Engine)
+https://123agustien.github.io/sextant-self-generator/
+
+Self Test Control Room
+https://123agustien.github.io/sextant-self-generator/self-test.html
+
+Simulator v6.2 (Cascade Engine)
+https://123agustien.github.io/sextant-self-generator/simulation_screen_v1.html
+
+Scenario Router
+https://123agustien.github.io/sextant-self-generator/scenario-router.html
+
+Operations Console (Visualization Layer)
+https://123agustien.github.io/sextant-self-generator/sextant-offline-command-center/
+
+Institutional Narrative
+
+Generate → Self Test → Simulate → Visualize → Document
+
+Self Generator:
+Creates resilience scenarios and failure cascades.
+
+Self Test:
+Validates core modules and boot sequence.
+
+Simulator:
+Executes scenarios and models cascade propagation.
+
+Operations Console:
+Visualizes system state, risk progression, and intervention pathways.
+
+Official Index:
+Documents architecture, repositories, and ecosystem structure.
+
+Mission Statement
+
+"Discovering pathways to failure and protecting the strategies that prevent them."
+yoyou
+youou can now describe the flow as:
 Control Gateway → Self Test → Scenario Selection → Cascade Simulation → Operations Console VisualizationGENERATORERATOR
 
 Stress Scale Methodology
