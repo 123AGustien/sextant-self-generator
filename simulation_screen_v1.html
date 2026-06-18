@@ -1,215 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sextant Simulator v6.2 – Phase 4.5</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0a0f14;
+    color: #d6e2f0;
+    font-family: monospace;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 10px;
+}
+
+.panel {
+    border: 1px solid #222;
+    padding: 10px;
+    background: #0d141b;
+}
+
+h2 {
+    font-size: 14px;
+    color: #8fbcd4;
+}
+
+button {
+    padding: 12px;
+    margin: 5px;
+    background: #0a0f14;
+    color: #00ff88;
+    border: 1px solid #00ff88;
+    cursor: pointer;
+    width: 48%;
+}
+
+button:hover {
+    background: #00ff88;
+    color: #0a0f14;
+}
+
+/* MOBILE FIX */
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     CONTROL BUTTONS (MOBILE SAFE)
+========================= -->
+<div style="padding:10px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
+
+    <button onclick="runTypedScenario()">
+        RUN SCENARIO
+    </button>
+
+    <button onclick="runSelfTest()">
+        RUN SELF TEST
+    </button>
+
+</div>
+
+<!-- =========================
+     DASHBOARD GRID
+========================= -->
+<div class="grid">
+
+    <div class="panel">
+        <h2>CASCADE ENGINE</h2>
+        <div id="output">Idle</div>
+    </div>
+
+    <div class="panel">
+        <h2>RISK ENGINE</h2>
+        <div id="risk">0</div>
+    </div>
+
+    <div class="panel">
+        <h2>TIMELINE</h2>
+        <div id="timeline">Waiting...</div>
+    </div>
+
+    <div class="panel">
+        <h2>SYSTEM STATE</h2>
+        <div id="log">Ready</div>
+    </div>
+
+    <div class="panel" style="grid-column: span 2;">
+        <h2>EXPLANATION LAYER</h2>
+        <div id="explanationPanel">Waiting...</div>
+    </div>
+
+</div>
+
 <script type="module">
 
-/* =====================================================
-   PHASE 4.5 WIRED EVENT SYSTEM (NO BACKEND)
-===================================================== */
-
 /* =========================
-   SIMPLE EVENT BUS
+   EVENT BUS
 ========================= */
 const EventBus = {
-
     listeners: {},
-
-    on(event, fn) {
-        if (!this.listeners[event]) this.listeners[event] = [];
-        this.listeners[event].push(fn);
-    },
-
-    emit(event, data) {
-        if (!this.listeners[event]) return;
-        this.listeners[event].forEach(fn => fn(data));
-    }
+    on(e, fn){ (this.listeners[e] ||= []).push(fn); },
+    emit(e, d){ (this.listeners[e]||[]).forEach(f=>f(d)); }
 };
 
 /* =========================
-   CASCADE MODULE
+   CASCADE
 ========================= */
-function createCascade(input) {
-
-    const text = input.toLowerCase();
+function createCascade(input){
+    const t = input.toLowerCase();
     const nodes = [];
 
-    if (text.includes("fx")) {
-        nodes.push({ type: "FX_SHOCK", impact: 0.85 });
-        EventBus.emit("NODE", nodes[nodes.length - 1]);
-    }
+    if(t.includes("fx")) nodes.push({type:"FX_SHOCK", impact:0.85});
+    if(t.includes("liquidity")) nodes.push({type:"LIQUIDITY_STRESS", impact:0.9});
+    if(t.includes("bank")) nodes.push({type:"BANKING_STRESS", impact:0.8});
 
-    if (text.includes("liquidity")) {
-        nodes.push({ type: "LIQUIDITY_STRESS", impact: 0.9 });
-        EventBus.emit("NODE", nodes[nodes.length - 1]);
-    }
-
-    if (text.includes("bank")) {
-        nodes.push({ type: "BANKING_STRESS", impact: 0.8 });
-        EventBus.emit("NODE", nodes[nodes.length - 1]);
-    }
-
-    nodes.push({ type: "CONFIDENCE_LOSS", impact: 0.6 });
-    EventBus.emit("NODE", nodes[nodes.length - 1]);
+    nodes.push({type:"CONFIDENCE_LOSS", impact:0.6});
+    EventBus.emit("NODE", nodes.at(-1));
 
     EventBus.emit("CASCADE_COMPLETE", nodes);
-
     return nodes;
 }
 
 /* =========================
-   RISK MODULE
+   RISK
 ========================= */
-function calculateRisk(nodes) {
+function calculateRisk(nodes){
+    const score = Math.min(
+        (nodes.reduce((a,n)=>a+n.impact,0)/nodes.length)*100,
+        100
+    );
 
-    let sum = 0;
+    const level =
+        score>80?"CRITICAL":
+        score>60?"HIGH":
+        score>40?"MODERATE":"LOW";
 
-    for (let n of nodes) sum += n.impact;
-
-    const score = Math.min((sum / nodes.length) * 100, 100);
-
-    let level = "LOW";
-    if (score > 80) level = "CRITICAL";
-    else if (score > 60) level = "HIGH";
-    else if (score > 40) level = "MODERATE";
-
-    const result = { score: Math.round(score), level };
-
-    EventBus.emit("RISK", result);
-
-    return result;
+    const res = {score:Math.round(score),level};
+    EventBus.emit("RISK",res);
+    return res;
 }
 
 /* =========================
-   EXPLANATION MODULE
+   EXPLANATION
 ========================= */
-function explain(nodes) {
+function explain(nodes){
+    const drivers = nodes.map(n=>{
+        if(n.type==="FX_SHOCK") return "currency instability";
+        if(n.type==="LIQUIDITY_STRESS") return "liquidity contraction";
+        if(n.type==="BANKING_STRESS") return "banking stress";
+        return "confidence erosion";
+    });
 
-    let drivers = [];
-    let max = 0;
+    const max = Math.max(...nodes.map(n=>n.impact));
 
-    for (let n of nodes) {
+    const severity =
+        max>0.8?"critical":
+        max>0.6?"high":
+        max>0.4?"moderate":"low";
 
-        max = Math.max(max, n.impact);
-
-        if (n.type === "FX_SHOCK") drivers.push("currency instability");
-        if (n.type === "LIQUIDITY_STRESS") drivers.push("liquidity contraction");
-        if (n.type === "BANKING_STRESS") drivers.push("banking system stress");
-        if (n.type === "CONFIDENCE_LOSS") drivers.push("market confidence erosion");
-    }
-
-    let severity = "low";
-    if (max > 0.8) severity = "critical";
-    else if (max > 0.6) severity = "high";
-    else if (max > 0.4) severity = "moderate";
-
-    const result = `
-CASCADE ANALYSIS
+    const out =
+`CASCADE ANALYSIS
 Drivers: ${drivers.join(" → ")}
-Severity: ${severity}
+Severity: ${severity}`;
 
-SYSTEM INTERPRETATION:
-System stress driven by ${drivers[0]}.
-Propagation indicates a ${severity} regime.
-`;
-
-    EventBus.emit("EXPLANATION", result);
-
-    return result;
+    EventBus.emit("EXPLANATION",out);
+    return out;
 }
 
 /* =========================
    ORCHESTRATOR
 ========================= */
-function runScenario(input) {
-
-    EventBus.emit("SYSTEM", "RUNNING");
+function runScenario(input){
+    EventBus.emit("SYSTEM","RUNNING");
 
     const nodes = createCascade(input);
     const risk = calculateRisk(nodes);
     const explanation = explain(nodes);
 
-    EventBus.emit("STATE", {
-        nodes,
-        risk,
-        explanation
-    });
+    EventBus.emit("STATE",{nodes,risk,explanation});
 }
 
 /* =========================
-   SELF TEST (NEW)
+   SELF TEST
 ========================= */
-function runSelfTest() {
+function runSelfTest(){
+    EventBus.emit("SYSTEM","SELF TEST RUNNING");
 
-    const testScenario = "fx liquidity bank panic";
-
-    EventBus.emit("SYSTEM", "SELF TEST RUNNING");
-
-    const nodes = createCascade(testScenario);
+    const nodes = createCascade("fx liquidity bank panic");
     const risk = calculateRisk(nodes);
     const explanation = explain(nodes);
 
-    const passed = nodes.length > 0 && risk.score > 0;
+    const passed = nodes.length>0 && risk.score>0;
 
-    EventBus.emit("SELF_TEST", {
-        passed,
-        nodes,
-        risk
-    });
-
-    EventBus.emit("SYSTEM",
-        passed ? "SELF TEST PASSED" : "SELF TEST FAILED"
-    );
+    EventBus.emit("SELF_TEST",{passed,nodes,risk});
+    EventBus.emit("SYSTEM",passed?"SELF TEST PASSED":"SELF TEST FAILED");
 }
 
 /* =========================
-   UI BINDING LAYER
+   UI BINDINGS
 ========================= */
-window.runTypedScenario = function () {
-    const input = prompt("Enter scenario (fx, liquidity, bank, panic)");
+window.runTypedScenario = ()=>{
+    const input = prompt("Enter scenario");
     runScenario(input);
 };
 
 window.runSelfTest = runSelfTest;
 
 /* =========================
-   UI LISTENERS
+   UI EVENTS
 ========================= */
-
-EventBus.on("NODE", (node) => {
-    document.getElementById("output").innerText +=
-        "\n→ " + node.type;
+EventBus.on("NODE",n=>{
+    document.getElementById("output").innerText += "\n→ "+n.type;
 });
 
-EventBus.on("RISK", (risk) => {
-    document.getElementById("risk").innerText =
-        risk.score + " (" + risk.level + ")";
+EventBus.on("RISK",r=>{
+    document.getElementById("risk").innerText = `${r.score} (${r.level})`;
 });
 
-EventBus.on("SYSTEM", (status) => {
-    document.getElementById("log").innerText = status;
+EventBus.on("SYSTEM",s=>{
+    document.getElementById("log").innerText = s;
 });
 
-EventBus.on("EXPLANATION", (text) => {
-    document.getElementById("explanationPanel").innerText = text;
+EventBus.on("EXPLANATION",t=>{
+    document.getElementById("explanationPanel").innerText = t;
 });
 
-EventBus.on("STATE", (state) => {
+EventBus.on("STATE",s=>{
     document.getElementById("timeline").innerText =
-        "NODES: " + state.nodes.length;
+        "NODES: "+s.nodes.length;
 });
 
-/* =========================
-   SELF TEST UI OUTPUT
-========================= */
-EventBus.on("SELF_TEST", (result) => {
-
-    const msg = result.passed
-        ? "🟢 SELF TEST PASSED → SYSTEM OK"
-        : "🔴 SELF TEST FAILED → SYSTEM ERROR";
-
-    document.getElementById("output").innerText += "\n" + msg;
+EventBus.on("SELF_TEST",r=>{
+    document.getElementById("output").innerText +=
+        "\n" + (r.passed
+        ? "🟢 SELF TEST PASSED"
+        : "🔴 SELF TEST FAILED");
 });
 
 </script>
 
-<!-- SELF TEST BUTTON -->
-<button onclick="runSelfTest()">
-    RUN SELF TEST
-</button>
+</body>
+</html>
