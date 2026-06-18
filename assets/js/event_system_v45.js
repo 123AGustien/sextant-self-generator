@@ -1,0 +1,202 @@
+/* =====================================================
+   PHASE 4.5 WIRED EVENT SYSTEM (NO BACKEND)
+===================================================== */
+
+/* =========================
+   SIMPLE EVENT BUS
+========================= */
+const EventBus = {
+
+    listeners: {},
+
+    on(event, fn) {
+        if (!this.listeners[event]) this.listeners[event] = [];
+        this.listeners[event].push(fn);
+    },
+
+    emit(event, data) {
+        if (!this.listeners[event]) return;
+        this.listeners[event].forEach(fn => fn(data));
+    }
+};
+
+/* =========================
+   CASCADE MODULE
+========================= */
+function createCascade(input) {
+
+    const text = (input || "").toLowerCase();
+    const nodes = [];
+
+    if (text.includes("fx")) {
+        nodes.push({ type: "FX_SHOCK", impact: 0.85 });
+        EventBus.emit("NODE", nodes[nodes.length - 1]);
+    }
+
+    if (text.includes("liquidity")) {
+        nodes.push({ type: "LIQUIDITY_STRESS", impact: 0.9 });
+        EventBus.emit("NODE", nodes[nodes.length - 1]);
+    }
+
+    if (text.includes("bank")) {
+        nodes.push({ type: "BANKING_STRESS", impact: 0.8 });
+        EventBus.emit("NODE", nodes[nodes.length - 1]);
+    }
+
+    nodes.push({ type: "CONFIDENCE_LOSS", impact: 0.6 });
+    EventBus.emit("NODE", nodes[nodes.length - 1]);
+
+    EventBus.emit("CASCADE_COMPLETE", nodes);
+
+    return nodes;
+}
+
+/* =========================
+   RISK MODULE
+========================= */
+function calculateRisk(nodes) {
+
+    let sum = 0;
+
+    for (let n of nodes) sum += n.impact;
+
+    const score = Math.min((sum / nodes.length) * 100, 100);
+
+    let level = "LOW";
+    if (score > 80) level = "CRITICAL";
+    else if (score > 60) level = "HIGH";
+    else if (score > 40) level = "MODERATE";
+
+    const result = {
+        score: Math.round(score),
+        level
+    };
+
+    EventBus.emit("RISK", result);
+
+    return result;
+}
+
+/* =========================
+   EXPLANATION MODULE
+========================= */
+function explain(nodes) {
+
+    let drivers = [];
+    let max = 0;
+
+    for (let n of nodes) {
+
+        max = Math.max(max, n.impact);
+
+        if (n.type === "FX_SHOCK") drivers.push("currency instability");
+        if (n.type === "LIQUIDITY_STRESS") drivers.push("liquidity contraction");
+        if (n.type === "BANKING_STRESS") drivers.push("banking system stress");
+        if (n.type === "CONFIDENCE_LOSS") drivers.push("market confidence erosion");
+    }
+
+    let severity = "low";
+    if (max > 0.8) severity = "critical";
+    else if (max > 0.6) severity = "high";
+    else if (max > 0.4) severity = "moderate";
+
+    const result = `
+CASCADE ANALYSIS
+Drivers: ${drivers.join(" → ")}
+Severity: ${severity}
+
+SYSTEM INTERPRETATION:
+System stress driven by ${drivers[0]}.
+Propagation indicates a ${severity} regime.
+`;
+
+    EventBus.emit("EXPLANATION", result);
+
+    return result;
+}
+
+/* =========================
+   ORCHESTRATOR
+========================= */
+function runScenario(input) {
+
+    EventBus.emit("SYSTEM", "RUNNING");
+
+    const nodes = createCascade(input);
+    const risk = calculateRisk(nodes);
+    const explanation = explain(nodes);
+
+    EventBus.emit("STATE", {
+        nodes,
+        risk,
+        explanation
+    });
+}
+
+/* =========================
+   UI RESET HELPERS
+========================= */
+function resetUI() {
+
+    const output = document.getElementById("output");
+    if (output) output.innerText = "";
+
+}
+
+/* =========================
+   UI BINDING
+========================= */
+window.runTypedScenario = function () {
+
+    resetUI();
+
+    const input = prompt("Enter scenario (fx, liquidity, bank, panic)");
+
+    if (!input) return;
+
+    runScenario(input);
+};
+
+/* =========================
+   UI LISTENERS
+========================= */
+
+EventBus.on("NODE", (node) => {
+
+    const el = document.getElementById("output");
+    if (!el) return;
+
+    el.innerText += "\n→ " + node.type;
+});
+
+EventBus.on("RISK", (risk) => {
+
+    const el = document.getElementById("risk");
+    if (!el) return;
+
+    el.innerText = `${risk.score} (${risk.level})`;
+});
+
+EventBus.on("SYSTEM", (status) => {
+
+    const el = document.getElementById("log");
+    if (!el) return;
+
+    el.innerText = status;
+});
+
+EventBus.on("EXPLANATION", (text) => {
+
+    const el = document.getElementById("explanationPanel");
+    if (!el) return;
+
+    el.innerText = text;
+});
+
+EventBus.on("STATE", (state) => {
+
+    const el = document.getElementById("timeline");
+    if (!el) return;
+
+    el.innerText = `NODES: ${state.nodes.length}`;
+});
