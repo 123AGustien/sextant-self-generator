@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sextant Simulator v6.2 – Phase 4.5</title>
+<title>Sextant Simulator v6.2 – Phase 4.5 Wired</title>
 
 <style>
 body {
@@ -12,11 +12,19 @@ body {
     font-family: monospace;
 }
 
+/* MOBILE SAFE GRID */
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     padding: 10px;
+}
+
+/* MOBILE STACK */
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .panel {
@@ -45,39 +53,21 @@ button:hover {
     color: #0a0f14;
 }
 
-/* MOBILE FIX */
-@media (max-width: 600px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    button {
-        width: 100%;
-    }
+@media (max-width:600px){
+    button{ width:100%; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- =========================
-     CONTROL BUTTONS (MOBILE SAFE)
-========================= -->
+<!-- CONTROL BAR -->
 <div style="padding:10px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
-
-    <button onclick="runTypedScenario()">
-        RUN SCENARIO
-    </button>
-
-    <button onclick="runSelfTest()">
-        RUN SELF TEST
-    </button>
-
+    <button onclick="runTypedScenario()">RUN SCENARIO</button>
+    <button onclick="runSelfTest()">RUN SELF TEST</button>
 </div>
 
-<!-- =========================
-     DASHBOARD GRID
-========================= -->
+<!-- DASHBOARD -->
 <div class="grid">
 
     <div class="panel">
@@ -119,10 +109,10 @@ const EventBus = {
 };
 
 /* =========================
-   CASCADE
+   CASCADE ENGINE
 ========================= */
 function createCascade(input){
-    const t = input.toLowerCase();
+    const t = (input || "").toLowerCase();
     const nodes = [];
 
     if(t.includes("fx")) nodes.push({type:"FX_SHOCK", impact:0.85});
@@ -137,7 +127,7 @@ function createCascade(input){
 }
 
 /* =========================
-   RISK
+   RISK ENGINE
 ========================= */
 function calculateRisk(nodes){
     const score = Math.min(
@@ -156,7 +146,7 @@ function calculateRisk(nodes){
 }
 
 /* =========================
-   EXPLANATION
+   EXPLANATION ENGINE
 ========================= */
 function explain(nodes){
     const drivers = nodes.map(n=>{
@@ -199,7 +189,12 @@ function runScenario(input){
    SELF TEST
 ========================= */
 function runSelfTest(){
+
     EventBus.emit("SYSTEM","SELF TEST RUNNING");
+
+    document.getElementById("output").innerText = "SELF TEST STARTING...";
+    document.getElementById("risk").innerText = "0";
+    document.getElementById("timeline").innerText = "BOOT TRACE...";
 
     const nodes = createCascade("fx liquidity bank panic");
     const risk = calculateRisk(nodes);
@@ -215,7 +210,7 @@ function runSelfTest(){
    UI BINDINGS
 ========================= */
 window.runTypedScenario = ()=>{
-    const input = prompt("Enter scenario");
+    const input = prompt("Enter scenario (fx, liquidity, bank, panic)");
     runScenario(input);
 };
 
@@ -251,6 +246,24 @@ EventBus.on("SELF_TEST",r=>{
         ? "🟢 SELF TEST PASSED"
         : "🔴 SELF TEST FAILED");
 });
+
+/* =========================
+   BOOT SEQUENCE (AUTO RUN)
+========================= */
+function bootSequence(){
+
+    EventBus.emit("SYSTEM","BOOT SEQUENCE INITIATED");
+
+    setTimeout(()=>{
+        runSelfTest();
+    },600);
+
+    setTimeout(()=>{
+        EventBus.emit("SYSTEM","SYSTEM ONLINE");
+    },2000);
+}
+
+window.addEventListener("load", bootSequence);
 
 </script>
 
