@@ -2,9 +2,11 @@
 
 /* =====================================================
    PHASE 4.5 WIRED EVENT SYSTEM (NO BACKEND)
+===================================================== */
 
 /* =========================
    SIMPLE EVENT BUS
+========================= */
 const EventBus = {
 
     listeners: {},
@@ -22,6 +24,7 @@ const EventBus = {
 
 /* =========================
    CASCADE MODULE
+========================= */
 function createCascade(input) {
 
     const text = input.toLowerCase();
@@ -52,6 +55,7 @@ function createCascade(input) {
 
 /* =========================
    RISK MODULE
+========================= */
 function calculateRisk(nodes) {
 
     let sum = 0;
@@ -74,6 +78,7 @@ function calculateRisk(nodes) {
 
 /* =========================
    EXPLANATION MODULE
+========================= */
 function explain(nodes) {
 
     let drivers = [];
@@ -110,7 +115,8 @@ Propagation indicates a ${severity} regime.
 }
 
 /* =========================
-   ORCHESTRATOR (WIRE ALL MODULES)
+   ORCHESTRATOR
+========================= */
 function runScenario(input) {
 
     EventBus.emit("SYSTEM", "RUNNING");
@@ -127,16 +133,44 @@ function runScenario(input) {
 }
 
 /* =========================
+   SELF TEST (NEW)
+========================= */
+function runSelfTest() {
+
+    const testScenario = "fx liquidity bank panic";
+
+    EventBus.emit("SYSTEM", "SELF TEST RUNNING");
+
+    const nodes = createCascade(testScenario);
+    const risk = calculateRisk(nodes);
+    const explanation = explain(nodes);
+
+    const passed = nodes.length > 0 && risk.score > 0;
+
+    EventBus.emit("SELF_TEST", {
+        passed,
+        nodes,
+        risk
+    });
+
+    EventBus.emit("SYSTEM",
+        passed ? "SELF TEST PASSED" : "SELF TEST FAILED"
+    );
+}
+
+/* =========================
    UI BINDING LAYER
+========================= */
 window.runTypedScenario = function () {
-
     const input = prompt("Enter scenario (fx, liquidity, bank, panic)");
-
     runScenario(input);
 };
 
+window.runSelfTest = runSelfTest;
+
 /* =========================
-   UI LISTENERS (LIVE WIRING)
+   UI LISTENERS
+========================= */
 
 EventBus.on("NODE", (node) => {
     document.getElementById("output").innerText +=
@@ -161,4 +195,21 @@ EventBus.on("STATE", (state) => {
         "NODES: " + state.nodes.length;
 });
 
+/* =========================
+   SELF TEST UI OUTPUT
+========================= */
+EventBus.on("SELF_TEST", (result) => {
+
+    const msg = result.passed
+        ? "🟢 SELF TEST PASSED → SYSTEM OK"
+        : "🔴 SELF TEST FAILED → SYSTEM ERROR";
+
+    document.getElementById("output").innerText += "\n" + msg;
+});
+
 </script>
+
+<!-- SELF TEST BUTTON -->
+<button onclick="runSelfTest()">
+    RUN SELF TEST
+</button>
