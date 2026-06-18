@@ -1,4 +1,24 @@
 SELF GENERATOR
+
+Stress Scale Methodology
+
+In the current prototype, subsystem stress values are user-defined scenario inputs.
+
+Each subsystem is assigned a normalized value between 0.00 and 1.00:
+
+0.00–0.20 Stable
+
+0.21–0.40 Watch
+
+0.41–0.60 Stress
+
+0.61–0.80 Severe Stress
+
+0.81–1.00 Crisis
+
+These values represent simulated pressure levels within the resilience model and are used to generate Risk, Impact, and Stability outputs.
+
+Future versions may include automated scenario classification and event-driven stress assignment, allowing the system to derive subsystem values from predefined events and institutional stress templates.
 ↓
 DISCOVER CASCADES
 ↓
@@ -19,8 +39,18 @@ Offline deterministic code generation and resilience scenario generation engine.
 
 Live Console (GitHub Pages)
 This is your running upgraded system (simulator + dashboard + engine):
+
+most likely URL sources for it are:
+123agustien.github.io
+123agustien.github.io
 👉 https://123agustien.github.io/sextant-self-generator
 Purpose
+
+## 🚀 Release v6.2 — Monetization Layer (Sextant System)
+
+- Git Tag: `v6.2-monetization-ready`  
+- GitHub Release: https://github.com/123AGustien/sextant-self-generator/releases/tag/v6.2-monetization-ready  
+- Live System: https://123agustien.github.io/sextant-self-generator/
 
 The Sextant Self Generator is a controlled scaffold engine designed to support the Sextant ecosystem.
 
@@ -197,3 +227,11 @@ https://github.com/123AGustien/sextant-self-generator
 Mission Statement
 
 "Discovering pathways to failure and protecting the strategies that prevent them."
+
+## Future Development Roadmap
+
+### Phase 4 — Data Integration Layer (External Collaboration Required)
+This phase requires integration with external data sources (FX, liquidity, market indicators) and backend infrastructure support. Collaboration with data engineering partners is required.
+
+### Phase 5 — Institutional Validation & Deployment Layer (External Collaboration Required)
+This phase focuses on auditability, model validation, and potential deployment in institutional environments. Requires partnership with backend engineers, financial data providers, and domain validators.

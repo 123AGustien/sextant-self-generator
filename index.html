@@ -2,106 +2,66 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sextant Simulator v6.2 – Unified Cascade Engine</title>
+<title>Sextant System — Control Entry</title>
 
 <style>
 body{
     background:#0b0f14;
     color:#00ff88;
     font-family:monospace;
-    padding:20px;
+    padding:40px;
+    max-width:900px;
+    margin:auto;
 }
 
-.panel{
-    border:1px solid #00ff88;
-    padding:12px;
-    margin-bottom:12px;
-}
-
-button{
-    background:#0b0f14;
+h1,h2{
     color:#00ff88;
-    border:1px solid #00ff88;
-    padding:10px;
-    margin:5px;
-    cursor:pointer;
 }
 
-button.active{
-    background:#00ff88;
-    color:#0b0f14;
+.section{
+    border:1px solid #00ff88;
+    padding:20px;
+    margin:20px 0;
 }
 
-pre{
-    background:#05080c;
-    border:1px solid #00ff88;
-    padding:12px;
-    min-height:120px;
-    overflow:auto;
+a{
+    color:#00ff88;
+    display:block;
+    margin:10px 0;
+    text-decoration:none;
+    font-size:18px;
+}
+
+a:hover{
+    text-decoration:underline;
 }
 </style>
 </head>
 
 <body>
 
-<h1>⚡ Sextant Simulator v6.2 – Unified Cascade Engine</h1>
+<h1>⚡ SEXTANT SYSTEM</h1>
+<h2>Control Entry Gateway</h2>
 
-<!-- NAVIGATION -->
-<div class="panel">
-    <h3>NAVIGATION</h3>
-    <button onclick="openModule('generator')">Self Generator</button>
-    <button onclick="openModule('simulator')">Simulator</button>
-    <button onclick="openModule('intervention')">Intervention Lab</button>
-    <button onclick="openModule('console')">Console</button>
+<div class="section">
+    <h2>Navigation</h2>
+
+    <a href="landing.html">📘 Product Overview (Institutional Brief)</a>
+
+    <a href="simulation_screen_v1.html">⚡ Simulator v6.2 (Cascade Engine)</a>
+
+    <a href="scenario-router.html">🧭 Scenario Router</a>
+
+    <a href="sextant-offline-command-center/">🛰 Operations Console</a>
 </div>
 
-<!-- SCENARIOS -->
-<div class="panel">
-    <h3>SCENARIO CONTROL</h3>
-    <button onclick="runScenario('trade')">US–China Trade</button>
-    <button onclick="runScenario('taiwan')">Taiwan Crisis</button>
-    <button onclick="runScenario('energy')">Energy Shock</button>
-    <button onclick="runScenario('recession')">Global Recession</button>
+<div class="section">
+    <h2>System Status</h2>
+    <p>Mode: Active</p>
+    <p>Engine: Cascade Simulation Layer</p>
+    <p>Deployment: GitHub Pages</p>
 </div>
 
-<!-- OUTPUT -->
-<div class="panel">
-    <h3>CASCADE ENGINE</h3>
-    <pre id="output">Idle...</pre>
-</div>
-
-<!-- RISK -->
-<div class="panel">
-    <h3>RISK ENGINE</h3>
-    <pre id="risk">0</pre>
-</div>
-
-<!-- INTERVENTION -->
-<div class="panel">
-    <h3>INTERVENTION</h3>
-    <button onclick="setIntervention('liquidity')">Liquidity</button>
-    <button onclick="setIntervention('central')">Central Bank</button>
-    <button onclick="setIntervention('communication')">Communication</button>
-    <pre id="log">None</pre>
-</div>
-
-<!-- TIMELINE -->
-<div class="panel">
-    <h3>TIMELINE</h3>
-    <pre id="timeline">Empty</pre>
-</div>
-
-<!-- EXPLANATION -->
-<div class="panel">
-    <h3>EXPLANATION LAYER</h3>
-    <pre id="explanation">Waiting...</pre>
-</div>
-
-<script>
-
-/* =========================
-   STATE ENGINE
-=========================*/
 let system = {
     scenario: null,
     step: 0,
@@ -114,7 +74,6 @@ let timer = null;
 
 /* =========================
    EXPLANATION ENGINE
-=========================*/
 function explainCascade(cascade) {
 
     const path = cascade.path || "unknown";
@@ -146,7 +105,6 @@ Intervention should focus on stabilising the primary driver.
 
 /* =========================
    NAVIGATION
-=========================*/
 function openModule(name){
     document.getElementById("output").textContent =
         "MODULE → " + name;
@@ -154,7 +112,6 @@ function openModule(name){
 
 /* =========================
    SCENARIOS
-=========================*/
 function runScenario(type){
 
     const scenarios = {
@@ -194,7 +151,6 @@ function runScenario(type){
 
 /* =========================
    CASCADE ENGINE
-=========================*/
 function startCascade(){
 
     clearInterval(timer);
@@ -233,7 +189,6 @@ function startCascade(){
 
 /* =========================
    INTERVENTION
-=========================*/
 function setIntervention(type){
 
     system.intervention = type;
@@ -246,7 +201,6 @@ function setIntervention(type){
 
 /* =========================
    LOGGING
-=========================*/
 function log(type, data){
 
     system.timeline.push({
@@ -260,7 +214,6 @@ function log(type, data){
 
 /* =========================
    RENDER
-=========================*/
 function update(){
 
     document.getElementById("risk").textContent = system.risk;
@@ -280,6 +233,10 @@ function update(){
 update();
 
 </script>
+<div class="section">
+    <h2>Core Flow</h2>
+    <p>Generate → Simulate → Intervene → Visualize</p>
+</div>
 
 </body>
 </html>
