@@ -67,6 +67,7 @@ pre{
 <h1>⚡ SEXTANT SYSTEM</h1>
 <h2>CONTROL ROOM — BOOT SEQUENCE</h2>
 
+<!-- NAVIGATION -->
 <div class="section">
     <h2>Navigation Layer</h2>
 
@@ -74,12 +75,20 @@ pre{
     <a href="simulation_screen_v1.html">⚡ Simulator v6.2</a>
     <a href="scenario-router.html">🧭 Scenario Router</a>
     <a href="sextant-offline-command-center/">🛰 Operations Console</a>
+
+    <!-- ✅ FIX: SELF TEST ROUTE -->
+    <a href="self-test.html">🧪 Self Test Control Room</a>
 </div>
 
+<!-- BOOT CONTROL -->
 <div class="section">
     <h2>Boot Control Layer</h2>
 
-    <button onclick="runSelfTest()">RUN SELF TEST</button>
+    <button onclick="runSelfTest()">RUN SELF TEST (INLINE)</button>
+
+    <button onclick="location.href='self-test.html'">
+        OPEN FULL SELF TEST SCREEN
+    </button>
 
     <div id="status">Status: INITIALIZING...</div>
 
@@ -87,9 +96,6 @@ pre{
 </div>
 
 <script>
-/* =========================
-   SELF TEST ENGINE
-========================= */
 function runSelfTest(){
 
     setStatus("SELF TEST RUNNING");
@@ -109,16 +115,10 @@ function runSelfTest(){
     setStatus("SELF TEST PASSED → SYSTEM ONLINE");
 }
 
-/* =========================
-   STATUS HANDLER
-========================= */
 function setStatus(text){
     document.getElementById("status").innerText = "Status: " + text;
 }
 
-/* =========================
-   BOOT SEQUENCE (AUTO RUN)
-========================= */
 window.onload = function(){
 
     setStatus("BOOT SEQUENCE STARTING");
