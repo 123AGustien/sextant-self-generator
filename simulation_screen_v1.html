@@ -2,11 +2,9 @@
 
 /* =====================================================
    PHASE 4.5 WIRED EVENT SYSTEM (NO BACKEND)
-===================================================== */
 
 /* =========================
    SIMPLE EVENT BUS
-========================= */
 const EventBus = {
 
     listeners: {},
@@ -24,7 +22,6 @@ const EventBus = {
 
 /* =========================
    CASCADE MODULE
-========================= */
 function createCascade(input) {
 
     const text = input.toLowerCase();
@@ -55,7 +52,6 @@ function createCascade(input) {
 
 /* =========================
    RISK MODULE
-========================= */
 function calculateRisk(nodes) {
 
     let sum = 0;
@@ -78,7 +74,6 @@ function calculateRisk(nodes) {
 
 /* =========================
    EXPLANATION MODULE
-========================= */
 function explain(nodes) {
 
     let drivers = [];
@@ -116,7 +111,6 @@ Propagation indicates a ${severity} regime.
 
 /* =========================
    ORCHESTRATOR (WIRE ALL MODULES)
-========================= */
 function runScenario(input) {
 
     EventBus.emit("SYSTEM", "RUNNING");
@@ -134,7 +128,6 @@ function runScenario(input) {
 
 /* =========================
    UI BINDING LAYER
-========================= */
 window.runTypedScenario = function () {
 
     const input = prompt("Enter scenario (fx, liquidity, bank, panic)");
@@ -144,7 +137,6 @@ window.runTypedScenario = function () {
 
 /* =========================
    UI LISTENERS (LIVE WIRING)
-========================= */
 
 EventBus.on("NODE", (node) => {
     document.getElementById("output").innerText +=

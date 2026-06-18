@@ -62,6 +62,177 @@ a:hover{
     <p>Deployment: GitHub Pages</p>
 </div>
 
+let system = {
+    scenario: null,
+    step: 0,
+    risk: 0,
+    intervention: null,
+    timeline: []
+};
+
+let timer = null;
+
+/* =========================
+   EXPLANATION ENGINE
+function explainCascade(cascade) {
+
+    const path = cascade.path || "unknown";
+    const stress = cascade.stress || 0;
+
+    let severity = "low";
+    if (stress > 0.8) severity = "critical";
+    else if (stress > 0.6) severity = "high";
+    else if (stress > 0.4) severity = "moderate";
+
+    let driver = "multi-factor stress";
+
+    if (path.includes("FX")) driver = "currency instability";
+    if (path.includes("Liquidity")) driver = "liquidity contraction";
+    if (path.includes("Bank")) driver = "banking system stress";
+
+    return `
+CASCADE ANALYSIS
+Primary Path: ${path}
+Primary Driver: ${driver}
+Severity: ${severity}
+
+SYSTEM INTERPRETATION:
+The system is experiencing ${driver}.
+Stress propagation indicates a ${severity} regime.
+Intervention should focus on stabilising the primary driver.
+`;
+}
+
+/* =========================
+   NAVIGATION
+function openModule(name){
+    document.getElementById("output").textContent =
+        "MODULE → " + name;
+}
+
+/* =========================
+   SCENARIOS
+function runScenario(type){
+
+    const scenarios = {
+        trade:{
+            name:"US–China Trade Escalation",
+            path:["FX Shock","Liquidity Stress","Confidence Loss"],
+            base:75
+        },
+        taiwan:{
+            name:"Taiwan Strait Crisis",
+            path:["Geopolitical Shock","Market Volatility","Capital Flight"],
+            base:95
+        },
+        energy:{
+            name:"Energy Shock",
+            path:["Oil Spike","Inflation Pressure","Liquidity Tightening"],
+            base:80
+        },
+        recession:{
+            name:"Global Recession",
+            path:["Demand Collapse","Credit Stress","Unemployment Rise"],
+            base:85
+        }
+    };
+
+    system.scenario = scenarios[type];
+    system.step = 0;
+    system.risk = system.scenario.base;
+    system.timeline = [];
+    system.intervention = null;
+
+    log("SCENARIO_INIT", system.scenario.name);
+
+    startCascade();
+    update();
+}
+
+/* =========================
+   CASCADE ENGINE
+function startCascade(){
+
+    clearInterval(timer);
+
+    timer = setInterval(() => {
+
+        if(!system.scenario) return;
+
+        if(system.step >= system.scenario.path.length){
+            log("CASCADE_COMPLETE", "finished");
+            clearInterval(timer);
+            update();
+            return;
+        }
+
+        let node = system.scenario.path[system.step];
+
+        log("CASCADE_STEP", node);
+
+        system.risk += 8;
+
+        system.step++;
+
+        update();
+
+        // CALL EXPLANATION ENGINE
+        const result = explainCascade({
+            path: system.scenario.path.slice(0, system.step).join(" → "),
+            stress: system.risk / 100
+        });
+
+        document.getElementById("explanation").textContent = result;
+
+    }, 1000);
+}
+
+/* =========================
+   INTERVENTION
+function setIntervention(type){
+
+    system.intervention = type;
+
+    log("INTERVENTION_SET", type);
+
+    document.getElementById("log").textContent =
+        "ACTIVE → " + type;
+}
+
+/* =========================
+   LOGGING
+function log(type, data){
+
+    system.timeline.push({
+        time: new Date().toISOString(),
+        type,
+        data
+    });
+
+    update();
+}
+
+/* =========================
+   RENDER
+function update(){
+
+    document.getElementById("risk").textContent = system.risk;
+
+    document.getElementById("output").textContent =
+        system.scenario
+        ? system.scenario.path.slice(0, system.step).map(x => "→ " + x).join("\n")
+        : "Idle";
+
+    document.getElementById("timeline").textContent =
+        system.timeline.map(t =>
+            `[${t.time}] ${t.type} → ${t.data}`
+        ).join("\n");
+}
+
+/* INIT */
+update();
+
+</script>
 <div class="section">
     <h2>Core Flow</h2>
     <p>Generate → Simulate → Intervene → Visualize</p>
