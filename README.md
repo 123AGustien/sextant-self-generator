@@ -1,4 +1,10 @@
-SELF GENERATOR
+SELFELFVisualizationGENERATOR URLs are:
+123agustien.github.io⁠
+123agustien.github.io⁠
+123agustien.github.io⁠
+123agustien.github.io⁠
+123agustien.github.io⁠nstitutionalinstitutional demonstrations, you can now describe the flow as:
+Control Gateway → Self Test → Scenario Selection → Cascade Simulation → Operations Console VisualizationGENERATORERATOR
 
 Stress Scale Methodology
 
