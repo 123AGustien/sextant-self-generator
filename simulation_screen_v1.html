@@ -1,86 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Sextant Simulator v6.2 – Phase 4.5</title>
-
-<style>
-body {
-    margin: 0;
-    background: #0a0f14;
-    color: #d6e2f0;
-    font-family: monospace;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto;
-    gap: 10px;
-    padding: 10px;
-}
-
-.panel {
-    border: 1px solid #222;
-    padding: 10px;
-    background: #0d141b;
-    overflow: auto;
-}
-
-h2 {
-    margin: 0 0 10px 0;
-    font-size: 14px;
-    color: #8fbcd4;
-}
-
-button {
-    margin: 10px;
-    padding: 10px;
-    background: #0a0f14;
-    color: #00ff88;
-    border: 1px solid #00ff88;
-    cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<button onclick="runTypedScenario()">RUN SCENARIO (PHASE 4.5)</button>
-
-<div class="grid">
-
-    <div class="panel">
-        <h2>CASCADE ENGINE</h2>
-        <div id="output">Idle</div>
-    </div>
-
-    <div class="panel">
-        <h2>RISK ENGINE</h2>
-        <div id="risk">0</div>
-    </div>
-
-    <div class="panel">
-        <h2>TIMELINE</h2>
-        <div id="timeline">Waiting...</div>
-    </div>
-
-    <div class="panel">
-        <h2>SYSTEM STATE</h2>
-        <div id="log">Ready</div>
-    </div>
-
-    <div class="panel" style="grid-column: span 2;">
-        <h2>EXPLANATION LAYER</h2>
-        <div id="explanationPanel">Waiting for scenario...</div>
-    </div>
-
-</div>
-
 <script type="module">
 
+/* =====================================================
+   PHASE 4.5 WIRED EVENT SYSTEM (NO BACKEND)
+===================================================== */
+
 /* =========================
-   CASCADE MODEL (PHASE 4.5)
+   SIMPLE EVENT BUS
+========================= */
+const EventBus = {
+
+    listeners: {},
+
+    on(event, fn) {
+        if (!this.listeners[event]) this.listeners[event] = [];
+        this.listeners[event].push(fn);
+    },
+
+    emit(event, data) {
+        if (!this.listeners[event]) return;
+        this.listeners[event].forEach(fn => fn(data));
+    }
+};
+
+/* =========================
+   CASCADE MODULE
 ========================= */
 function createCascade(input) {
 
@@ -89,31 +32,35 @@ function createCascade(input) {
 
     if (text.includes("fx")) {
         nodes.push({ type: "FX_SHOCK", impact: 0.85 });
+        EventBus.emit("NODE", nodes[nodes.length - 1]);
     }
 
     if (text.includes("liquidity")) {
         nodes.push({ type: "LIQUIDITY_STRESS", impact: 0.9 });
+        EventBus.emit("NODE", nodes[nodes.length - 1]);
     }
 
     if (text.includes("bank")) {
         nodes.push({ type: "BANKING_STRESS", impact: 0.8 });
+        EventBus.emit("NODE", nodes[nodes.length - 1]);
     }
 
     nodes.push({ type: "CONFIDENCE_LOSS", impact: 0.6 });
+    EventBus.emit("NODE", nodes[nodes.length - 1]);
+
+    EventBus.emit("CASCADE_COMPLETE", nodes);
 
     return nodes;
 }
 
 /* =========================
-   RISK ENGINE
+   RISK MODULE
 ========================= */
 function calculateRisk(nodes) {
 
     let sum = 0;
 
-    for (let n of nodes) {
-        sum += n.impact;
-    }
+    for (let n of nodes) sum += n.impact;
 
     const score = Math.min((sum / nodes.length) * 100, 100);
 
@@ -122,14 +69,15 @@ function calculateRisk(nodes) {
     else if (score > 60) level = "HIGH";
     else if (score > 40) level = "MODERATE";
 
-    return {
-        score: Math.round(score),
-        level
-    };
+    const result = { score: Math.round(score), level };
+
+    EventBus.emit("RISK", result);
+
+    return result;
 }
 
 /* =========================
-   EXPLANATION ENGINE
+   EXPLANATION MODULE
 ========================= */
 function explain(nodes) {
 
@@ -151,7 +99,7 @@ function explain(nodes) {
     else if (max > 0.6) severity = "high";
     else if (max > 0.4) severity = "moderate";
 
-    return `
+    const result = `
 CASCADE ANALYSIS
 Drivers: ${drivers.join(" → ")}
 Severity: ${severity}
@@ -160,36 +108,65 @@ SYSTEM INTERPRETATION:
 System stress driven by ${drivers[0]}.
 Propagation indicates a ${severity} regime.
 `;
+
+    EventBus.emit("EXPLANATION", result);
+
+    return result;
 }
 
 /* =========================
-   MAIN RUNNER
+   ORCHESTRATOR (WIRE ALL MODULES)
 ========================= */
-window.runTypedScenario = function () {
+function runScenario(input) {
 
-    const input = prompt("Enter scenario (FX, liquidity, bank, panic)");
+    EventBus.emit("SYSTEM", "RUNNING");
 
     const nodes = createCascade(input);
     const risk = calculateRisk(nodes);
     const explanation = explain(nodes);
 
-    document.getElementById("output").innerText =
-        nodes.map(n => "→ " + n.type).join("\n");
+    EventBus.emit("STATE", {
+        nodes,
+        risk,
+        explanation
+    });
+}
 
-    document.getElementById("risk").innerText =
-        risk.score + " (" + risk.level + ")";
+/* =========================
+   UI BINDING LAYER
+========================= */
+window.runTypedScenario = function () {
 
-    document.getElementById("timeline").innerText =
-        "Cascade generated from input";
+    const input = prompt("Enter scenario (fx, liquidity, bank, panic)");
 
-    document.getElementById("log").innerText =
-        "SYSTEM ACTIVE";
-
-    document.getElementById("explanationPanel").innerText =
-        explanation;
+    runScenario(input);
 };
 
-</script>
+/* =========================
+   UI LISTENERS (LIVE WIRING)
+========================= */
 
-</body>
-</html>
+EventBus.on("NODE", (node) => {
+    document.getElementById("output").innerText +=
+        "\n→ " + node.type;
+});
+
+EventBus.on("RISK", (risk) => {
+    document.getElementById("risk").innerText =
+        risk.score + " (" + risk.level + ")";
+});
+
+EventBus.on("SYSTEM", (status) => {
+    document.getElementById("log").innerText = status;
+});
+
+EventBus.on("EXPLANATION", (text) => {
+    document.getElementById("explanationPanel").innerText = text;
+});
+
+EventBus.on("STATE", (state) => {
+    document.getElementById("timeline").innerText =
+        "NODES: " + state.nodes.length;
+});
+
+</script>
