@@ -1,87 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Sextant Simulator v6.2</title>
+<meta charset="UTF-8">
+<title>Sextant Simulator v6.2 – Phase 4.5</title>
 
-    <style>
-        body {
-            margin: 0;
-            background: #0a0f14;
-            color: #d6e2f0;
-            font-family: monospace;
-        }
+<style>
+body {
+    margin: 0;
+    background: #0a0f14;
+    color: #d6e2f0;
+    font-family: monospace;
+}
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto auto;
-            gap: 10px;
-            padding: 10px;
-        }
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+    padding: 10px;
+}
 
-        .panel {
-            border: 1px solid #222;
-            padding: 10px;
-            background: #0d141b;
-            overflow: auto;
-        }
+.panel {
+    border: 1px solid #222;
+    padding: 10px;
+    background: #0d141b;
+    overflow: auto;
+}
 
-        h2 {
-            margin: 0 0 10px 0;
-            font-size: 14px;
-            color: #8fbcd4;
-        }
-    </style>
+h2 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #8fbcd4;
+}
+
+button {
+    margin: 10px;
+    padding: 10px;
+    background: #0a0f14;
+    color: #00ff88;
+    border: 1px solid #00ff88;
+    cursor: pointer;
+}
+</style>
 </head>
 
 <body>
 
-    <div class="grid">
+<button onclick="runTypedScenario()">RUN SCENARIO (PHASE 4.5)</button>
 
-        <!-- CASCADE OUTPUT -->
-        <div class="panel">
-            <h2>CASCADE ENGINE</h2>
-            <div id="output">Idle</div>
-        </div>
+<div class="grid">
 
-        <!-- RISK -->
-        <div class="panel">
-            <h2>RISK ENGINE</h2>
-            <div id="risk">0</div>
-        </div>
-
-        <!-- TIMELINE -->
-        <div class="panel">
-            <h2>TIMELINE</h2>
-            <div id="timeline"></div>
-        </div>
-
-        <!-- SYSTEM IO -->
-        <div class="panel">
-            <h2>SYSTEM STATE</h2>
-            <div id="io"></div>
-        </div>
-
-        <!-- LOG -->
-        <div class="panel">
-            <h2>LOG</h2>
-            <div id="log"></div>
-        </div>
-
-        <!-- 🧠 EXPLANATION PANEL (NEW) -->
-        <div class="panel" style="grid-column: span 2;">
-            <h2>EXPLANATION LAYER</h2>
-            <div id="explanationPanel">
-                <em>Waiting for cascade output...</em>
-            </div>
-        </div>
-
+    <div class="panel">
+        <h2>CASCADE ENGINE</h2>
+        <div id="output">Idle</div>
     </div>
 
-    <!-- ENGINE BINDING (IMPORTANT) -->
-    <script type="module" src="./assets/js/ui-controller.js"></script>
-    <script type="module" src="./assets/js/app-orchestrator.js"></script>
+    <div class="panel">
+        <h2>RISK ENGINE</h2>
+        <div id="risk">0</div>
+    </div>
+
+    <div class="panel">
+        <h2>TIMELINE</h2>
+        <div id="timeline">Waiting...</div>
+    </div>
+
+    <div class="panel">
+        <h2>SYSTEM STATE</h2>
+        <div id="log">Ready</div>
+    </div>
+
+    <div class="panel" style="grid-column: span 2;">
+        <h2>EXPLANATION LAYER</h2>
+        <div id="explanationPanel">Waiting for scenario...</div>
+    </div>
+
+</div>
+
+<script type="module">
+
+/* =========================
+   CASCADE MODEL (PHASE 4.5)
+========================= */
+function createCascade(input) {
+
+    const text = input.toLowerCase();
+    const nodes = [];
+
+    if (text.includes("fx")) {
+        nodes.push({ type: "FX_SHOCK", impact: 0.85 });
+    }
+
+    if (text.includes("liquidity")) {
+        nodes.push({ type: "LIQUIDITY_STRESS", impact: 0.9 });
+    }
+
+    if (text.includes("bank")) {
+        nodes.push({ type: "BANKING_STRESS", impact: 0.8 });
+    }
+
+    nodes.push({ type: "CONFIDENCE_LOSS", impact: 0.6 });
+
+    return nodes;
+}
+
+/* =========================
+   RISK ENGINE
+========================= */
+function calculateRisk(nodes) {
+
+    let sum = 0;
+
+    for (let n of nodes) {
+        sum += n.impact;
+    }
+
+    const score = Math.min((sum / nodes.length) * 100, 100);
+
+    let level = "LOW";
+    if (score > 80) level = "CRITICAL";
+    else if (score > 60) level = "HIGH";
+    else if (score > 40) level = "MODERATE";
+
+    return {
+        score: Math.round(score),
+        level
+    };
+}
+
+/* =========================
+   EXPLANATION ENGINE
+========================= */
+function explain(nodes) {
+
+    let drivers = [];
+    let max = 0;
+
+    for (let n of nodes) {
+
+        max = Math.max(max, n.impact);
+
+        if (n.type === "FX_SHOCK") drivers.push("currency instability");
+        if (n.type === "LIQUIDITY_STRESS") drivers.push("liquidity contraction");
+        if (n.type === "BANKING_STRESS") drivers.push("banking system stress");
+        if (n.type === "CONFIDENCE_LOSS") drivers.push("market confidence erosion");
+    }
+
+    let severity = "low";
+    if (max > 0.8) severity = "critical";
+    else if (max > 0.6) severity = "high";
+    else if (max > 0.4) severity = "moderate";
+
+    return `
+CASCADE ANALYSIS
+Drivers: ${drivers.join(" → ")}
+Severity: ${severity}
+
+SYSTEM INTERPRETATION:
+System stress driven by ${drivers[0]}.
+Propagation indicates a ${severity} regime.
+`;
+}
+
+/* =========================
+   MAIN RUNNER
+========================= */
+window.runTypedScenario = function () {
+
+    const input = prompt("Enter scenario (FX, liquidity, bank, panic)");
+
+    const nodes = createCascade(input);
+    const risk = calculateRisk(nodes);
+    const explanation = explain(nodes);
+
+    document.getElementById("output").innerText =
+        nodes.map(n => "→ " + n.type).join("\n");
+
+    document.getElementById("risk").innerText =
+        risk.score + " (" + risk.level + ")";
+
+    document.getElementById("timeline").innerText =
+        "Cascade generated from input";
+
+    document.getElementById("log").innerText =
+        "SYSTEM ACTIVE";
+
+    document.getElementById("explanationPanel").innerText =
+        explanation;
+};
+
+</script>
 
 </body>
 </html>
