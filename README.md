@@ -1,3 +1,44 @@
+# Sextant Protocol – Experimental Resilience Simulation Framework
+
+## LIVE PROTOTYPE ACCESS
+
+### Control Gateway (System Entry)
+https://123agustien.github.io/sextant-self-generator/
+
+### Self-Test Control Room
+https://123agustien.github.io/sextant-self-generator/self-test.html
+
+### Simulation Engine
+https://123agustien.github.io/sextant-self-generator/simulation_screen_v1.html
+
+### Scenario Router
+https://123agustien.github.io/sextant-self-generator/scenario-router.html
+
+### Operations Console
+https://123agustien.github.io/sextant-self-generator/sextant-offline-command-center/
+
+## TECHNICAL REFERENCE
+
+### GitHub Repository
+https://github.com/123AGustien/sextant-self-generator
+
+## PURPOSE OF SUBMISSION
+
+- Simulating stress cascade propagation across interconnected systems
+- Running diagnostic self-test logic for system verification
+- Visualising risk propagation pathways and system state evolution
+- Supporting structured scenario analysis and intervention exploration
+- Supporting internal compliance and experimental framework review
+
+## OVERVIEW
+
+Sextant Protocol is an experimental resilience simulation and scenario modelling framework designed to explore how complex interconnected systems behave under stress conditions. The framework supports scenario-based analysis, resilience research, systemic risk exploration, and structured intervention modelling.
+
+## STATUS
+
+Experimental Prototype – Active Development
+
+This project is intended for research, evaluation, innovation sandbox review, and conceptual systems assessment.
 SEXTANT PROTOCOL ECOSYSTEM
 
 Live URLs
