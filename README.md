@@ -1,3 +1,5 @@
+https://123agustien.github.io/sextant-self-generator/schneider-datacentre-pilot/
+
 # ⚠️ SCHNEIDER DATACENTRE PILOT — ISOLATED SIMULATION BRANCH
 
 ## 🚫 DO NOT MERGE / DO NOT CREATE PRs TO MAIN
