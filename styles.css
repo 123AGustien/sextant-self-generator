@@ -1,0 +1,96 @@
+/* SCHNEIDER DATACENTRE PILOT UI */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0f14;
+  color: #e6edf3;
+}
+
+/* HEADER */
+header {
+  padding: 20px;
+  background: #111826;
+  border-bottom: 1px solid #1f2a37;
+}
+
+h1 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: 1px;
+}
+
+h2 {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* MAIN LAYOUT */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 15px;
+}
+
+/* PANELS */
+.panel {
+  background: #111826;
+  border: 1px solid #1f2a37;
+  border-radius: 6px;
+  padding: 15px;
+}
+
+/* METRICS */
+.metric {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #1f2a37;
+}
+
+.metric:last-child {
+  border-bottom: none;
+}
+
+/* STATUS COLORS */
+.good {
+  color: #22c55e;
+}
+
+.warning {
+  color: #f59e0b;
+}
+
+.critical {
+  color: #ef4444;
+}
+
+/* BUTTONS */
+button {
+  background: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+  padding: 10px 12px;
+  margin: 5px 0;
+  width: 100%;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  background: #374151;
+}
+
+/* SIMULATION OUTPUT */
+#output {
+  font-family: monospace;
+  font-size: 12px;
+  background: #0a0f18;
+  padding: 10px;
+  border-radius: 4px;
+  height: 200px;
+  overflow-y: auto;
+  border: 1px solid #1f2a37;
+}
