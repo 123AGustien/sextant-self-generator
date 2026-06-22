@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Schneider AI Datacentre Simulator</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      background: #0b1220;
+      color: #e5e7eb;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: #0f172a;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-right: 1px solid #1f2937;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #38bdf8;
+    }
+
+    .nav-btn {
+      padding: 10px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      color: #e5e7eb;
+      cursor: pointer;
+      border-radius: 6px;
+      text-align: left;
+    }
+
+    .nav-btn:hover {
+      background: #1f2937;
+    }
+
+    /* MAIN AREA */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      padding: 14px;
+      background: #0f172a;
+      border-bottom: 1px solid #1f2937;
+      font-weight: bold;
+    }
+
+    /* CONTENT */
+    .content {
+      flex: 1;
+      display: flex;
+      padding: 16px;
+      gap: 16px;
+    }
+
+    /* ENGINE PANEL */
+    .engine {
+      flex: 2;
+      background: #111827;
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .engine h2 {
+      color: #38bdf8;
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .scenario {
+      padding: 12px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .scenario:hover {
+      background: #273449;
+    }
+
+    /* OUTPUT CONSOLE */
+    .console {
+      flex: 1;
+      background: #0a0f1a;
+      border-radius: 10px;
+      padding: 12px;
+      overflow-y: auto;
+      font-size: 13px;
+      border: 1px solid #1f2937;
+    }
+
+    .log {
+      margin-bottom: 6px;
+      color: #9ca3af;
+    }
+
+    .log strong {
+      color: #38bdf8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">SEXTANT AI</div>
+
+    <button class="nav-btn">Dashboard</button>
+    <button class="nav-btn">Datacentre Engine</button>
+    <button class="nav-btn">Scenario Simulator</button>
+    <button class="nav-btn">Risk Models</button>
+    <button class="nav-btn">Energy Load</button>
+    <button class="nav-btn">System Logs</button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="topbar">
+      Schneider Datacentre AI Simulation Console
+    </div>
+
+    <div class="content">
+
+      <!-- ENGINE -->
+      <div class="engine">
+        <h2>Scenario Engine</h2>
+
+        <p>Select a scenario to simulate system response:</p>
+
+        <div class="scenario-grid">
+          <div class="scenario" onclick="runScenario('Power Surge')">
+            ⚡ Power Surge Event
+          </div>
+
+          <div class="scenario" onclick="runScenario('Cooling Failure')">
+            ❄ Cooling Failure
+          </div>
+
+          <div class="scenario" onclick="runScenario('Network Congestion')">
+            🌐 Network Congestion
+          </div>
+
+          <div class="scenario" onclick="runScenario('Load Spike')">
+            📈 Compute Load Spike
+          </div>
+        </div>
+      </div>
+
+      <!-- CONSOLE -->
+      <div class="console" id="console">
+        <div class="log"><strong>System:</strong> AI Engine initialized</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function runScenario(name) {
+      const consoleBox = document.getElementById("console");
+
+      const log = document.createElement("div");
+      log.className = "log";
+      log.innerHTML = `<strong>Scenario:</strong> ${name} triggered`;
+
+      consoleBox.appendChild(log);
+
+      const response = document.createElement("div");
+      response.className = "log";
+      response.innerHTML = `AI Analysis: Running simulation model for ${name}...`;
+
+      consoleBox.appendChild(response);
+
+      consoleBox.scrollTop = consoleBox.scrollHeight;
+    }
+  </script>
+
+</body>
+</html>
