@@ -1,7 +1,7 @@
-console.log("Schneider Cascade Engine v2 Loaded");
+console.log("Schneider Cascade Engine v3 (Tick Engine) Loaded");
 
 // =====================
-// SYSTEM STATE (NODE GRAPH)
+// SYSTEM STATE
 // =====================
 let systemState = {
   cooling: 1.0,
@@ -13,74 +13,168 @@ let systemState = {
 };
 
 // =====================
-// CASCADE GRAPH (REAL DEPENDENCIES)
+// DEPENDENCY GRAPH (WEIGHTED)
 // =====================
 const dependencies = {
-  cooling: ["compute", "storage"],
-  power: ["cooling", "compute", "network"],
-  network: ["compute"],
+  cooling: [
+    { node: "compute", weight: 0.35 },
+    { node: "storage", weight: 0.25 }
+  ],
+  power: [
+    { node: "cooling", weight: 0.30 },
+    { node: "compute", weight: 0.40 },
+    { node: "network", weight: 0.30 }
+  ],
+  network: [
+    { node: "compute", weight: 0.50 }
+  ],
   compute: [],
-  storage: ["compute"]
+  storage: [
+    { node: "compute", weight: 0.30 }
+  ]
 };
 
 // =====================
-// METRICS ENGINE
+// SIMULATION CLOCK
 // =====================
-function calculateRisk() {
-  let values = Object.values(systemState).slice(0, 5);
-  let avg = values.reduce((a, b) => a + b, 0) / values.length;
+let tick = 0;
+let running = false;
 
-  systemState.overallRisk = +(1 - avg).toFixed(2);
-
-  console.log("Resilience Index:", avg.toFixed(2));
-  console.log("Risk Score:", systemState.overallRisk);
+// =====================
+// UTILITIES
+// =====================
+function clamp(v) {
+  return Math.max(0, Math.min(1, v));
 }
 
 // =====================
-// CASCADE PROPAGATION ENGINE
+// CASCADE ENGINE (PER TICK)
 // =====================
-function propagateImpact(node, severity) {
-  if (!dependencies[node]) return;
+function propagate(node, severity) {
+  const edges = dependencies[node];
+  if (!edges) return;
 
-  dependencies[node].forEach(target => {
-    let impact = severity * (Math.random() * 0.4 + 0.2); // nonlinear spread
+  edges.forEach(edge => {
+    let shock =
+      severity *
+      edge.weight *
+      (0.6 + Math.random() * 0.5); // instability factor
 
-    systemState[target] -= impact;
+    systemState[edge.node] -= shock;
 
     console.log(
-      `Cascade: ${node} → ${target} | Impact: ${impact.toFixed(2)}`
+      `Tick ${tick} | Cascade ${node} → ${edge.node} | Shock ${shock.toFixed(3)}`
     );
 
-    if (systemState[target] < 0.5) {
-      propagateImpact(target, impact); // recursive cascade
+    // recursive cascade if critical threshold crossed
+    if (systemState[edge.node] < 0.45) {
+      propagate(edge.node, shock * 0.9);
     }
   });
 }
 
 // =====================
-// EVENTS (ENTRY POINTS)
+// NATURAL DECAY + RECOVERY MODEL
+// =====================
+function recoveryStep() {
+  Object.keys(systemState).forEach(key => {
+    if (key === "overallRisk") return;
+
+    // natural stabilization (cool-down recovery)
+    let recovery = 0.003;
+
+    // degraded systems recover slower
+    if (systemState[key] < 0.5) recovery *= 0.4;
+
+    systemState[key] += recovery;
+    systemState[key] = clamp(systemState[key]);
+  });
+}
+
+// =====================
+// RISK ENGINE
+// =====================
+function calculateRisk() {
+  let nodes = ["cooling", "power", "network", "compute", "storage"];
+
+  let avg =
+    nodes.reduce((sum, n) => sum + systemState[n], 0) / nodes.length;
+
+  systemState.overallRisk = +(1 - avg).toFixed(3);
+
+  console.log(
+    `Tick ${tick} | Resilience Index: ${avg.toFixed(3)} | Risk: ${systemState.overallRisk}`
+  );
+}
+
+// =====================
+// SCENARIO INJECTION (SEEDS)
+// =====================
+function inject(event, severity) {
+  systemState[event] -= severity;
+  systemState[event] = clamp(systemState[event]);
+
+  console.log(`🔥 Event injected: ${event} (-${severity})`);
+
+  propagate(event, severity);
+}
+
+// =====================
+// TICK ENGINE LOOP
+// =====================
+function step() {
+  tick++;
+
+  // passive recovery
+  recoveryStep();
+
+  // risk calculation
+  calculateRisk();
+
+  // stop condition (optional stability return)
+  if (tick > 200) {
+    running = false;
+    console.log("Simulation ended (tick limit reached)");
+  }
+
+  if (running) {
+    setTimeout(step, 300); // simulation speed
+  }
+}
+
+// =====================
+// PUBLIC API
+// =====================
+function startSimulation() {
+  if (running) return;
+  running = true;
+  tick = 0;
+  console.log("▶ Simulation started");
+  step();
+}
+
+function stopSimulation() {
+  running = false;
+  console.log("⏹ Simulation stopped");
+}
+
+// =====================
+// SCENARIOS
 // =====================
 function triggerCoolingFailure() {
-  systemState.cooling -= 0.35;
-  propagateImpact("cooling", 0.35);
-  calculateRisk();
+  inject("cooling", 0.35);
 }
 
 function triggerPowerInstability() {
-  systemState.power -= 0.5;
-  propagateImpact("power", 0.5);
-  calculateRisk();
+  inject("power", 0.45);
 }
 
 function triggerNetworkCongestion() {
-  systemState.network -= 0.4;
-  propagateImpact("network", 0.4);
-  calculateRisk();
+  inject("network", 0.40);
 }
 
 function runNormal() {
-  console.log("System Stable Baseline");
-  calculateRisk();
+  console.log("System running baseline (no injection)");
 }
 
 // =====================
@@ -93,12 +187,23 @@ function runScenario(type) {
     case "cooling":
       triggerCoolingFailure();
       break;
+
     case "power":
       triggerPowerInstability();
       break;
+
     case "network":
       triggerNetworkCongestion();
       break;
+
+    case "start":
+      startSimulation();
+      break;
+
+    case "stop":
+      stopSimulation();
+      break;
+
     default:
       runNormal();
   }
