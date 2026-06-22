@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Schneider Datacentre Pilot — Simulator</title>
+  <title>Schneider Datacentre Pilot — Cascade Engine</title>
 
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -12,12 +12,12 @@
 
 <header>
   <h1>Schneider Datacentre Pilot</h1>
-  <h2>Isolated Resilience Simulation Environment (DO NOT MERGE)</h2>
+  <h2>Isolated Cascade Simulation Engine (DO NOT MERGE)</h2>
 </header>
 
 <div class="container">
 
-  <!-- CONTROLS PANEL -->
+  <!-- CONTROLS -->
   <div class="panel">
     <h3>Simulation Controls</h3>
 
@@ -28,7 +28,6 @@
 
     <hr style="border:1px solid #1f2a37; margin:15px 0;" />
 
-    <!-- METRICS DASHBOARD -->
     <div class="metric"><span>Cooling</span><span id="cooling">1.00</span></div>
     <div class="metric"><span>Power</span><span id="power">1.00</span></div>
     <div class="metric"><span>Network</span><span id="network">1.00</span></div>
@@ -36,7 +35,7 @@
     <div class="metric"><span>Risk</span><span id="risk">0.00</span></div>
   </div>
 
-  <!-- OUTPUT PANEL -->
+  <!-- OUTPUT -->
   <div class="panel">
     <h3>Simulation Output</h3>
     <div id="output"></div>
@@ -53,7 +52,6 @@
 
 const outputDiv = document.getElementById("output");
 
-/* Console → UI stream */
 function logToUI(msg) {
   const line = document.createElement("div");
   line.textContent = msg;
@@ -61,14 +59,16 @@ function logToUI(msg) {
   outputDiv.scrollTop = outputDiv.scrollHeight;
 }
 
-/* preserve original console */
 const originalLog = console.log;
 console.log = function (...args) {
   originalLog(...args);
   logToUI(args.join(" "));
 };
 
-/* Dashboard refresh */
+/* =========================
+   DASHBOARD UPDATE
+   ========================= */
+
 function refreshDashboard() {
   document.getElementById("cooling").textContent = systemState.cooling.toFixed(2);
   document.getElementById("power").textContent = systemState.power.toFixed(2);
@@ -77,7 +77,7 @@ function refreshDashboard() {
   document.getElementById("risk").textContent = systemState.overallRisk;
 }
 
-/* Hook simulator metric updates */
+/* hook engine updates */
 const originalUpdateMetrics = updateMetrics;
 
 updateMetrics = function () {
