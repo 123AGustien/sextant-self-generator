@@ -1,4 +1,18 @@
-LIVEIVEarchitectureSYSTEMSe engine + simulation script + HTML UI = stable AI-safe architectureSYSTEMSYSTEMS & DASHBOARD (VISUAL EXECUTION LAYER) Schneider Datacentre Pilot Dashboard (Live Simulation Screen) https://123agustien.github.io/sextant-self-generator/
+1. Definition (design)
+        ↓
+2. simulator.js + blackout_engine.js
+        ↓
+3. execution logic (systemState + cascade)
+        ↓
+4. simulation_screen_v1.html
+        ↓
+5. wiring (JS ↔ UI connection)
+        ↓
+6. live screen outputonefinition = what system is
+Engine = how system behaves
+HTML = where system is shown
+Wiring = connects brain to screen
+Screen = final liveDefinitioniononIVEIVEarchitectureSYSTEMSe engine + simulation script + HTML UI = stable AI-safe architectureSYSTEMSYSTEMS & DASHBOARD (VISUAL EXECUTION LAYER) Schneider Datacentre Pilot Dashboard (Live Simulation Screen) https://123agustien.github.io/sextant-self-generator/
 # ⚠️ SCHNEIDER DATACENTRE PILOT (ISOLATED BRANCH)
 
 ## DO NOT MERGE THIS BRANCH
