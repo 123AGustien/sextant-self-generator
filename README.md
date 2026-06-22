@@ -1,4 +1,4 @@
-LIVE SYSTEMS & DASHBOARD (VISUAL EXECUTION LAYER) Schneider Datacentre Pilot Dashboard (Live Simulation Screen) https://123agustien.github.io/sextant-self-generator/
+LIVEIVEarchitectureSYSTEMSe engine + simulation script + HTML UI = stable AI-safe architectureSYSTEMSYSTEMS & DASHBOARD (VISUAL EXECUTION LAYER) Schneider Datacentre Pilot Dashboard (Live Simulation Screen) https://123agustien.github.io/sextant-self-generator/
 # ⚠️ SCHNEIDER DATACENTRE PILOT (ISOLATED BRANCH)
 
 ## DO NOT MERGE THIS BRANCH
