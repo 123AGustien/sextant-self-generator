@@ -2,54 +2,52 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Sextant True Scenario Engine</title>
+<meta charset="UTF-8">
+<title>Sextant True Scenario Engine</title>
 
-    <style>
-        body {
-            background: #0b0f14;
-            color: #00ff88;
-            font-family: monospace;
-            padding: 20px;
-        }
+<style>
+    body {
+        background: #0b0f14;
+        color: #00ff88;
+        font-family: monospace;
+        padding: 20px;
+    }
 
-        h1 {
-            margin-bottom: 10px;
-        }
+    h1 { margin-bottom: 10px; }
 
-        .panel {
-            border: 1px solid #00ff88;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
+    .panel {
+        border: 1px solid #00ff88;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
 
-        button {
-            background: #0b0f14;
-            color: #00ff88;
-            border: 1px solid #00ff88;
-            padding: 10px;
-            margin: 5px;
-            cursor: pointer;
-        }
+    button {
+        background: #0b0f14;
+        color: #00ff88;
+        border: 1px solid #00ff88;
+        padding: 10px;
+        margin: 5px;
+        cursor: pointer;
+    }
 
-        button:hover {
-            background: #00ff88;
-            color: #0b0f14;
-        }
+    button:hover {
+        background: #00ff88;
+        color: #0b0f14;
+    }
 
-        pre {
-            background: #05080c;
-            padding: 12px;
-            min-height: 160px;
-            overflow: auto;
-            border: 1px solid #00ff88;
-        }
-    </style>
+    pre {
+        background: #05080c;
+        padding: 12px;
+        min-height: 180px;
+        overflow: auto;
+        border: 1px solid #00ff88;
+    }
+</style>
 </head>
 
 <body>
 
-<h1>⚡ Sextant True Scenario Engine</h1>
+<h1>⚡ Sextant True Scenario Engine (Complete Build)</h1>
 
 <div class="panel">
     <button onclick="runScenario('trade')">US–China Trade Escalation</button>
@@ -68,69 +66,69 @@
     <pre id="risk">--</pre>
 </div>
 
-<script src="engine.js"></script>
-
 <script>
+console.log("Sextant True Scenario Engine Loaded");
+
+// =====================
+// SYSTEM SCENARIOS
+// =====================
+const scenarios = {
+    trade: {
+        name: "US–China Trade Escalation",
+        risk: "HIGH",
+        effects: {
+            supply_chain: -70,
+            currency: -50,
+            exports: -80,
+            inflation: +40
+        },
+        narrative: "Export collapse + currency shock detected"
+    },
+
+    taiwan: {
+        name: "Taiwan Strait Crisis",
+        risk: "CRITICAL",
+        effects: {
+            semiconductors: -90,
+            tech_supply: -85,
+            markets: -60,
+            volatility: +80
+        },
+        narrative: "Semiconductor breakdown + global tech shock"
+    },
+
+    energy: {
+        name: "Energy Market Shock",
+        risk: "HIGH",
+        effects: {
+            oil_supply: -75,
+            inflation: +70,
+            logistics: -60,
+            markets: -55
+        },
+        narrative: "Energy disruption + inflation spike"
+    },
+
+    recession: {
+        name: "Global Recession",
+        risk: "HIGH",
+        effects: {
+            gdp: -80,
+            banking: -85,
+            liquidity: -70,
+            unemployment: +60
+        },
+        narrative: "Banking liquidity failure + economic contraction"
+    }
+};
+
+// =====================
+// CORE RUNNER
+// =====================
 function runScenario(type) {
+
     const output = document.getElementById("output");
     const risk = document.getElementById("risk");
-
-    if (!output || !risk || typeof generateModule !== "function") {
-        console.error("Engine not loaded correctly");
-        return;
-    }
-
-    const base = generateModule("simulator");
-
-    const scenarios = {
-        trade: {
-            name: "US–China Trade Escalation",
-            risk: "HIGH",
-            effects: {
-                supply_chain: -70,
-                currency: -50,
-                exports: -80,
-                inflation: +40
-            },
-            narrative: "Export collapse + currency shock detected"
-        },
-
-        taiwan: {
-            name: "Taiwan Strait Crisis",
-            risk: "CRITICAL",
-            effects: {
-                semiconductors: -90,
-                tech_supply: -85,
-                markets: -60,
-                volatility: +80
-            },
-            narrative: "Semiconductor breakdown + global tech shock"
-        },
-
-        energy: {
-            name: "Energy Market Shock",
-            risk: "HIGH",
-            effects: {
-                oil_supply: -75,
-                inflation: +70,
-                logistics: -60,
-                markets: -55
-            },
-            narrative: "Energy disruption + inflation spike"
-        },
-
-        recession: {
-            name: "Global Recession",
-            risk: "HIGH",
-            effects: {
-                gdp: -80,
-                banking: -85,
-                liquidity: -70,
-                unemployment: +60
-            },
-            narrative: "Banking liquidity failure + economic contraction"
-        }
-    };
 
     const scenario = scenarios[type];
 
@@ -140,17 +138,30 @@ function runScenario(type) {
         return;
     }
 
+    // simulate derived metrics
+    const resilienceIndex =
+        (100 -
+        Math.abs(Object.values(scenario.effects)
+            .reduce((a, b) => a + Math.abs(b), 0) / 4)).toFixed(2);
+
     const simulation = {
         scenario: scenario.name,
-        engine_layer: base,
         narrative: scenario.narrative,
         system_effects: scenario.effects,
+        resilience_index: resilienceIndex,
         timestamp: new Date().toISOString()
     };
 
     output.textContent = JSON.stringify(simulation, null, 2);
-    risk.textContent = "Risk Index: " + scenario.risk;
+    risk.textContent =
+        "Risk Index: " + scenario.risk +
+        " | Resilience: " + resilienceIndex;
 }
+
+// =====================
+// INITIAL STATE
+// =====================
+runScenario("trade");
 </script>
 
 </body>
