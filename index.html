@@ -26,12 +26,15 @@
     <button onclick="runScenario('network')">Trigger Network Congestion</button>
     <button onclick="runScenario('normal')">Run Normal Operation</button>
 
+    <button onclick="triggerBlackout()">⚫ Trigger Blackout Mode</button>
+
     <hr style="border:1px solid #1f2a37; margin:15px 0;" />
 
     <div class="metric"><span>Cooling</span><span id="cooling">1.00</span></div>
     <div class="metric"><span>Power</span><span id="power">1.00</span></div>
     <div class="metric"><span>Network</span><span id="network">1.00</span></div>
     <div class="metric"><span>Compute</span><span id="compute">1.00</span></div>
+    <div class="metric"><span>Storage</span><span id="storage">1.00</span></div>
     <div class="metric"><span>Risk</span><span id="risk">0.00</span></div>
   </div>
 
@@ -43,7 +46,9 @@
 
 </div>
 
+<!-- CORE ENGINE -->
 <script src="simulator.js"></script>
+<script src="blackout_engine.js"></script>
 
 <script>
 /* =========================
@@ -59,6 +64,7 @@ function logToUI(msg) {
   outputDiv.scrollTop = outputDiv.scrollHeight;
 }
 
+/* override console */
 const originalLog = console.log;
 console.log = function (...args) {
   originalLog(...args);
@@ -74,6 +80,7 @@ function refreshDashboard() {
   document.getElementById("power").textContent = systemState.power.toFixed(2);
   document.getElementById("network").textContent = systemState.network.toFixed(2);
   document.getElementById("compute").textContent = systemState.compute.toFixed(2);
+  document.getElementById("storage").textContent = systemState.storage.toFixed(2);
   document.getElementById("risk").textContent = systemState.overallRisk;
 }
 
@@ -84,6 +91,13 @@ updateMetrics = function () {
   originalUpdateMetrics();
   refreshDashboard();
 };
+
+/* =========================
+   OPTIONAL BLACKOUT LOOP
+   ========================= */
+setInterval(() => {
+  runBlackoutEngine?.();
+}, 1000);
 
 /* initial render */
 refreshDashboard();
