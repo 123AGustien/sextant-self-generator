@@ -1,3 +1,4 @@
+https://123agustien.github.io/sextant-self-generator/schneider-datacentre-pilot/
 1. Definition (design)
         ↓
 2. simulator.js + blackout_engine.js
