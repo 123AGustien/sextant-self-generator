@@ -1,131 +1,105 @@
-console.log("Schneider Data Centre Cascade Simulator Loaded");
+console.log("Schneider Cascade Engine v2 Loaded");
 
-// ================================
-// SYSTEM STATE (NORMALISED 0–1)
-// ================================
+// =====================
+// SYSTEM STATE (NODE GRAPH)
+// =====================
 let systemState = {
-  nodes: {
-    cooling: { value: 1.0, weight: 1.0 },
-    power:   { value: 1.0, weight: 1.2 },
-    network: { value: 1.0, weight: 0.9 },
-    compute: { value: 1.0, weight: 1.3 }
-  },
-
-  risk: 0.0
+  cooling: 1.0,
+  power: 1.0,
+  network: 1.0,
+  compute: 1.0,
+  storage: 1.0,
+  overallRisk: 0.0
 };
 
-// ================================
-// DEPENDENCY MAP (CASCADE LOGIC)
-// ================================
-const links = {
-  cooling: ["power", "compute"],
-  power:   ["compute"],
+// =====================
+// CASCADE GRAPH (REAL DEPENDENCIES)
+// =====================
+const dependencies = {
+  cooling: ["compute", "storage"],
+  power: ["cooling", "compute", "network"],
   network: ["compute"],
-  compute: []
+  compute: [],
+  storage: ["compute"]
 };
 
-// ================================
-// CORE STRESS FUNCTION (NON-LINEAR)
-// ================================
-function stress(nodeName, impact, source = "external") {
-  const node = systemState.nodes[nodeName];
-
-  // nonlinear decay curve (prevents simple subtraction behaviour)
-  const delta = Math.pow(impact, 1.25) * node.weight;
-
-  node.value -= delta;
-
-  // clamp
-  node.value = Math.max(0, Math.min(1, node.value));
-
-  console.log(`⚠ ${source} → ${nodeName} impacted (${delta.toFixed(3)})`);
-
-  // trigger cascade if weak
-  if (node.value < 0.65) {
-    cascade(nodeName, (1 - node.value) * 0.5);
-  }
-}
-
-// ================================
-// CASCADE ENGINE
-// ================================
-function cascade(origin, intensity) {
-  const targets = links[origin];
-
-  targets.forEach((t) => {
-    const amplified = intensity * (1.1 + Math.random() * 0.4);
-    stress(t, amplified, origin);
-  });
-}
-
-// ================================
-// SCENARIO TRIGGERS
-// ================================
-function coolingFailure() {
-  stress("cooling", 0.45);
-}
-
-function powerInstability() {
-  stress("power", 0.55);
-}
-
-function networkCongestion() {
-  stress("network", 0.4);
-}
-
-// ================================
-// NATURAL SYSTEM DRIFT (REALISM LAYER)
-// ================================
-function systemDrift() {
-  Object.keys(systemState.nodes).forEach((key) => {
-    const node = systemState.nodes[key];
-
-    // slight instability over time
-    const drift = (Math.random() - 0.5) * 0.02;
-
-    node.value += drift;
-    node.value = Math.max(0, Math.min(1, node.value));
-  });
-}
-
-// ================================
+// =====================
 // METRICS ENGINE
-// ================================
-function updateMetrics() {
-  const values = Object.values(systemState.nodes).map(n => n.value);
+// =====================
+function calculateRisk() {
+  let values = Object.values(systemState).slice(0, 5);
+  let avg = values.reduce((a, b) => a + b, 0) / values.length;
 
-  const avg = values.reduce((a, b) => a + b, 0) / values.length;
+  systemState.overallRisk = +(1 - avg).toFixed(2);
 
-  systemState.risk = (1 - avg).toFixed(3);
-
-  console.log("────────────────────");
-  console.log("Resilience Index:", avg.toFixed(3));
-  console.log("Risk Score:", systemState.risk);
+  console.log("Resilience Index:", avg.toFixed(2));
+  console.log("Risk Score:", systemState.overallRisk);
 }
 
-// ================================
-// MAIN RUNNER (UI HOOK)
-// ================================
+// =====================
+// CASCADE PROPAGATION ENGINE
+// =====================
+function propagateImpact(node, severity) {
+  if (!dependencies[node]) return;
+
+  dependencies[node].forEach(target => {
+    let impact = severity * (Math.random() * 0.4 + 0.2); // nonlinear spread
+
+    systemState[target] -= impact;
+
+    console.log(
+      `Cascade: ${node} → ${target} | Impact: ${impact.toFixed(2)}`
+    );
+
+    if (systemState[target] < 0.5) {
+      propagateImpact(target, impact); // recursive cascade
+    }
+  });
+}
+
+// =====================
+// EVENTS (ENTRY POINTS)
+// =====================
+function triggerCoolingFailure() {
+  systemState.cooling -= 0.35;
+  propagateImpact("cooling", 0.35);
+  calculateRisk();
+}
+
+function triggerPowerInstability() {
+  systemState.power -= 0.5;
+  propagateImpact("power", 0.5);
+  calculateRisk();
+}
+
+function triggerNetworkCongestion() {
+  systemState.network -= 0.4;
+  propagateImpact("network", 0.4);
+  calculateRisk();
+}
+
+function runNormal() {
+  console.log("System Stable Baseline");
+  calculateRisk();
+}
+
+// =====================
+// MAIN RUNNER
+// =====================
 function runScenario(type) {
-  console.log("▶ Scenario:", type);
+  console.log("Running scenario:", type);
 
   switch (type) {
     case "cooling":
-      coolingFailure();
+      triggerCoolingFailure();
       break;
-
     case "power":
-      powerInstability();
+      triggerPowerInstability();
       break;
-
     case "network":
-      networkCongestion();
+      triggerNetworkCongestion();
       break;
-
     default:
-      console.log("Normal operation");
+      runNormal();
   }
-
-  systemDrift();
-  updateMetrics();
 }
