@@ -1,3 +1,29 @@
+# ⚠️ SCHNEIDER DATACENTRE PILOT (ISOLATED BRANCH)
+
+## DO NOT MERGE THIS BRANCH
+
+This branch is a deployment-only simulation environment.
+
+It is:
+- NOT part of the main system
+- NOT intended for merge into main
+- NOT designed for production integration
+
+## Branch Policy
+This branch is:
+- GitHub Pages deployment sandbox
+- Schneider-specific evaluation module
+- Fully isolated from FX / core systems
+
+## Critical Rule
+🚫 DO NOT CREATE PRS INTO MAIN
+🚫 DO NOT MERGE BACK INTO CORE REPOSITORY
+
+This branch exists ONLY for:
+- Schneider Data Centre resilience simulation
+- Controlled evaluation environment
+- External technical review
+
 # Sextant Protocol – Experimental Resilience Simulation Framework
 
 ## LIVE PROTOTYPE ACCESS
