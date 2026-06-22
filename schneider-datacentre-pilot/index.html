@@ -14,9 +14,25 @@
 
     body {
       height: 100vh;
-      display: flex;
       background: #0b1220;
       color: #e5e7eb;
+    }
+
+    /* BOOT SCREEN */
+    #bootScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000814;
+      color: #38bdf8;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: monospace;
+      z-index: 9999;
     }
 
     /* SIDEBAR */
@@ -51,22 +67,27 @@
       background: #1f2937;
     }
 
-    /* MAIN AREA */
+    /* MAIN */
     .main {
       flex: 1;
       display: flex;
       flex-direction: column;
     }
 
-    /* TOP BAR */
     .topbar {
       padding: 14px;
       background: #0f172a;
       border-bottom: 1px solid #1f2937;
       font-weight: bold;
+      display: flex;
+      justify-content: space-between;
     }
 
-    /* CONTENT */
+    .status {
+      color: #22c55e;
+      font-size: 12px;
+    }
+
     .content {
       flex: 1;
       display: flex;
@@ -74,7 +95,6 @@
       gap: 16px;
     }
 
-    /* ENGINE PANEL */
     .engine {
       flex: 2;
       background: #111827;
@@ -107,7 +127,6 @@
       background: #273449;
     }
 
-    /* OUTPUT CONSOLE */
     .console {
       flex: 1;
       background: #0a0f1a;
@@ -131,6 +150,14 @@
 
 <body>
 
+<!-- BOOT SCREEN -->
+<div id="bootScreen">
+  <div id="bootLog"></div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none; height:100vh; display:flex;">
+
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="logo">SEXTANT AI</div>
@@ -148,62 +175,93 @@
 
     <div class="topbar">
       Schneider Datacentre AI Simulation Console
+      <div class="status">● SYSTEM ONLINE</div>
     </div>
 
     <div class="content">
 
-      <!-- ENGINE -->
       <div class="engine">
         <h2>Scenario Engine</h2>
 
         <p>Select a scenario to simulate system response:</p>
 
         <div class="scenario-grid">
-          <div class="scenario" onclick="runScenario('Power Surge')">
-            ⚡ Power Surge Event
-          </div>
-
-          <div class="scenario" onclick="runScenario('Cooling Failure')">
-            ❄ Cooling Failure
-          </div>
-
-          <div class="scenario" onclick="runScenario('Network Congestion')">
-            🌐 Network Congestion
-          </div>
-
-          <div class="scenario" onclick="runScenario('Load Spike')">
-            📈 Compute Load Spike
-          </div>
+          <div class="scenario" onclick="runScenario('Power Surge')">⚡ Power Surge Event</div>
+          <div class="scenario" onclick="runScenario('Cooling Failure')">❄ Cooling Failure</div>
+          <div class="scenario" onclick="runScenario('Network Congestion')">🌐 Network Congestion</div>
+          <div class="scenario" onclick="runScenario('Load Spike')">📈 Compute Load Spike</div>
         </div>
       </div>
 
-      <!-- CONSOLE -->
       <div class="console" id="console">
         <div class="log"><strong>System:</strong> AI Engine initialized</div>
       </div>
 
     </div>
   </div>
+</div>
 
-  <script>
-    function runScenario(name) {
-      const consoleBox = document.getElementById("console");
+<script>
+/* BOOT SEQUENCE */
+const steps = [
+  "Booting Sextant AI Kernel...",
+  "Loading Datacentre Models...",
+  "Initializing Power Grid Simulation...",
+  "Checking Cooling Systems...",
+  "Loading Risk Engine...",
+  "Calibrating Network Topology...",
+  "AI CORE ONLINE"
+];
 
-      const log = document.createElement("div");
-      log.className = "log";
-      log.innerHTML = `<strong>Scenario:</strong> ${name} triggered`;
+let i = 0;
+const boot = document.getElementById("bootLog");
 
-      consoleBox.appendChild(log);
+function bootSeq() {
+  if (i < steps.length) {
+    const line = document.createElement("div");
+    line.textContent = "> " + steps[i];
+    boot.appendChild(line);
+    i++;
+    setTimeout(bootSeq, 600);
+  } else {
+    setTimeout(() => {
+      document.getElementById("bootScreen").style.display = "none";
+      document.getElementById("app").style.display = "flex";
+    }, 800);
+  }
+}
 
-      const response = document.createElement("div");
-      response.className = "log";
-      response.innerHTML = `AI Analysis: Running simulation model for ${name}...`;
+bootSeq();
 
-      consoleBox.appendChild(response);
+/* SCENARIO ENGINE */
+function runScenario(name) {
+  const consoleBox = document.getElementById("console");
 
-      consoleBox.scrollTop = consoleBox.scrollHeight;
-    }
-  </script>
+  const start = document.createElement("div");
+  start.className = "log";
+  start.innerHTML = `<strong>Scenario:</strong> ${name} triggered`;
+
+  consoleBox.appendChild(start);
+
+  setTimeout(() => {
+    const ai = document.createElement("div");
+    ai.className = "log";
+    ai.innerHTML = `AI ANALYSIS: Simulating ${name} impact model...`;
+
+    consoleBox.appendChild(ai);
+    consoleBox.scrollTop = consoleBox.scrollHeight;
+  }, 700);
+
+  setTimeout(() => {
+    const result = document.createElement("div");
+    result.className = "log";
+    result.innerHTML = `RESULT: System stability recalculated for ${name}`;
+
+    consoleBox.appendChild(result);
+    consoleBox.scrollTop = consoleBox.scrollHeight;
+  }, 1400);
+}
+</script>
 
 </body>
 </html>
