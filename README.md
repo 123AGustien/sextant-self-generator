@@ -43,7 +43,8 @@ This branch exists ONLY for:
 ## LIVE PROTOTYPE ACCESS
 
 ### Control Gateway (System Entry)
-https://123agustien.github.io/sextant-self-generator/
+https://123agustien.github.io/sextant-self-generator/hhttps
+httpsttps://123agustien.github.io/sextant-self-generator/schneider-datacentre-pilot/
 
 ### Self-Test Control Room
 https://123agustien.github.io/sextant-self-generator/self-test.html
