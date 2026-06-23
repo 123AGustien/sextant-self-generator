@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Schneider AI Datacentre Simulator</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: #0b1220;
+      color: #e5e7eb;
+    }
+
+    /* BOOT SCREEN */
+    #bootScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000814;
+      color: #38bdf8;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: monospace;
+      z-index: 9999;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: #0f172a;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-right: 1px solid #1f2937;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #38bdf8;
+    }
+
+    .nav-btn {
+      padding: 10px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      color: #e5e7eb;
+      cursor: pointer;
+      border-radius: 6px;
+      text-align: left;
+    }
+
+    .nav-btn:hover {
+      background: #1f2937;
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      padding: 14px;
+      background: #0f172a;
+      border-bottom: 1px solid #1f2937;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .status {
+      color: #22c55e;
+      font-size: 12px;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      padding: 16px;
+      gap: 16px;
+    }
+
+    .engine {
+      flex: 2;
+      background: #111827;
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .engine h2 {
+      color: #38bdf8;
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .scenario {
+      padding: 12px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .scenario:hover {
+      background: #273449;
+    }
+
+    .console {
+      flex: 1;
+      background: #0a0f1a;
+      border-radius: 10px;
+      padding: 12px;
+      overflow-y: auto;
+      font-size: 13px;
+      border: 1px solid #1f2937;
+    }
+
+    .log {
+      margin-bottom: 6px;
+      color: #9ca3af;
+    }
+
+    .log strong {
+      color: #38bdf8;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- BOOT SCREEN -->
+<div id="bootScreen">
+  <div id="bootLog"></div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none; height:100vh; display:flex;">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">SEXTANT AI</div>
+
+    <button class="nav-btn">Dashboard</button>
+    <button class="nav-btn">Datacentre Engine</button>
+    <button class="nav-btn">Scenario Simulator</button>
+    <button class="nav-btn">Risk Models</button>
+    <button class="nav-btn">Energy Load</button>
+    <button class="nav-btn">System Logs</button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="topbar">
+      Schneider Datacentre AI Simulation Console
+      <div class="status">● SYSTEM ONLINE</div>
+    </div>
+
+    <div class="content">
+
+      <div class="engine">
+        <h2>Scenario Engine</h2>
+
+        <p>Select a scenario to simulate system response:</p>
+
+        <div class="scenario-grid">
+          <div class="scenario" onclick="runScenario('Power Surge')">⚡ Power Surge Event</div>
+          <div class="scenario" onclick="runScenario('Cooling Failure')">❄ Cooling Failure</div>
+          <div class="scenario" onclick="runScenario('Network Congestion')">🌐 Network Congestion</div>
+          <div class="scenario" onclick="runScenario('Load Spike')">📈 Compute Load Spike</div>
+        </div>
+      </div>
+
+      <div class="console" id="console">
+        <div class="log"><strong>System:</strong> AI Engine initialized</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* BOOT SEQUENCE */
+const steps = [
+  "Booting Sextant AI Kernel...",
+  "Loading Datacentre Models...",
+  "Initializing Power Grid Simulation...",
+  "Checking Cooling Systems...",
+  "Loading Risk Engine...",
+  "Calibrating Network Topology...",
+  "AI CORE ONLINE"
+];
+
+let i = 0;
+const boot = document.getElementById("bootLog");
+
+function bootSeq() {
+  if (i < steps.length) {
+    const line = document.createElement("div");
+    line.textContent = "> " + steps[i];
+    boot.appendChild(line);
+    i++;
+    setTimeout(bootSeq, 600);
+  } else {
+    setTimeout(() => {
+      document.getElementById("bootScreen").style.display = "none";
+      document.getElementById("app").style.display = "flex";
+    }, 800);
+  }
+}
+
+bootSeq();
+
+/* SCENARIO ENGINE */
+function runScenario(name) {
+  const consoleBox = document.getElementById("console");
+
+  const start = document.createElement("div");
+  start.className = "log";
+  start.innerHTML = `<strong>Scenario:</strong> ${name} triggered`;
+
+  consoleBox.appendChild(start);
+
+  setTimeout(() => {
+    const ai = document.createElement("div");
+    ai.className = "log";
+    ai.innerHTML = `AI ANALYSIS: Simulating ${name} impact model...`;
+
+    consoleBox.appendChild(ai);
+    consoleBox.scrollTop = consoleBox.scrollHeight;
+  }, 700);
+
+  setTimeout(() => {
+    const result = document.createElement("div");
+    result.className = "log";
+    result.innerHTML = `RESULT: System stability recalculated for ${name}`;
+
+    consoleBox.appendChild(result);
+    consoleBox.scrollTop = consoleBox.scrollHeight;
+  }, 1400);
+}
+</script>
+
+</body>
+</html>
