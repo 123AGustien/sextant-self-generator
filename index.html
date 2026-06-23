@@ -1,132 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Sextant Control Room v2 — Boot System</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Schneider Datacentre Pilot — Cascade Engine</title>
 
-<style>
-body{
-    background:#0b0f14;
-    color:#00ff88;
-    font-family:monospace;
-    padding:20px;
-    margin:0;
-}
-
-h1,h2{
-    margin:5px 0;
-}
-
-.section{
-    border:1px solid #00ff88;
-    padding:15px;
-    margin-bottom:15px;
-}
-
-a, button{
-    display:block;
-    width:100%;
-    margin:8px 0;
-    padding:12px;
-    background:#0b0f14;
-    color:#00ff88;
-    border:1px solid #00ff88;
-    text-decoration:none;
-    cursor:pointer;
-    font-size:14px;
-}
-
-button:hover, a:hover{
-    background:#00ff88;
-    color:#0b0f14;
-}
-
-#status{
-    padding:10px;
-    margin-top:10px;
-    border:1px solid #00ff88;
-}
-
-pre{
-    background:#05080c;
-    padding:10px;
-    border:1px solid #00ff88;
-    overflow:auto;
-    min-height:120px;
-}
-
-@media(max-width:600px){
-    body{padding:10px;}
-}
-</style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
 
-<h1>⚡ SEXTANT SYSTEM</h1>
-<h2>CONTROL ROOM — BOOT SEQUENCE</h2>
+<header>
+  <h1>Schneider Datacentre Pilot</h1>
+  <h2>Isolated Cascade Simulation Engine (DO NOT MERGE)</h2>
+</header>
 
-<!-- NAVIGATION -->
-<div class="section">
-    <h2>Navigation Layer</h2>
+<div class="container">
 
-    <a href="landing.html">📘 Product Overview</a>
-    <a href="simulation_screen_v1.html">⚡ Simulator v6.2</a>
-    <a href="scenario-router.html">🧭 Scenario Router</a>
+  <!-- CONTROLS -->
+  <div class="panel">
+    <h3>Simulation Controls</h3>
 
-    <!-- ✅ FIXED: MUST USE index.html -->
-    <a href="sextant-offline-command-center/index.html">🛰 Operations Console</a>
+    <button onclick="runScenario('cooling')">Trigger Cooling Failure</button>
+    <button onclick="runScenario('power')">Trigger Power Instability</button>
+    <button onclick="runScenario('network')">Trigger Network Congestion</button>
+    <button onclick="runScenario('normal')">Run Normal Operation</button>
 
-    <a href="self-test.html">🧪 Self Test Control Room</a>
+    <button onclick="triggerBlackout()">⚫ Trigger Blackout Mode</button>
+
+    <hr style="border:1px solid #1f2a37; margin:15px 0;" />
+
+    <div class="metric"><span>Cooling</span><span id="cooling">1.00</span></div>
+    <div class="metric"><span>Power</span><span id="power">1.00</span></div>
+    <div class="metric"><span>Network</span><span id="network">1.00</span></div>
+    <div class="metric"><span>Compute</span><span id="compute">1.00</span></div>
+    <div class="metric"><span>Storage</span><span id="storage">1.00</span></div>
+    <div class="metric"><span>Risk</span><span id="risk">0.00</span></div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="panel">
+    <h3>Simulation Output</h3>
+    <div id="output"></div>
+  </div>
+
 </div>
 
-<!-- BOOT CONTROL -->
-<div class="section">
-    <h2>Boot Control Layer</h2>
-
-    <button onclick="runSelfTest()">RUN SELF TEST (INLINE)</button>
-
-    <button onclick="location.href='self-test.html'">
-        OPEN FULL SELF TEST SCREEN
-    </button>
-
-    <div id="status">Status: INITIALIZING...</div>
-
-    <pre id="output">Waiting for boot sequence...</pre>
-</div>
+<!-- CORE ENGINE -->
+<script src="simulator.js"></script>
+<script src="blackout_engine.js"></script>
 
 <script>
-function runSelfTest(){
+/* =========================
+   UI BINDING LAYER
+   ========================= */
 
-    setStatus("SELF TEST RUNNING");
+const outputDiv = document.getElementById("output");
 
-    const system = {
-        engine: "LOADED",
-        eventBus: "LOADED",
-        cascade: "LOADED",
-        risk: "LOADED",
-        scenario: "LOADED",
-        bootSequence: "OK"
-    };
-
-    document.getElementById("output").innerText =
-        JSON.stringify(system, null, 2);
-
-    setStatus("SELF TEST PASSED → SYSTEM ONLINE");
+function logToUI(msg) {
+  const line = document.createElement("div");
+  line.textContent = msg;
+  outputDiv.appendChild(line);
+  outputDiv.scrollTop = outputDiv.scrollHeight;
 }
 
-function setStatus(text){
-    document.getElementById("status").innerText = "Status: " + text;
-}
-
-window.onload = function(){
-
-    setStatus("BOOT SEQUENCE STARTING");
-
-    setTimeout(() => {
-        runSelfTest();
-    }, 1200);
+/* override console */
+const originalLog = console.log;
+console.log = function (...args) {
+  originalLog(...args);
+  logToUI(args.join(" "));
 };
+
+/* =========================
+   DASHBOARD UPDATE
+   ========================= */
+
+function refreshDashboard() {
+  document.getElementById("cooling").textContent = systemState.cooling.toFixed(2);
+  document.getElementById("power").textContent = systemState.power.toFixed(2);
+  document.getElementById("network").textContent = systemState.network.toFixed(2);
+  document.getElementById("compute").textContent = systemState.compute.toFixed(2);
+  document.getElementById("storage").textContent = systemState.storage.toFixed(2);
+  document.getElementById("risk").textContent = systemState.overallRisk;
+}
+
+/* hook engine updates */
+const originalUpdateMetrics = updateMetrics;
+
+updateMetrics = function () {
+  originalUpdateMetrics();
+  refreshDashboard();
+};
+
+/* =========================
+   OPTIONAL BLACKOUT LOOP
+   ========================= */
+setInterval(() => {
+  runBlackoutEngine?.();
+}, 1000);
+
+/* initial render */
+refreshDashboard();
 </script>
 
 </body>

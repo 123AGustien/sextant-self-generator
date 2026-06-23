@@ -41,7 +41,7 @@ This branch exists ONLY for:
 - External technical environment
 # Sextant Protocol – Experimental Resilience Simulation Framework
 
-## LIVE PROTOTYPE ACCESS
+# ⚠️ SCHNEIDER DATACENTRE PILOT — ISOLATED SIMULATION BRANCH
 
 ### Control Gateway (System Entry)
 https://123agustien.github.io/sextant-self-generator/hhttps
@@ -177,190 +177,118 @@ Purpose
 
 ## 🚀 Release v6.2 — Monetization Layer (Sextant System)
 
-- Git Tag: `v6.2-monetization-ready`  
-- GitHub Release: https://github.com/123AGustien/sextant-self-generator/releases/tag/v6.2-monetization-ready  
-- Live System: https://123agustien.github.io/sextant-self-generator/
+This branch is a **strictly isolated GitHub Pages simulation environment**.
 
-The Sextant Self Generator is a controlled scaffold engine designed to support the Sextant ecosystem.
+It is:
+- NOT part of the main Sextant system
+- NOT intended for merge into main
+- NOT a production deployment
+- NOT a financial or trading system
+- NOT dependent on external services
 
-Originally developed as an offline module generation platform, the project is evolving into a resilience scenario generation engine capable of discovering failure cascades, identifying intervention points, and supporting resilience analysis.
-
-Live Console (GitHub Pages)
-This is your running upgraded system (simulator + dashboard + engine):
-👉 https://123agustien.github.io/sextant-self-generator
-
----
-
-Core Mission
-
-Generate Scenarios → Discover Cascades → Protect Interventions → Preserve Resilience
+This branch exists ONLY for:
+- Schneider Data Centre resilience evaluation
+- Infrastructure stress simulation testing
+- Controlled engineering review
+- GitHub Pages sandbox execution
 
 ---
 
-Sextant Philosophy
+# 🧭 SYSTEM OVERVIEW
 
-Sextant Protocol does not seek to predict the future or quantify every possible risk.
+## Purpose
+This module simulates **data centre infrastructure resilience under stress conditions**.
 
-Instead, Sextant identifies plausible sequences of events that may develop into cascading failures.
-
-The objective is to discover:
-
-- How stress propagates through a system.
-- Which pathways create resilience challenges.
-- Which intervention points can interrupt a cascade.
-- Which recovery strategies reduce systemic impact.
-
-Core Principle
-
-We do not start with risk.
-
-We start with scenarios.
-
-By exploring how events interact and propagate, Sextant identifies potential failure cascades and strategic intervention points that may prevent escalation.
-
-Resilience Objective
-
-Identify the cascade.
-
-Protect the intervention.
-
-Preserve system resilience.
+It evaluates:
+- Power instability impact
+- Cooling system stress behaviour
+- Network degradation effects
+- Hardware failure propagation
+- Recovery dynamics under load
 
 ---
 
-Top 10 Emerging Failure Cascades
+# 🧪 SIMULATION OBJECTIVE
 
-1. FX Shock → Liquidity Stress → Confidence Loss
+The system models how infrastructure components behave under combined stress conditions and how failures may propagate across dependencies.
 
-2. Payment Delay → Customer Panic → Withdrawal Spike
-
-3. Market Volatility → Margin Calls → Funding Pressure
-
-4. Cyber Incident → Service Disruption → Reputation Damage
-
-5. Deposit Outflow → Liquidity Compression → Emergency Funding
-
-6. Credit Deterioration → Capital Erosion → Lending Contraction
-
-7. Infrastructure Failure → Operational Disruption → Business Continuity Stress
-
-8. Regulatory Shock → Compliance Pressure → Strategic Retrenchment
-
-9. Market Rumor → Confidence Erosion → Liquidity Event
-
-10. Multi-Stress Convergence → Systemic Pressure → Resilience Threshold Breach
+It is designed for:
+- Scenario-based resilience testing
+- Failure propagation analysis
+- Operational continuity assessment
+- Controlled stress simulation
 
 ---
 
-Resilience Intervention Framework
+# 🧩 CORE SYSTEM FLOW
 
-Sextant Protocol does not stop at identifying failure cascades.
-
-For every cascade discovered, Sextant seeks to identify potential intervention points that may interrupt, reduce, or prevent escalation.
-
-The framework evaluates:
-
-1. The cascade pathway.
-2. Available intervention options.
-3. The resilience of each intervention.
-4. Alternative recovery pathways.
-
-Core Question
-
-"What intervention would prevent the cascade?"
-
-Secondary Question
-
-"What protects the intervention itself?"
-
-This creates a layered resilience model where systems are evaluated not only for failure pathways, but also for the durability of the measures designed to prevent them.
+Control Gateway  
+→ Self-Test  
+→ Scenario Selection  
+→ Cascade Simulation  
+→ Operations Console Visualization  
 
 ---
 
-Sextant Ecosystem Architecture
+# 📥 INPUT PARAMETERS (SIMULATION MODEL)
 
-1. Self Generator
+All inputs are normalized values between **0.00 and 1.00**
 
-Generates Cascades
-
-Responsible for creating structured failure scenarios based on interacting stress factors.
-
-Output:
-
-- Failure cascade models
-- Scenario libraries
-- Stress combinations
-
-2. Simulator
-
-Runs Cascades
-
-Executes generated scenarios and simulates how stress events propagate through a system.
-
-Output:
-
-- Cascade execution results
-- System response behaviour
-- Resilience thresholds
-
-3. Operations Console
-
-Visualizes Cascades
-
-Provides a visual interface for observing simulations in real time.
-
-Output:
-
-- Dashboards
-- Control room views
-- Scenario playback
-- Risk visualization
-
-4. Official Index
-
-Explains the Ecosystem
-
-Serves as the documentation and reference layer for the entire Sextant Protocol.
-
-Output:
-
-- Architecture overview
-- Repository mapping
-- Public documentation
-- System narrative
+## Infrastructure Stress Inputs:
+- Cooling Load Stress (CLS)
+- Power Supply Stability (PSS)
+- Network Latency Stress (NLS)
+- Hardware Failure Probability (HFP)
+- System Load Index (SLI)
 
 ---
 
-System Flow
+# 📤 OUTPUT METRICS
 
-Self Generator → Simulator → Operations Console → Official Index
+The simulation produces the following outputs:
 
-This forms a continuous loop:
-
-Generate → Execute → Visualize → Document
-
----
-
-Current Platform
-
-Live Command Center
-
-https://123AGustien.github.io/sextant-self-generator/
-
-Repository
-
-https://github.com/123AGustien/sextant-self-generator
+- System Stability Score (SSS)
+- Cascade Depth Level (CDL)
+- Failure Propagation Pathway
+- Recovery Time Estimate (RTE)
+- Critical Node Identification Map
 
 ---
 
-Mission Statement
+# 🧠 VISUAL INTERFACE LAYER
 
-"Discovering pathways to failure and protecting the strategies that prevent them."
+## Live System Access
 
-## Future Development Roadmap
+- Control Gateway  
+https://123agustien.github.io/sextant-self-generator/
 
-### Phase 4 — Data Integration Layer (External Collaboration Required)
-This phase requires integration with external data sources (FX, liquidity, market indicators) and backend infrastructure support. Collaboration with data engineering partners is required.
+- Self-Test Module  
+https://123agustien.github.io/sextant-self-generator/self-test.html
 
-### Phase 5 — Institutional Validation & Deployment Layer (External Collaboration Required)
-This phase focuses on auditability, model validation, and potential deployment in institutional environments. Requires partnership with backend engineers, financial data providers, and domain validators.
+- Cascade Simulation Engine  
+https://123agustien.github.io/sextant-self-generator/simulation_screen_v1.html
+
+- Scenario Router  
+https://123agustien.github.io/sextant-self-generator/scenario-router.html
+
+- Operations Console (Visualization Layer)  
+https://123agustien.github.io/sextant-self-generator/sextant-offline-command-center/
+
+---
+
+# 🔐 ISOLATION & SAFETY GUARANTEE
+
+This branch is fully isolated and designed to ensure:
+
+- No production impact
+- No external API dependency
+- No financial system coupling
+- No cross-branch contamination
+- Deterministic execution only
+- Local sandbox evaluation only
+
+---
+
+# 🚫 BRANCH GOVERNANCE RULE
+
+## CRITICAL INSTRUCTION
