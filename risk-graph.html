@@ -80,7 +80,7 @@ button:hover{
 
 <header>
 <h1>SEXTANT PROTOCOL</h1>
-<h3>Risk Graph Module v1</h3>
+<h3>Risk Graph Module v1 (Real-Time Sync)</h3>
 </header>
 
 <div class="container">
@@ -117,8 +117,20 @@ button:hover{
 </div>
 
 <script>
+
+/* =========================
+   REAL-TIME CHANNEL
+========================= */
+const channel = new BroadcastChannel("sextant_risk_channel");
+
+/* =========================
+   HISTORY STATE
+========================= */
 let history = [20,30,25,40,35,50,45,60,55,65];
 
+/* =========================
+   RENDER GRAPH
+========================= */
 function render(){
     const graph = document.getElementById("graph");
     graph.innerHTML = "";
@@ -132,26 +144,25 @@ function render(){
         else if(v < 70) bar.style.background = "#f59e0b";
         else bar.style.background = "#ef4444";
 
-        bar.innerText = "";
         graph.appendChild(bar);
     });
 
     updateStatus();
 }
 
+/* =========================
+   STATUS CALCULATION
+========================= */
 function updateStatus(){
     let avg = history.reduce((a,b)=>a+b)/history.length;
 
+    document.getElementById("risk").innerText = "Risk Score: " + Math.round(avg);
+    document.getElementById("recovery").innerText = "Recovery Index: " + Math.round(100 - avg);
+    document.getElementById("nodes").innerText = "Critical Nodes: " + Math.round(avg/25);
+
     let status = document.getElementById("status");
-    let risk = document.getElementById("risk");
-    let recovery = document.getElementById("recovery");
-    let nodes = document.getElementById("nodes");
 
-    risk.innerText = "Risk Score: " + Math.round(avg);
-
-    recovery.innerText = "Recovery Index: " + Math.round(100 - avg) + "%";
-
-    nodes.innerText = "Critical Nodes: " + Math.round(avg/25);
+    let finalRisk = Math.round(avg);
 
     if(avg < 40){
         status.innerText = "🟢 STABLE";
@@ -160,13 +171,37 @@ function updateStatus(){
     } else {
         status.innerText = "🔴 CRISIS";
     }
+
+    // 🔥 REAL-TIME SYNC OUTPUT
+    publishRisk(finalRisk);
 }
 
+/* =========================
+   SYNC FUNCTION
+========================= */
+function publishRisk(value){
+
+    // local storage (backup channel)
+    localStorage.setItem("sextant_risk", value);
+
+    // real-time broadcast
+    channel.postMessage({
+        type: "risk_update",
+        value: value
+    });
+}
+
+/* =========================
+   CORE SIMULATION ENGINE
+========================= */
 function pushValue(val){
     history.push(val);
     if(history.length > 10) history.shift();
 }
 
+/* =========================
+   SIMULATION INPUTS
+========================= */
 function runSim(type){
     let base = 40;
 
@@ -183,12 +218,19 @@ function runSim(type){
     render();
 }
 
+/* =========================
+   RESET
+========================= */
 function resetSim(){
     history = [20,30,25,40,35,50,45,60,55,65];
     render();
 }
 
+/* =========================
+   INIT
+========================= */
 render();
+
 </script>
 
 </body>
