@@ -1,106 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Schneider Datacentre Pilot — Cascade Engine</title>
+<meta charset="UTF-8">
+<title>Sextant State-Aware Master Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="styles.css" />
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0f14;
+    color: #2bd4ff;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 20px;
+    font-size: 22px;
+}
+
+button {
+    width: 90%;
+    max-width: 400px;
+    padding: 15px;
+    margin: 10px;
+    background: #111826;
+    color: #2bd4ff;
+    border: 1px solid #2bd4ff;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.status {
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.note {
+    font-size: 12px;
+    color: #7aa2b7;
+    margin-top: 10px;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  <h1>Schneider Datacentre Pilot</h1>
-  <h2>Isolated Cascade Simulation Engine (DO NOT MERGE)</h2>
-</header>
+<h1>SEXTANT MASTER CONSOLE</h1>
 
-<div class="container">
+<div id="systemState" class="status">🟢 STABLE</div>
 
-  <!-- CONTROLS -->
-  <div class="panel">
-    <h3>Simulation Controls</h3>
+<button id="btnSim" onclick="go('sim')">Run Simulation Screen v2</button>
+<button id="btnInd" onclick="go('ind')">Industrial Control Screen v1</button>
+<button id="btnPilot" onclick="go('pilot')">Schneider Datacentre Pilot</button>
 
-    <button onclick="runScenario('cooling')">Trigger Cooling Failure</button>
-    <button onclick="runScenario('power')">Trigger Power Instability</button>
-    <button onclick="runScenario('network')">Trigger Network Congestion</button>
-    <button onclick="runScenario('normal')">Run Normal Operation</button>
-
-    <button onclick="triggerBlackout()">⚫ Trigger Blackout Mode</button>
-
-    <hr style="border:1px solid #1f2a37; margin:15px 0;" />
-
-    <div class="metric"><span>Cooling</span><span id="cooling">1.00</span></div>
-    <div class="metric"><span>Power</span><span id="power">1.00</span></div>
-    <div class="metric"><span>Network</span><span id="network">1.00</span></div>
-    <div class="metric"><span>Compute</span><span id="compute">1.00</span></div>
-    <div class="metric"><span>Storage</span><span id="storage">1.00</span></div>
-    <div class="metric"><span>Risk</span><span id="risk">0.00</span></div>
-  </div>
-
-  <!-- OUTPUT -->
-  <div class="panel">
-    <h3>Simulation Output</h3>
-    <div id="output"></div>
-  </div>
-
-</div>
-
-<!-- CORE ENGINE -->
-<script src="simulator.js"></script>
-<script src="blackout_engine.js"></script>
+<div class="note">State-Aware Navigation Layer • Contingency Controlled Access</div>
 
 <script>
+
 /* =========================
-   UI BINDING LAYER
-   ========================= */
+   BASE URL
+========================= */
+const BASE = "https://123agustien.github.io/sextant-resilience-operations-console/";
 
-const outputDiv = document.getElementById("output");
-
-function logToUI(msg) {
-  const line = document.createElement("div");
-  line.textContent = msg;
-  outputDiv.appendChild(line);
-  outputDiv.scrollTop = outputDiv.scrollHeight;
-}
-
-/* override console */
-const originalLog = console.log;
-console.log = function (...args) {
-  originalLog(...args);
-  logToUI(args.join(" "));
+/* =========================
+   ROUTES
+========================= */
+const routes = {
+    sim: "simulation_screen_v2.html",
+    ind: "industrial_control_screen_v1.html",
+    pilot: "schneider_datacentre_pilot.html"
 };
 
 /* =========================
-   DASHBOARD UPDATE
-   ========================= */
-
-function refreshDashboard() {
-  document.getElementById("cooling").textContent = systemState.cooling.toFixed(2);
-  document.getElementById("power").textContent = systemState.power.toFixed(2);
-  document.getElementById("network").textContent = systemState.network.toFixed(2);
-  document.getElementById("compute").textContent = systemState.compute.toFixed(2);
-  document.getElementById("storage").textContent = systemState.storage.toFixed(2);
-  document.getElementById("risk").textContent = systemState.overallRisk;
-}
-
-/* hook engine updates */
-const originalUpdateMetrics = updateMetrics;
-
-updateMetrics = function () {
-  originalUpdateMetrics();
-  refreshDashboard();
-};
+   SYSTEM STATE (SIMULATION INPUT)
+   change this later from Risk Graph
+========================= */
+let systemState = "stable"; 
+// stable | warning | crisis
 
 /* =========================
-   OPTIONAL BLACKOUT LOOP
-   ========================= */
-setInterval(() => {
-  runBlackoutEngine?.();
-}, 1000);
+   STATE CONTROLS ACCESS
+========================= */
+function applyStateRules() {
 
-/* initial render */
-refreshDashboard();
+    const btnSim = document.getElementById("btnSim");
+    const btnInd = document.getElementById("btnInd");
+    const btnPilot = document.getElementById("btnPilot");
+    const stateBox = document.getElementById("systemState");
+
+    if (systemState === "stable") {
+        stateBox.innerText = "🟢 STABLE";
+
+        btnSim.disabled = false;
+        btnInd.disabled = false;
+        btnPilot.disabled = false;
+    }
+
+    if (systemState === "warning") {
+        stateBox.innerText = "🟠 WARNING";
+
+        btnSim.disabled = false;
+        btnInd.disabled = false;
+        btnPilot.disabled = true; // restrict pilot
+    }
+
+    if (systemState === "crisis") {
+        stateBox.innerText = "🔴 CRISIS";
+
+        btnSim.disabled = false;
+        btnInd.disabled = true;
+        btnPilot.disabled = true;
+    }
+}
+
+/* =========================
+   SAFE ROUTER
+========================= */
+function go(screen) {
+
+    const file = routes[screen];
+    const url = BASE + file;
+
+    fetch(url, { method: "HEAD" })
+        .then(res => {
+
+            if (res.ok) {
+                window.location.href = url;
+            } else {
+                alert("Screen not found: " + file);
+            }
+
+        })
+        .catch(() => {
+            alert("Network error or file missing");
+        });
+}
+
+/* =========================
+   DEMO STATE SWITCH (for testing)
+   REMOVE LATER OR CONNECT TO RISK GRAPH
+========================= */
+setTimeout(() => {
+    systemState = "warning";
+    applyStateRules();
+}, 2000);
+
+setTimeout(() => {
+    systemState = "crisis";
+    applyStateRules();
+}, 5000);
+
+/* =========================
+   INIT
+========================= */
+applyStateRules();
+
 </script>
 
 </body>
