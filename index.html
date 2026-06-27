@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sextant State-Aware Master Console</title>
+<title>Sextant Risk-Aware Master Console</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -39,7 +39,7 @@ button:disabled {
 
 .status {
     margin-top: 15px;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
 }
 
@@ -47,6 +47,12 @@ button:disabled {
     font-size: 12px;
     color: #7aa2b7;
     margin-top: 10px;
+}
+
+.risk {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #7aa2b7;
 }
 </style>
 </head>
@@ -56,12 +62,13 @@ button:disabled {
 <h1>SEXTANT MASTER CONSOLE</h1>
 
 <div id="systemState" class="status">🟢 STABLE</div>
+<div id="riskScore" class="risk">Risk Score: --</div>
 
 <button id="btnSim" onclick="go('sim')">Run Simulation Screen v2</button>
 <button id="btnInd" onclick="go('ind')">Industrial Control Screen v1</button>
 <button id="btnPilot" onclick="go('pilot')">Schneider Datacentre Pilot</button>
 
-<div class="note">State-Aware Navigation Layer • Contingency Controlled Access</div>
+<div class="note">Risk-Driven Navigation Layer • Live Contingency Control</div>
 
 <script>
 
@@ -80,23 +87,42 @@ const routes = {
 };
 
 /* =========================
-   SYSTEM STATE (SIMULATION INPUT)
-   change this later from Risk Graph
+   RISK INPUT SOURCE
+   (LINKED TO RISK GRAPH LOGIC)
 ========================= */
-let systemState = "stable"; 
-// stable | warning | crisis
+function getRiskScore() {
+
+    // CONNECT LATER TO REAL GRAPH DATA
+    // fallback simulation value
+
+    return Math.floor(20 + Math.random() * 80);
+}
 
 /* =========================
-   STATE CONTROLS ACCESS
+   STATE ENGINE
 ========================= */
-function applyStateRules() {
+function calculateState(risk) {
+
+    if (risk < 40) return "stable";
+    if (risk < 70) return "warning";
+    return "crisis";
+}
+
+/* =========================
+   APPLY SYSTEM STATE
+========================= */
+function applyState(state, risk) {
+
+    const stateBox = document.getElementById("systemState");
+    const riskBox = document.getElementById("riskScore");
 
     const btnSim = document.getElementById("btnSim");
     const btnInd = document.getElementById("btnInd");
     const btnPilot = document.getElementById("btnPilot");
-    const stateBox = document.getElementById("systemState");
 
-    if (systemState === "stable") {
+    riskBox.innerText = "Risk Score: " + risk;
+
+    if (state === "stable") {
         stateBox.innerText = "🟢 STABLE";
 
         btnSim.disabled = false;
@@ -104,15 +130,15 @@ function applyStateRules() {
         btnPilot.disabled = false;
     }
 
-    if (systemState === "warning") {
+    if (state === "warning") {
         stateBox.innerText = "🟠 WARNING";
 
         btnSim.disabled = false;
         btnInd.disabled = false;
-        btnPilot.disabled = true; // restrict pilot
+        btnPilot.disabled = true;
     }
 
-    if (systemState === "crisis") {
+    if (state === "crisis") {
         stateBox.innerText = "🔴 CRISIS";
 
         btnSim.disabled = false;
@@ -131,13 +157,11 @@ function go(screen) {
 
     fetch(url, { method: "HEAD" })
         .then(res => {
-
             if (res.ok) {
                 window.location.href = url;
             } else {
                 alert("Screen not found: " + file);
             }
-
         })
         .catch(() => {
             alert("Network error or file missing");
@@ -145,23 +169,21 @@ function go(screen) {
 }
 
 /* =========================
-   DEMO STATE SWITCH (for testing)
-   REMOVE LATER OR CONNECT TO RISK GRAPH
+   LIVE LOOP (CONNECTS SYSTEM)
 ========================= */
-setTimeout(() => {
-    systemState = "warning";
-    applyStateRules();
-}, 2000);
+function updateSystem() {
 
-setTimeout(() => {
-    systemState = "crisis";
-    applyStateRules();
-}, 5000);
+    const risk = getRiskScore();
+    const state = calculateState(risk);
+
+    applyState(state, risk);
+}
 
 /* =========================
-   INIT
+   INIT LOOP
 ========================= */
-applyStateRules();
+updateSystem();
+setInterval(updateSystem, 3000);
 
 </script>
 
