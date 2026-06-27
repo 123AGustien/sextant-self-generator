@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sextant Protocol - Risk Graph Module v1</title>
+
+<style>
+body{
+    margin:0;
+    background:#0f172a;
+    color:#ffffff;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+header{
+    background:#1d4ed8;
+    padding:18px;
+    text-align:center;
+}
+
+.container{
+    width:92%;
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+.panel{
+    background:#1e293b;
+    padding:16px;
+    border-radius:12px;
+    margin-bottom:16px;
+}
+
+.status{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.graph{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    height:220px;
+    border-left:2px solid #fff;
+    border-bottom:2px solid #fff;
+    padding:10px;
+}
+
+.bar{
+    width:8%;
+    background:#38bdf8;
+    text-align:center;
+    font-size:10px;
+    color:#000;
+    border-radius:4px 4px 0 0;
+}
+
+button{
+    padding:10px;
+    margin:5px;
+    cursor:pointer;
+    border:none;
+    border-radius:6px;
+    font-weight:bold;
+}
+
+button:hover{
+    opacity:0.85;
+}
+
+.metrics p{
+    margin:6px 0;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>SEXTANT PROTOCOL</h1>
+<h3>Risk Graph Module v1</h3>
+</header>
+
+<div class="container">
+
+<div class="panel">
+<h2>Status</h2>
+<div id="status" class="status">🟢 STABLE</div>
+</div>
+
+<div class="panel">
+<h2>Risk History (Last 10)</h2>
+<div class="graph" id="graph"></div>
+</div>
+
+<div class="panel">
+<h2>Controls</h2>
+
+<button onclick="runSim('normal')">Run Normal</button>
+<button onclick="runSim('cooling')">Cooling Failure</button>
+<button onclick="runSim('network')">Network Congestion</button>
+<button onclick="runSim('power')">Power Failure</button>
+<button onclick="runSim('blackout')">Blackout</button>
+<button onclick="resetSim()">Reset</button>
+
+</div>
+
+<div class="panel metrics">
+<h2>Live Metrics</h2>
+<p id="risk">Risk Score: 0</p>
+<p id="recovery">Recovery Index: 100%</p>
+<p id="nodes">Critical Nodes: 0</p>
+</div>
+
+</div>
+
+<script>
+let history = [20,30,25,40,35,50,45,60,55,65];
+
+function render(){
+    const graph = document.getElementById("graph");
+    graph.innerHTML = "";
+
+    history.forEach(v=>{
+        let bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.height = v + "px";
+
+        if(v < 40) bar.style.background = "#22c55e";
+        else if(v < 70) bar.style.background = "#f59e0b";
+        else bar.style.background = "#ef4444";
+
+        bar.innerText = "";
+        graph.appendChild(bar);
+    });
+
+    updateStatus();
+}
+
+function updateStatus(){
+    let avg = history.reduce((a,b)=>a+b)/history.length;
+
+    let status = document.getElementById("status");
+    let risk = document.getElementById("risk");
+    let recovery = document.getElementById("recovery");
+    let nodes = document.getElementById("nodes");
+
+    risk.innerText = "Risk Score: " + Math.round(avg);
+
+    recovery.innerText = "Recovery Index: " + Math.round(100 - avg) + "%";
+
+    nodes.innerText = "Critical Nodes: " + Math.round(avg/25);
+
+    if(avg < 40){
+        status.innerText = "🟢 STABLE";
+    } else if(avg < 70){
+        status.innerText = "🟠 WARNING";
+    } else {
+        status.innerText = "🔴 CRISIS";
+    }
+}
+
+function pushValue(val){
+    history.push(val);
+    if(history.length > 10) history.shift();
+}
+
+function runSim(type){
+    let base = 40;
+
+    if(type === "normal") base = 30;
+    if(type === "cooling") base = 60;
+    if(type === "network") base = 65;
+    if(type === "power") base = 75;
+    if(type === "blackout") base = 90;
+
+    let noise = Math.random() * 15;
+    let value = base + noise;
+
+    pushValue(value);
+    render();
+}
+
+function resetSim(){
+    history = [20,30,25,40,35,50,45,60,55,65];
+    render();
+}
+
+render();
+</script>
+
+</body>
+</html>
