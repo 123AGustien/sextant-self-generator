@@ -87,15 +87,24 @@ const routes = {
 };
 
 /* =========================
-   RISK INPUT SOURCE
-   (LINKED TO RISK GRAPH LOGIC)
+   RISK INPUT (REAL SOURCE)
+   CONNECTED TO RISK GRAPH VIA localStorage
 ========================= */
 function getRiskScore() {
 
-    // CONNECT LATER TO REAL GRAPH DATA
-    // fallback simulation value
+    const stored = localStorage.getItem("sextant_risk");
 
-    return Math.floor(20 + Math.random() * 80);
+    if (!stored) {
+        return 30; // safe default baseline
+    }
+
+    const risk = parseInt(stored);
+
+    if (isNaN(risk)) {
+        return 30;
+    }
+
+    return risk;
 }
 
 /* =========================
@@ -164,12 +173,12 @@ function go(screen) {
             }
         })
         .catch(() => {
-            alert("Network error or file missing");
+            alert("Network error or missing file");
         });
 }
 
 /* =========================
-   LIVE LOOP (CONNECTS SYSTEM)
+   LIVE SYSTEM LOOP
 ========================= */
 function updateSystem() {
 
@@ -180,7 +189,7 @@ function updateSystem() {
 }
 
 /* =========================
-   INIT LOOP
+   INIT
 ========================= */
 updateSystem();
 setInterval(updateSystem, 3000);
