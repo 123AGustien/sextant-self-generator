@@ -847,26 +847,3 @@ function runDatacentreScenario(event){
 
 
 
-/* =========================
-   LIVE SYSTEM UPDATE
-========================= */
-
-function updateSystem(){
-
-    const risk =
-    getRiskScore();
-
-
-    const state =
-    calculateState(risk);
-
-
-    applyState(
-        state,
-        risk
-    );
-
-}
-
-
-
