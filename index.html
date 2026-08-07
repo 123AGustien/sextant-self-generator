@@ -646,5 +646,159 @@ function go(screen){
     }
 
 }
+/* =========================
+   LIVE SYSTEM UPDATE
+========================= */
 
+function updateSystem(){
+
+    const risk = getRiskScore();
+
+    const state = calculateState(risk);
+
+    applyState(
+        state,
+        risk
+    );
+
+}
+
+
+/* =========================
+   ACTIVE SCREEN ROUTER
+========================= */
+
+function go(screen){
+
+    switch(screen){
+
+        case "sim":
+
+            window.location.href =
+            "https://123agustien.github.io/sextant-self-generator/simulation_screen_v1.html";
+
+            break;
+
+
+        case "ind":
+
+            window.location.href =
+            "https://123agustien.github.io/sextant-self-generator/sextant-offline-command-center/";
+
+            break;
+
+
+        default:
+
+            alert(
+            "Screen route unavailable"
+            );
+
+            break;
+
+    }
+
+}
+
+
+/* =========================
+   SYSTEM START
+========================= */
+
+if(!localStorage.getItem("sextant_risk")){
+
+    localStorage.setItem(
+        "sextant_risk",
+        "30"
+    );
+
+}
+
+
+window.addEventListener(
+    "load",
+    function(){
+
+        updateSystem();
+
+    }
+);
+
+/* =========================
+   LIVE SYSTEM UPDATE
+========================= */
+
+function updateSystem(){
+
+    const risk = getRiskScore();
+
+    const state = calculateState(risk);
+
+    applyState(
+        state,
+        risk
+    );
+
+}
+
+
+/* =========================
+   ACTIVE SCREEN ROUTER
+========================= */
+
+function go(screen){
+
+    switch(screen){
+
+        case "sim":
+
+            window.location.href =
+            "https://123agustien.github.io/sextant-self-generator/simulation_screen_v1.html";
+
+            break;
+
+
+        case "ind":
+
+            window.location.href =
+            "https://123agustien.github.io/sextant-self-generator/sextant-offline-command-center/";
+
+            break;
+
+
+        default:
+
+            alert(
+            "Screen route unavailable"
+            );
+
+            break;
+
+    }
+
+}
+
+
+/* =========================
+   SYSTEM START
+========================= */
+
+if(!localStorage.getItem("sextant_risk")){
+
+    localStorage.setItem(
+        "sextant_risk",
+        "30"
+    );
+
+}
+
+
+window.addEventListener(
+    "load",
+    function(){
+
+        updateSystem();
+
+    }
+);
 
