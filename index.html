@@ -627,27 +627,3 @@ function updateSystem(){
 
 
 
-/* =========================
-   SYSTEM BOOT
-========================= */
-
-if(!localStorage.getItem("sextant_risk")){
-
-    localStorage.setItem(
-        "sextant_risk",
-        "30"
-    );
-
-}
-
-
-updateSystem();
-
-
-setInterval(
-    updateSystem,
-    3000
-);
-
-
-</script>
