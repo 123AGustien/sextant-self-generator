@@ -587,3 +587,17 @@ function runDatacentreScenario(event){
     document
     .getElementById("dcRisk")
     .innerText = risk;
+/* =========================
+   MASTER CONSOLE RISK LINK
+========================= */
+
+localStorage.setItem(
+    "sextant_risk",
+    risk
+);
+
+
+updateSystem();
+
+
+}
