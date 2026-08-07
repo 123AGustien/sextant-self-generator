@@ -948,6 +948,93 @@ function calculateState(risk){
 
 }
 /* =========================
+   APPLY SYSTEM STATE
+========================= */
+
+function applyState(state,risk){
+
+    const stateBox =
+    document.getElementById("systemState");
+
+    const riskBox =
+    document.getElementById("riskScore");
+
+
+    const btnSim =
+    document.getElementById("btnSim");
+
+    const btnInd =
+    document.getElementById("btnInd");
+
+    const btnPilot =
+    document.getElementById("btnPilot");
+
+
+
+    if(riskBox){
+
+        riskBox.innerText =
+        "Risk Score: " + risk;
+
+    }
+
+
+
+    if(stateBox){
+
+        if(state==="stable"){
+
+            stateBox.innerText =
+            "🟢 STABLE";
+
+        }
+
+
+        if(state==="warning"){
+
+            stateBox.innerText =
+            "🟠 WARNING";
+
+        }
+
+
+        if(state==="crisis"){
+
+            stateBox.innerText =
+            "🔴 CRISIS";
+
+        }
+
+    }
+
+
+
+    // Navigation control
+
+    if(btnSim){
+
+        btnSim.disabled=false;
+
+    }
+
+
+    if(btnInd){
+
+        btnInd.disabled =
+        (state==="crisis");
+
+    }
+
+
+    if(btnPilot){
+
+        // Schneider Pilot remains available
+        btnPilot.disabled=false;
+
+    }
+
+}
+/* =========================
    SYSTEM BOOT
 ========================= */
 
