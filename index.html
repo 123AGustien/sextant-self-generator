@@ -1,1 +1,215 @@
-g
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sextant Risk-Aware Master Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body {
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#0b0f14;
+    color:#2bd4ff;
+    text-align:center;
+}
+
+h1 {
+    margin-top:20px;
+    font-size:22px;
+}
+
+h2 {
+    font-size:20px;
+}
+
+button,
+.scenario {
+    width:90%;
+    max-width:400px;
+    padding:15px;
+    margin:10px;
+    background:#111826;
+    color:#2bd4ff;
+    border:1px solid #2bd4ff;
+    font-size:16px;
+    cursor:pointer;
+    border-radius:6px;
+    display:inline-block;
+}
+
+button:disabled {
+    opacity:0.3;
+    cursor:not-allowed;
+}
+
+.status {
+    margin-top:15px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.note {
+    font-size:12px;
+    color:#7aa2b7;
+    margin-top:10px;
+}
+
+.risk {
+    margin-top:10px;
+    font-size:14px;
+    color:#7aa2b7;
+}
+
+.panel {
+    margin:20px;
+    padding:20px;
+    border:1px solid #2bd4ff;
+    border-radius:8px;
+    background:#111826;
+}
+
+.log {
+    margin:12px;
+    padding:10px;
+    border:1px solid #24506b;
+    border-radius:5px;
+}
+
+.screen {
+    display:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="mainScreen">
+
+<h1>
+SEXTANT MASTER CONSOLE
+</h1>
+
+<div id="systemState" class="status">
+🟢 STABLE
+</div>
+
+<div id="riskScore" class="risk">
+Risk Score: --
+</div>
+
+
+<button id="btnSim"
+onclick="go('sim')">
+Run Simulation Screen v2
+</button>
+
+
+<button id="btnInd"
+onclick="go('ind')">
+Industrial Control Screen v1
+</button>
+
+
+<button id="btnPilot"
+onclick="openSchneider()">
+Schneider Datacentre Pilot
+</button>
+
+
+<div class="note">
+Risk-Driven Navigation Layer • Live Contingency Control
+</div>
+
+</div>
+
+
+<!-- =========================
+SCHNEIDER DATACENTRE PILOT SCREEN
+========================= -->
+
+<div id="schneiderScreen" class="screen">
+
+<div class="panel">
+
+<h2>
+🏢 Schneider Datacentre AI Pilot
+</h2>
+
+<p>
+AI Infrastructure Resilience Monitoring
+</p>
+
+
+<div class="log">
+POWER SYSTEM:
+<span id="powerStatus">
+NORMAL
+</span>
+</div>
+
+
+<div class="log">
+COOLING SYSTEM:
+<span id="coolingStatus">
+NORMAL
+</span>
+</div>
+
+
+<div class="log">
+NETWORK LOAD:
+<span id="networkStatus">
+NORMAL
+</span>
+</div>
+
+
+<div class="log">
+DATACENTRE RISK SCORE:
+<span id="dcRisk">
+25
+</span>
+</div>
+
+
+<br>
+
+
+<div class="scenario"
+onclick="runDatacentreScenario('Power Surge')">
+
+⚡ Simulate Power Surge
+
+</div>
+
+
+<div class="scenario"
+onclick="runDatacentreScenario('Cooling Failure')">
+
+❄ Simulate Cooling Failure
+
+</div>
+
+
+<div class="scenario"
+onclick="runDatacentreScenario('Network Congestion')">
+
+🌐 Simulate Network Stress
+
+</div>
+
+
+<br>
+
+<button onclick="closeSchneider()">
+Return To Master Console
+</button>
+
+
+</div>
+
+</div>
