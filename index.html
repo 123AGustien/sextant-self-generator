@@ -299,3 +299,212 @@ Return To Master Console
 
 
 </div>
+<script>
+
+/* =========================
+   BASE URL
+========================= */
+
+const BASE =
+"https://123agustien.github.io/sextant-resilience-operations-console/";
+
+
+/* =========================
+   ROUTES
+========================= */
+
+const routes = {
+
+    sim:"simulation_screen_v2.html",
+
+    ind:"industrial_control_screen_v1.html"
+
+};
+
+
+
+/* =========================
+   RISK INPUT
+========================= */
+
+function getRiskScore(){
+
+    const stored =
+    localStorage.getItem("sextant_risk");
+
+
+    if(!stored){
+
+        return 30;
+
+    }
+
+
+    const risk =
+    parseInt(stored);
+
+
+    if(isNaN(risk)){
+
+        return 30;
+
+    }
+
+
+    return risk;
+
+}
+
+
+
+/* =========================
+   STATE ENGINE
+========================= */
+
+function calculateState(risk){
+
+    if(risk < 40)
+        return "stable";
+
+
+    if(risk < 70)
+        return "warning";
+
+
+    return "crisis";
+
+}
+
+
+
+/* =========================
+   APPLY SYSTEM STATE
+========================= */
+
+function applyState(state,risk){
+
+
+    const stateBox =
+    document.getElementById("systemState");
+
+
+    const riskBox =
+    document.getElementById("riskScore");
+
+
+    const btnSim =
+    document.getElementById("btnSim");
+
+
+    const btnInd =
+    document.getElementById("btnInd");
+
+
+    const btnPilot =
+    document.getElementById("btnPilot");
+
+
+
+    riskBox.innerText =
+    "Risk Score: " + risk;
+
+
+
+    if(state==="stable"){
+
+        stateBox.innerText="🟢 STABLE";
+
+        btnSim.disabled=false;
+        btnInd.disabled=false;
+        btnPilot.disabled=false;
+
+    }
+
+
+
+    if(state==="warning"){
+
+        stateBox.innerText="🟠 WARNING";
+
+        btnSim.disabled=false;
+        btnInd.disabled=false;
+        btnPilot.disabled=true;
+
+    }
+
+
+
+    if(state==="crisis"){
+
+        stateBox.innerText="🔴 CRISIS";
+
+        btnSim.disabled=false;
+        btnInd.disabled=true;
+        btnPilot.disabled=true;
+
+    }
+
+}
+
+
+
+/* =========================
+   SAFE ROUTER
+========================= */
+
+function go(screen){
+
+    const file =
+    routes[screen];
+
+
+    const url =
+    BASE + file;
+
+
+
+    fetch(url,{method:"HEAD"})
+
+    .then(res=>{
+
+        if(res.ok){
+
+            window.location.href=url;
+
+        }
+
+        else{
+
+            alert(
+            "Screen not found: " + file
+            );
+
+        }
+
+    })
+
+
+    .catch(()=>{
+
+        alert(
+        "Network error or missing file"
+        );
+
+    });
+
+
+}
+
+
+
+
+/* =========================
+   SCHNEIDER SCREEN CONTROL
+========================= */
+
+
+function openSchneider(){
+
+    document
+    .getElementById("mainScreen")
+   
