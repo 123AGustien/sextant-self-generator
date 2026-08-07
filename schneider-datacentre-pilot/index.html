@@ -1,2 +1,331 @@
 
-g
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Schneider Datacentre Pilot - Sextant Protocol</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#0b0f14;
+    color:#2bd4ff;
+    text-align:center;
+}
+
+h1{
+    margin-top:20px;
+}
+
+.panel{
+
+    margin:20px;
+    padding:20px;
+    background:#111826;
+    border:1px solid #2bd4ff;
+    border-radius:8px;
+
+}
+
+
+.log{
+
+    margin:12px;
+    padding:10px;
+    border:1px solid #24506b;
+    border-radius:5px;
+
+}
+
+
+button,
+.scenario{
+
+    width:90%;
+    max-width:400px;
+    padding:15px;
+    margin:10px;
+    background:#111826;
+    color:#2bd4ff;
+    border:1px solid #2bd4ff;
+    border-radius:6px;
+    font-size:16px;
+
+}
+
+
+.status{
+
+    font-size:20px;
+    font-weight:bold;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>
+🏢 Schneider Datacentre AI Pilot
+</h1>
+
+
+<div class="panel">
+
+
+<div id="systemState" class="status">
+🟢 STABLE
+</div>
+
+
+<div id="riskScore">
+Risk Score: 30
+</div>
+
+
+
+<div class="log">
+
+POWER SYSTEM:
+<span id="powerStatus">
+NORMAL
+</span>
+
+</div>
+
+
+
+<div class="log">
+
+COOLING SYSTEM:
+<span id="coolingStatus">
+NORMAL
+</span>
+
+</div>
+
+
+
+<div class="log">
+
+NETWORK LOAD:
+<span id="networkStatus">
+NORMAL
+</span>
+
+</div>
+
+
+
+<div class="log">
+
+DATACENTRE RISK:
+<span id="dcRisk">
+25
+</span>
+
+</div>
+
+
+
+<div class="scenario"
+onclick="runDatacentreScenario('Power')">
+
+⚡ Simulate Power Surge
+
+</div>
+
+
+
+<div class="scenario"
+onclick="runDatacentreScenario('Cooling')">
+
+❄ Simulate Cooling Failure
+
+</div>
+
+
+
+<div class="scenario"
+onclick="runDatacentreScenario('Network')">
+
+🌐 Simulate Network Congestion
+
+</div>
+
+
+<button onclick="resetSystem()">
+
+Reset Simulation
+
+</button>
+
+
+</div>
+
+
+
+<script>
+
+
+function runDatacentreScenario(event){
+
+
+let risk = 25;
+
+
+
+if(event==="Power"){
+
+risk +=35;
+
+document.getElementById("powerStatus").innerText =
+"STRESS DETECTED";
+
+}
+
+
+
+if(event==="Cooling"){
+
+risk +=30;
+
+document.getElementById("coolingStatus").innerText =
+"FAILURE RISK";
+
+}
+
+
+
+if(event==="Network"){
+
+risk +=25;
+
+document.getElementById("networkStatus").innerText =
+"CONGESTION";
+
+}
+
+
+
+if(risk>100){
+
+risk=100;
+
+}
+
+
+
+document.getElementById("dcRisk").innerText=risk;
+
+
+
+localStorage.setItem(
+"sextant_risk",
+risk
+);
+
+
+
+updateSystem();
+
+
+}
+
+
+
+
+function calculateState(risk){
+
+
+if(risk<40){
+
+return "🟢 STABLE";
+
+}
+
+
+if(risk<70){
+
+return "🟠 WARNING";
+
+}
+
+
+return "🔴 CRISIS";
+
+
+}
+
+
+
+
+
+function updateSystem(){
+
+
+let risk =
+parseInt(localStorage.getItem("sextant_risk") || 30);
+
+
+
+document.getElementById("riskScore").innerText =
+"Risk Score: " + risk;
+
+
+
+document.getElementById("systemState").innerText =
+calculateState(risk);
+
+
+}
+
+
+
+
+
+function resetSystem(){
+
+
+localStorage.setItem(
+"sextant_risk",
+"30"
+);
+
+
+document.getElementById("powerStatus").innerText="NORMAL";
+
+document.getElementById("coolingStatus").innerText="NORMAL";
+
+document.getElementById("networkStatus").innerText="NORMAL";
+
+
+updateSystem();
+
+
+}
+
+
+
+window.onload=function(){
+
+updateSystem();
+
+};
+
+
+</script>
+
+
+</body>
+
+</html>
