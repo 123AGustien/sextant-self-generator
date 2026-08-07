@@ -1,1 +1,672 @@
-g
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>
+SEXTANT MASTER CONSOLE - Schneider Datacentre Pilot
+</title>
+
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+
+body{
+
+height:100vh;
+background:#050b16;
+color:#e5e7eb;
+
+}
+
+
+/* =====================
+BOOT SCREEN
+===================== */
+
+
+#bootScreen{
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:#000814;
+
+color:#38bdf8;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-family:monospace;
+
+z-index:9999;
+
+}
+
+
+#bootLog{
+
+font-size:16px;
+
+line-height:28px;
+
+}
+
+
+
+/* =====================
+APPLICATION
+===================== */
+
+
+#app{
+
+display:none;
+
+height:100vh;
+
+width:100%;
+
+}
+
+
+
+/* =====================
+SIDEBAR
+===================== */
+
+
+.sidebar{
+
+width:260px;
+
+background:#0f172a;
+
+padding:20px;
+
+border-right:1px solid #334155;
+
+}
+
+
+
+.logo{
+
+font-size:22px;
+
+font-weight:bold;
+
+color:#38bdf8;
+
+margin-bottom:25px;
+
+}
+
+
+
+.nav-btn{
+
+width:100%;
+
+padding:12px;
+
+margin-bottom:10px;
+
+background:#111827;
+
+color:#e5e7eb;
+
+border:1px solid #374151;
+
+border-radius:6px;
+
+cursor:pointer;
+
+}
+
+
+.nav-btn:hover{
+
+background:#1f2937;
+
+}
+/* =====================
+MAIN AREA
+===================== */
+
+
+.main{
+
+flex:1;
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+
+
+
+.topbar{
+
+padding:15px;
+
+background:#0f172a;
+
+border-bottom:1px solid #334155;
+
+display:flex;
+
+justify-content:space-between;
+
+font-weight:bold;
+
+}
+
+
+
+.online{
+
+color:#22c55e;
+
+}
+
+
+.warning{
+
+color:#f59e0b;
+
+}
+
+
+.critical{
+
+color:#ef4444;
+
+}
+
+
+
+/* =====================
+MASTER HEADER
+===================== */
+
+
+.master{
+
+padding:20px;
+
+background:#111827;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+border-bottom:1px solid #334155;
+
+}
+
+
+
+.master h2{
+
+color:#38bdf8;
+
+}
+
+
+
+.description{
+
+color:#94a3b8;
+
+margin-top:5px;
+
+}
+
+
+
+.score{
+
+font-size:28px;
+
+color:#38bdf8;
+
+}
+
+
+
+/* =====================
+CONTENT PANELS
+===================== */
+
+
+.content{
+
+display:flex;
+
+gap:15px;
+
+padding:15px;
+
+flex:1;
+
+}
+
+
+
+.panel{
+
+background:#111827;
+
+padding:15px;
+
+border-radius:10px;
+
+border:1px solid #1f2937;
+
+}
+
+
+
+.engine{
+
+flex:2;
+
+}
+
+
+
+.console{
+
+flex:1;
+
+height:450px;
+
+overflow:auto;
+
+}
+
+
+
+
+/* =====================
+SCENARIO BUTTONS
+===================== */
+
+
+.scenario{
+
+background:#1f2937;
+
+padding:12px;
+
+margin:10px 0;
+
+border-radius:6px;
+
+cursor:pointer;
+
+border:1px solid #374151;
+
+}
+
+
+
+.scenario:hover{
+
+background:#273449;
+
+}
+
+
+
+/* =====================
+LOG
+===================== */
+
+
+.log{
+
+margin-bottom:8px;
+
+color:#cbd5e1;
+
+font-size:14px;
+
+}
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================
+BOOT SCREEN
+===================== -->
+
+
+<div id="bootScreen">
+
+<div id="bootLog"></div>
+
+</div>
+
+
+
+<!-- =====================
+APPLICATION
+===================== -->
+
+
+<div id="app">
+
+
+
+<!-- SIDEBAR -->
+
+
+<div class="sidebar">
+
+
+<div class="logo">
+
+SEXTANT AI
+
+</div>
+
+
+
+<button class="nav-btn">
+
+Dashboard
+
+</button>
+
+
+
+<button class="nav-btn">
+
+Industrial Control Screen v1
+
+</button>
+
+
+
+<button class="nav-btn">
+
+Simulation Screen v2
+
+</button>
+
+
+
+<button class="nav-btn">
+
+Schneider Datacentre Pilot
+
+</button>
+
+
+
+<button class="nav-btn">
+
+Risk Models
+
+</button>
+
+
+
+<button class="nav-btn">
+
+Contingency Control
+
+</button>
+
+
+
+</div>
+
+
+
+<!-- MAIN AREA -->
+
+
+<div class="main">
+
+
+<div class="topbar">
+
+
+<div>
+
+Schneider Datacentre Pilot
+
+</div>
+
+
+
+<div id="systemStatus" class="online">
+
+● SYSTEM ONLINE
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<!-- MASTER CONSOLE -->
+
+
+<div class="master">
+
+
+<div>
+
+
+<h2>
+
+SEXTANT MASTER CONSOLE
+
+</h2>
+
+
+
+<div class="description">
+
+Risk-Driven Navigation Layer • Live Contingency Control
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div>
+
+
+<div id="riskState" class="warning">
+
+🟠 WARNING
+
+</div>
+
+
+
+<div class="score">
+
+Risk Score:
+
+<span id="riskScore">
+
+43
+
+</span>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+<!-- =====================
+CONTENT AREA
+===================== -->
+
+
+<div class="content">
+
+
+<!-- SCENARIO ENGINE -->
+
+
+<div class="panel engine">
+
+
+<h2>
+
+Scenario Engine
+
+</h2>
+
+
+
+<p>
+
+Select infrastructure stress simulation:
+
+</p>
+
+
+
+
+<div class="scenario"
+onclick="runScenario('Power Surge')">
+
+⚡ Power Surge Event
+
+</div>
+
+
+
+
+<div class="scenario"
+onclick="runScenario('Cooling Failure')">
+
+❄ Cooling Failure
+
+</div>
+
+
+
+
+<div class="scenario"
+onclick="runScenario('Network Congestion')">
+
+🌐 Network Congestion
+
+</div>
+
+
+
+
+<div class="scenario"
+onclick="runScenario('Load Spike')">
+
+📈 Compute Load Spike
+
+</div>
+
+
+
+
+<div class="scenario"
+onclick="runScenario('Blackout Cascade')">
+
+⚠ Blackout Cascade
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<!-- SYSTEM CONSOLE -->
+
+
+<div class="panel console" id="console">
+
+
+<div class="log">
+
+<strong>SYSTEM:</strong>
+
+Sextant Master Console Initialized
+
+</div>
+
+
+
+<div class="log">
+
+<strong>MODE:</strong>
+
+Offline Deterministic Simulation
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+</body>
+</html>
