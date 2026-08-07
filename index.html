@@ -737,8 +737,56 @@ function calculateState(risk){
 
 }
 
+/* =========================
+   LIVE SYSTEM UPDATE
+========================= */
+
+function updateSystem(){
+
+    const risk =
+    getRiskScore();
 
 
+    const state =
+    calculateState(risk);
+
+
+    applyState(
+        state,
+        risk
+    );
+
+}
+
+
+/* =========================
+   SYSTEM BOOT
+========================= */
+
+if(!localStorage.getItem("sextant_risk")){
+
+    localStorage.setItem(
+        "sextant_risk",
+        "30"
+    );
+
+}
+
+
+window.addEventListener(
+    "load",
+    function(){
+
+        updateSystem();
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
 /* =========================
    APPLY SYSTEM STATE
 ========================= */
