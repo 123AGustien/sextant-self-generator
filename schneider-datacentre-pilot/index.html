@@ -399,3 +399,348 @@ color:#cbd5e1;
 <!-- APPLICATION -->
 
 <div id="app">
+<script>
+
+
+/* =========================
+SEXTANT BOOT SEQUENCE
+========================= */
+
+
+const bootSteps = [
+
+"Booting Sextant AI Kernel",
+
+"Loading Schneider Datacentre Model",
+
+"Checking Power Systems",
+
+"Checking Cooling Systems",
+
+"Loading Risk Engine",
+
+"Activating Master Console"
+
+];
+
+
+let bootIndex = 0;
+
+
+
+function bootSequence(){
+
+
+if(bootIndex < bootSteps.length){
+
+
+let line = document.createElement("div");
+
+
+line.innerText =
+"> " + bootSteps[bootIndex];
+
+
+document
+.getElementById("bootLog")
+.appendChild(line);
+
+
+
+bootIndex++;
+
+
+setTimeout(
+bootSequence,
+500
+);
+
+
+
+}
+
+else{
+
+
+setTimeout(()=>{
+
+
+document
+.getElementById("bootScreen")
+.style.display="none";
+
+
+
+document
+.getElementById("app")
+.style.display="flex";
+
+
+
+},800);
+
+
+
+}
+
+
+}
+
+
+bootSequence();
+
+
+
+
+
+/* =========================
+RISK ENGINE
+========================= */
+
+
+function calculateRisk(event){
+
+
+let risk = 25;
+
+
+
+if(event.includes("Power"))
+
+risk += 25;
+
+
+
+if(event.includes("Cooling"))
+
+risk += 20;
+
+
+
+if(event.includes("Network"))
+
+risk += 18;
+
+
+
+if(event.includes("Load"))
+
+risk += 15;
+
+
+
+if(event.includes("Blackout"))
+
+risk += 40;
+
+
+
+return Math.min(risk,100);
+
+
+}
+
+
+
+
+
+
+/* =========================
+SYSTEM CLASSIFICATION
+========================= */
+
+
+function classifyRisk(score){
+
+
+if(score >= 70)
+
+return "🔴 CRITICAL";
+
+
+else if(score >= 40)
+
+return "🟠 WARNING";
+
+
+else
+
+return "🟢 STABLE";
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+DECISION ENGINE
+========================= */
+
+
+function decisionEngine(score){
+
+
+if(score >=70)
+
+return "ACTIVATE STABILIZATION PROTOCOL";
+
+
+if(score >=40)
+
+return "PREVENTIVE RESILIENCE MODE";
+
+
+return "NORMAL MONITORING";
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+SCENARIO EXECUTION
+========================= */
+
+
+function runScenario(event){
+
+
+const risk =
+calculateRisk(event);
+
+
+
+const state =
+classifyRisk(risk);
+
+
+
+const decision =
+decisionEngine(risk);
+
+
+
+
+
+document
+.getElementById("riskScore")
+.innerText = risk;
+
+
+
+document
+.getElementById("riskState")
+.innerText = state;
+
+
+
+
+
+writeLog(
+"Scenario Triggered: " + event
+);
+
+
+
+writeLog(
+"Risk Score: " + risk
+);
+
+
+
+writeLog(
+"System State: " + state
+);
+
+
+
+writeLog(
+"AI Decision: " + decision
+);
+
+
+
+writeLog(
+"Action: Evaluate mitigation pathway"
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+/* =========================
+CONSOLE LOGGER
+========================= */
+
+
+function writeLog(message){
+
+
+let consoleBox =
+document.getElementById("console");
+
+
+
+let line =
+document.createElement("div");
+
+
+
+line.className="log";
+
+
+
+line.innerHTML =
+"<strong>AI:</strong> "
++ message;
+
+
+
+consoleBox.appendChild(line);
+
+
+
+consoleBox.scrollTop =
+consoleBox.scrollHeight;
+
+
+
+}
+
+
+
+
+/* =========================
+SYSTEM READY CHECK
+========================= */
+
+
+window.addEventListener("load",()=>{
+
+
+console.log(
+"Sextant Master Console Online"
+);
+
+
+});
+
+
+
+</script>
