@@ -713,6 +713,160 @@ function getRiskScore(){
     return parseInt(stored);
 
 }
+/* =========================
+   STATE CALCULATION
+========================= */
+
+function calculateState(risk){
+
+    if(risk < 40){
+
+        return "stable";
+
+    }
+
+
+    if(risk < 70){
+
+        return "warning";
+
+    }
+
+
+    return "crisis";
+
+}
+
+
+
+/* =========================
+   APPLY SYSTEM STATE
+========================= */
+
+function applyState(state,risk){
+
+    const stateBox =
+    document.getElementById("systemState");
+
+
+    const riskBox =
+    document.getElementById("riskScore");
+
+
+    riskBox.innerText =
+    "Risk Score: " + risk;
+
+
+
+    if(state==="stable"){
+
+        stateBox.innerText =
+        "🟢 STABLE";
+
+    }
+
+
+    if(state==="warning"){
+
+        stateBox.innerText =
+        "🟠 WARNING";
+
+    }
+
+
+    if(state==="crisis"){
+
+        stateBox.innerText =
+        "🔴 CRISIS";
+
+    }
+
+}
+
+
+
+/* =========================
+   SCHNEIDER DATACENTRE ENGINE
+========================= */
+
+function runDatacentreScenario(event){
+
+    let risk = 25;
+
+
+    if(event.includes("Power")){
+
+        risk += 35;
+
+        document.getElementById("powerStatus")
+        .innerText="STRESS DETECTED";
+
+    }
+
+
+    if(event.includes("Cooling")){
+
+        risk += 30;
+
+        document.getElementById("coolingStatus")
+        .innerText="FAILURE RISK";
+
+    }
+
+
+    if(event.includes("Network")){
+
+        risk += 25;
+
+        document.getElementById("networkStatus")
+        .innerText="CONGESTION";
+
+    }
+
+
+    if(risk > 100){
+
+        risk = 100;
+
+    }
+
+
+    document.getElementById("dcRisk")
+    .innerText=risk;
+
+
+    localStorage.setItem(
+        "sextant_risk",
+        risk
+    );
+
+
+    updateSystem();
+
+}
+
+
+
+/* =========================
+   LIVE SYSTEM UPDATE
+========================= */
+
+function updateSystem(){
+
+    const risk =
+    getRiskScore();
+
+
+    const state =
+    calculateState(risk);
+
+
+    applyState(
+        state,
+        risk
+    );
+
+}
 
 
 
