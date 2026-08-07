@@ -587,3 +587,67 @@ function runDatacentreScenario(event){
     document
     .getElementById("dcRisk")
     .innerText = risk;
+/* =========================
+   MASTER CONSOLE RISK LINK
+========================= */
+
+localStorage.setItem(
+    "sextant_risk",
+    risk
+);
+
+
+updateSystem();
+
+
+}
+
+
+
+/* =========================
+   LIVE SYSTEM UPDATE
+========================= */
+
+function updateSystem(){
+
+    const risk =
+    getRiskScore();
+
+
+    const state =
+    calculateState(risk);
+
+
+    applyState(
+        state,
+        risk
+    );
+
+}
+
+
+
+/* =========================
+   SYSTEM BOOT
+========================= */
+
+if(!localStorage.getItem("sextant_risk")){
+
+    localStorage.setItem(
+        "sextant_risk",
+        "30"
+    );
+
+}
+
+
+updateSystem();
+
+
+setInterval(
+    updateSystem,
+    3000
+);
+
+
+</script>
