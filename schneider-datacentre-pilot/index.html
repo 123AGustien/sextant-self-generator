@@ -813,3 +813,168 @@ return "NORMAL MONITORING";
 
 
 }
+ /* =====================
+ SCENARIO EXECUTION
+ ===================== */
+
+
+function runScenario(event){
+
+
+const risk =
+calculateRisk(event);
+
+
+
+const state =
+classifyRisk(risk);
+
+
+
+const decision =
+decisionEngine(risk);
+
+
+
+
+
+// UPDATE MASTER CONSOLE
+
+
+document
+.getElementById("riskScore")
+.innerText = risk;
+
+
+
+const riskElement =
+document.getElementById("riskState");
+
+
+
+riskElement.innerText = state;
+
+
+
+riskElement.className="";
+
+
+
+if(risk>=70)
+
+riskElement.classList.add("critical");
+
+
+else if(risk>=40)
+
+riskElement.classList.add("warning");
+
+
+else
+
+riskElement.classList.add("online");
+
+
+
+
+
+
+// WRITE SYSTEM LOG
+
+
+writeLog(
+"Scenario Triggered: "+event
+);
+
+
+writeLog(
+"Risk Score: "+risk
+);
+
+
+writeLog(
+"System State: "+state
+);
+
+
+writeLog(
+"AI Decision: "+decision
+);
+
+
+writeLog(
+"Action: Execute resilience assessment"
+);
+
+
+
+}
+
+
+
+
+
+/* =====================
+CONSOLE LOGGER
+===================== */
+
+
+function writeLog(message){
+
+
+const consoleBox =
+document.getElementById("console");
+
+
+
+const line =
+document.createElement("div");
+
+
+
+line.className="log";
+
+
+
+line.innerHTML =
+"<strong>AI:</strong> "+message;
+
+
+
+consoleBox.appendChild(line);
+
+
+
+consoleBox.scrollTop =
+consoleBox.scrollHeight;
+
+
+}
+
+
+
+
+
+/* =====================
+SYSTEM READY
+===================== */
+
+
+window.addEventListener("load",()=>{
+
+
+console.log(
+"SEXTANT MASTER CONSOLE ONLINE"
+);
+
+
+});
+
+
+
+</script>
+
+
+</body>
+
+</html>
