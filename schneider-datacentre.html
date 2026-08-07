@@ -1,1 +1,77 @@
-g
+<!-- =========================
+SCHNEIDER DATACENTRE PILOT SCREEN
+========================= -->
+
+<div id="schneiderScreen" style="display:none;padding:20px;">
+
+<div class="panel">
+
+<h2>
+🏢 Schneider Datacentre AI Pilot
+</h2>
+
+<p>
+AI Infrastructure Resilience Monitoring
+</p>
+
+<br>
+
+<div class="log">
+POWER SYSTEM:
+<span id="powerStatus">
+NORMAL
+</span>
+</div>
+
+<div class="log">
+COOLING SYSTEM:
+<span id="coolingStatus">
+NORMAL
+</span>
+</div>
+
+<div class="log">
+NETWORK LOAD:
+<span id="networkStatus">
+NORMAL
+</span>
+</div>
+
+<div class="log">
+DATACENTRE RISK SCORE:
+<span id="dcRisk">
+25
+</span>
+</div>
+
+
+<br>
+
+
+<div class="scenario"
+onclick="runDatacentreScenario('Power Surge')">
+
+⚡ Simulate Power Surge
+
+</div>
+
+
+<div class="scenario"
+onclick="runDatacentreScenario('Cooling Failure')">
+
+❄ Simulate Cooling Failure
+
+</div>
+
+
+<div class="scenario"
+onclick="runDatacentreScenario('Network Congestion')">
+
+🌐 Simulate Network Stress
+
+</div>
+
+
+</div>
+
+</div>
