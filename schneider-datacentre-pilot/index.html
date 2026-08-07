@@ -277,3 +277,243 @@ color:#38bdf8;
 <div id="bootLog"></div>
 
 </div>
+<!-- =====================
+APPLICATION START
+===================== -->
+
+<div id="app">
+
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="logo">
+SEXTANT AI
+</div>
+
+
+<button class="nav-btn">
+Dashboard
+</button>
+
+
+<button class="nav-btn">
+Industrial Control Screen v1
+</button>
+
+
+<button class="nav-btn">
+Simulation Screen v2
+</button>
+
+
+<button class="nav-btn">
+Schneider Datacentre Pilot
+</button>
+
+
+<button class="nav-btn">
+Risk Models
+</button>
+
+
+<button class="nav-btn">
+Contingency Control
+</button>
+
+
+</div>
+
+
+
+<!-- MAIN -->
+
+<div class="main">
+
+
+<div class="topbar">
+
+<div>
+Schneider Datacentre Pilot
+</div>
+
+
+<div id="systemStatus" class="online">
+
+● SYSTEM ONLINE
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- MASTER CONSOLE HEADER -->
+
+
+<div class="master">
+
+
+<div>
+
+<h2>
+SEXTANT MASTER CONSOLE
+</h2>
+
+
+<div class="description">
+
+Risk-Driven Navigation Layer • Live Contingency Control
+
+</div>
+
+
+</div>
+
+
+
+
+<div>
+
+
+<div id="riskState" class="warning">
+
+🟠 WARNING
+
+</div>
+
+
+
+<div class="score">
+
+Risk Score:
+
+<span id="riskScore">
+43
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<!-- CONTENT -->
+
+
+<div class="content">
+
+
+<div class="panel engine">
+
+
+<h2>
+Scenario Engine
+</h2>
+
+
+<p>
+Select infrastructure stress simulation:
+</p>
+
+
+
+<div class="scenario"
+onclick="runScenario('Power Surge')">
+
+⚡ Power Surge Event
+
+</div>
+
+
+
+
+<div class="scenario"
+onclick="runScenario('Cooling Failure')">
+
+❄ Cooling Failure
+
+</div>
+
+
+
+
+<div class="scenario"
+onclick="runScenario('Network Congestion')">
+
+🌐 Network Congestion
+
+</div>
+
+
+
+
+<div class="scenario"
+onclick="runScenario('Load Spike')">
+
+📈 Compute Load Spike
+
+</div>
+
+
+
+
+<div class="scenario"
+onclick="runScenario('Blackout Cascade')">
+
+⚠ Blackout Cascade
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- CONSOLE -->
+
+
+<div class="panel console" id="console">
+
+
+<div class="log">
+
+<strong>SYSTEM:</strong>
+Sextant Master Console Initialized
+
+</div>
+
+
+<div class="log">
+
+<strong>MODE:</strong>
+Offline Deterministic Simulation
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+</div>
+
+
+</div>
