@@ -688,7 +688,57 @@ function closeSchneider(){
 }
 
 
+/* =========================
+   RISK RECOVERY ENGINE
+========================= */
 
+function getRiskScore(){
+
+    let stored =
+    localStorage.getItem("sextant_risk");
+
+
+    if(!stored){
+
+        stored = "30";
+
+        localStorage.setItem(
+            "sextant_risk",
+            stored
+        );
+
+    }
+
+
+    return parseInt(stored);
+
+}
+
+
+
+/* =========================
+   STATE CALCULATION
+========================= */
+
+function calculateState(risk){
+
+    if(risk < 40){
+
+        return "stable";
+
+    }
+
+
+    if(risk < 70){
+
+        return "warning";
+
+    }
+
+
+    return "crisis";
+
+}
 /* =========================
    SYSTEM BOOT
 ========================= */
