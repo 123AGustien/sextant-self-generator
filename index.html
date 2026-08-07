@@ -624,6 +624,44 @@ function updateSystem(){
     );
 
 }
+/* =========================
+   ACTIVE SCREEN ROUTES
+========================= */
+
+const BASE = "./";
+
+
+const routes = {
+
+    sim: "simulation_screen_v2.html",
+
+    ind: "industrial_control_screen_v1.html"
+
+};
+
+
+
+/* =========================
+   ACTIVE SCREEN ROUTER
+========================= */
+
+function go(screen){
+
+    const file = routes[screen];
+
+
+    if(!file){
+
+        alert("Screen route unavailable");
+
+        return;
+
+    }
+
+
+    window.location.href = BASE + file;
+
+}
 
 
 
